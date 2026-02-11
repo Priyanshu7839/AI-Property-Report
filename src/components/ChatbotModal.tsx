@@ -233,7 +233,7 @@ export function ChatbotModal({ isOpen, onClose, propertyAddress, mode = 'general
       {/* Chat Modal */}
       <div className="relative w-full max-w-md h-[600px] sm:h-[700px] bg-white rounded-t-2xl sm:rounded-l-2xl sm:rounded-tr-none shadow-2xl flex flex-col pointer-events-auto animate-slide-up sm:animate-slide-left overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#005BFF] to-[#0066FF] px-6 py-4 flex items-center justify-between">
+        <div className="bg-gradient-to-b from-[#0A0A0A] to-[#161718] px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="relative">
               <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-xl flex items-center justify-center">
@@ -272,7 +272,7 @@ export function ChatbotModal({ isOpen, onClose, propertyAddress, mode = 'general
               <div
                 className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                   message.type === 'user'
-                    ? 'bg-gradient-to-r from-[#005BFF] to-[#0066FF] text-white'
+                    ? 'bg-gradient-to-b from-[#0A0A0A] to-[#161718] text-white'
                     : 'bg-white text-black border border-black/[0.06] shadow-sm'
                 }`}
               >
@@ -295,7 +295,7 @@ export function ChatbotModal({ isOpen, onClose, propertyAddress, mode = 'general
                 <button
                   key={idx}
                   onClick={() => handleQuickReply(reply)}
-                  className="px-4 py-2 rounded-full bg-white border border-[#005BFF]/20 text-[#005BFF] text-[13px] font-medium hover:bg-[#005BFF]/5 transition-all duration-200 shadow-sm hover:shadow"
+                  className="px-4 py-2 rounded-full bg-white border border-[#000]/20 text-[#000] text-[13px] font-medium hover:bg-[#005BFF]/5 transition-all duration-200 shadow-sm hover:shadow"
                 >
                   {reply}
                 </button>
@@ -383,7 +383,7 @@ export function ChatbotModal({ isOpen, onClose, propertyAddress, mode = 'general
             <button
               type="submit"
               disabled={!inputValue.trim() || conversationStage === 'booking'}
-              className="p-3 rounded-full bg-gradient-to-r from-[#005BFF] to-[#0066FF] text-white hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-3 rounded-full bg-gradient-to-b from-[#0A0A0A] to-[#161718] text-white hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Send size={18} />
             </button>

@@ -3,8 +3,8 @@ import { Lock } from 'lucide-react';
 export function IntelligenceCards() {
   const cards = [
     { label: 'AI VALUATION', value: '$847K', color: '#005BFF' },
-    { label: 'EQUITY UNLOCK', value: '$142K', color: '#18A36F' },
-    { label: 'INSURANCE WASTE', value: '$2.4K/yr', color: '#000' },
+    { label: 'EQUITY UNLOCK', value: '$142K', color: '#fff' },
+    { label: 'INSURANCE WASTE', value: '$2.4K/yr', color: '#18A36F' },
   ];
 
   return (
@@ -14,15 +14,15 @@ export function IntelligenceCards() {
         {cards.map((card, index) => (
           <div
             key={index}
-            className="relative bg-white/60 backdrop-blur-xl border border-black/[0.06] rounded-3xl p-8 lg:p-10 shadow-[0_0_0_1px_rgba(255,255,255,0.1)_inset,0_1px_2px_rgba(0,0,0,0.05),0_8px_16px_rgba(0,0,0,0.04)] overflow-hidden group hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2)_inset,0_1px_2px_rgba(0,0,0,0.08),0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-500 hover:scale-[1.02]"
+            className="relative bg-black backdrop-blur-xl border border-black/[0.06] rounded-3xl p-8 lg:p-10 shadow-[0_0_0_1px_rgba(255,255,255,0.1)_inset,0_1px_2px_rgba(0,0,0,0.05),0_8px_16px_rgba(0,0,0,0.04)] overflow-hidden group hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2)_inset,0_1px_2px_rgba(0,0,0,0.08),0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-500 hover:scale-[1.02]"
           >
             {/* Gradient accent on hover */}
             <div className="absolute inset-0 bg-gradient-to-br from-[#005BFF]/[0.02] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             
             {/* Lock overlay */}
-            <div className="absolute inset-0 backdrop-blur-sm bg-white/40 z-10 flex items-center justify-center group-hover:backdrop-blur-md transition-all duration-300">
-              <div className="bg-white rounded-2xl p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_8px_16px_rgba(0,0,0,0.08)] group-hover:scale-110 transition-transform duration-300">
-                <Lock className="text-[#6A6A6A]" size={24} strokeWidth={1.5} />
+            <div className="absolute inset-0 backdrop-blur-[3px] bg-black/10 z-10 flex items-center justify-center group-hover:backdrop-blur-md transition-all duration-300">
+              <div className="bg-black border border-[#fff] rounded-2xl p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_8px_16px_rgba(0,0,0,0.08)] group-hover:scale-110 transition-transform duration-300">
+                <Lock className="text-[#fff]" size={24} strokeWidth={1.5} />
               </div>
             </div>
             
@@ -42,7 +42,7 @@ export function IntelligenceCards() {
         ))}
       </div>
       <div className="text-center mt-8">
-        <p className="text-[#6A6A6A] text-[15px]">Unlock full intelligence report</p>
+        <p className="text-[#6A6A6A] text-[15px]">Unlock Your Property's Full Potential</p>
       </div>
     </section>
   );

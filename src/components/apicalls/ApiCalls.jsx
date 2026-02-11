@@ -38,13 +38,13 @@ export const gettimeSeriesData = async(zpid) => {
     try {
          const [SandP, Bonds, Bitcoin, House] = await Promise.all([
       axios.get(
-        "https://api.twelvedata.com/time_series?apikey=0b3f30ff2a97427996198a52b9881c02&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2025-12-02 02:57:00&symbol=SPY"
+        "https://api.twelvedata.com/time_series?apikey=9d3b914c31d5414b94858399343c5cfa&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2025-12-02 02:57:00&symbol=SPY"
       ),
       axios.get(
-        "https://api.twelvedata.com/time_series?apikey=0b3f30ff2a97427996198a52b9881c02&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2025-12-02 02:57:00&symbol=BND"
+        "https://api.twelvedata.com/time_series?apikey=9d3b914c31d5414b94858399343c5cfa&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2025-12-02 02:57:00&symbol=BND"
       ),
       axios.get(
-        "https://api.twelvedata.com/time_series?apikey=0b3f30ff2a97427996198a52b9881c02&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2025-12-02 02:57:00&symbol=BTC/USD"
+        "https://api.twelvedata.com/time_series?apikey=9d3b914c31d5414b94858399343c5cfa&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2025-12-02 02:57:00&symbol=BTC/USD"
       ),
       axios.get(
         `https://zhomes-realty-us.p.rapidapi.com/properties/zestimate-history?zpid=${zpid}`,
@@ -58,6 +58,7 @@ export const gettimeSeriesData = async(zpid) => {
       ),
     ]);
 
+    console.log(House)
     console.log(SandP)
 
   
@@ -78,6 +79,7 @@ console.log(response3.cagr1,response3.cagr3,response3.cagr5);
     const secondYearClose =House?.data?.data?.homeValueChartData?.[0]?.points?.[12]?.value
     const thirdYearClose = House?.data?.data?.homeValueChartData?.[0]?.points?.[36]?.value
     const fourthYearClose = House?.data?.data?.homeValueChartData?.[0]?.points?.[60]?.value
+    const fifthYearClose = House?.data?.data?.homeValueChartData?.[0]?.points?.[72]?.value
 
     console.log(firstYearClose,secondYearClose,thirdYearClose,fourthYearClose)
 
@@ -88,7 +90,7 @@ console.log(response3.cagr1,response3.cagr3,response3.cagr5);
 
     const cagr3 = ((firstYearClose - thirdYearClose) / firstYearClose) * 100;
     console.log(cagr3)
-    const cagr5 = ((firstYearClose - fourthYearClose) / firstYearClose) * 100;
+    const cagr5 = ((Math.pow((firstYearClose / fifthYearClose),0.2)) - 1 )*100   ;
     console.log(cagr5)
 
     

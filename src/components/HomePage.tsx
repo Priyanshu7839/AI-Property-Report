@@ -24,6 +24,8 @@ import Logo from '../assets/logo.png'
 import {CommercialErrorPopup} from '../components/CommercialErrorPopup'
 import {ErrorPopup} from '../components/ErrorPopup';
 import { trackEvent } from "../GoogleAnalytics/Analytics";
+import HouseImage from '../assets/HouseImage.jpeg'
+import HouseBanner from '../assets/Banner.png'
 
 interface HomePageProps {
   onGenerateReport: (
@@ -211,14 +213,14 @@ export function HomePage({
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFBFC] relative overflow-hidden">
+    <div className="min-h-screen bg-[#F7F7F7] relative overflow-hidden">
      <CommercialErrorPopup isOpen={Error} onClose={()=>setError(false)}/>
       <ErrorPopup isOpen={DataError} onClose={()=>setDataError(false)}/>
       {/* Advanced mesh gradient background */}
-      <div className="fixed inset-0 pointer-events-none">
+      {/* <div className="fixed inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(0,91,255,0.08)_0%,transparent_50%),radial-gradient(circle_at_80%_80%,rgba(24,163,111,0.06)_0%,transparent_50%),radial-gradient(circle_at_50%_50%,rgba(0,91,255,0.04)_0%,transparent_50%)]"></div>
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#005BFF]/10 to-transparent"></div>
-      </div>
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#0A2540]/10 to-transparent"></div>
+      </div> */}
 
       {/* Floating dots pattern */}
       <div
@@ -237,11 +239,11 @@ export function HomePage({
       {/* Header */}
       <header className="border-b border-black/[0.06] bg-white/80 backdrop-blur-xl sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex items-center justify-between">
-          <div className="text-black tracking-tight font-medium relative inline-flex items-baseline">
+          <div className="text-[#757575] tracking-tight font-medium relative inline-flex items-baseline">
             <span
             >AIPropertyReport</span>
             <span
-              className="text-[#0285FF]"
+              className="text-[#000]"
               style={{
                 fontFamily: "Comic Sans MS, cursive",
                 transform: "rotate(-4deg)",
@@ -250,7 +252,7 @@ export function HomePage({
                 fontWeight: 600,
                 letterSpacing: "0.5px",
                 marginLeft: "1px",
-                textShadow: "0.5px 0.5px 0 #0285FF, -0.3px 0.3px 0 #0285FF",
+                textShadow: "0.5px 0.5px 0 #000, -0.3px 0.3px 0 #000",
               }}
             >
               .com
@@ -270,7 +272,7 @@ export function HomePage({
               <path
                 d="M 2 4 Q 75 5, 150 4 T 298 4"
                 fill="none"
-                stroke="#0285FF"
+                stroke="#000"
                 strokeWidth="2.5"
                 opacity="0.88"
                 strokeLinecap="round"
@@ -280,13 +282,13 @@ export function HomePage({
           <nav className="hidden md:flex items-center gap-8 text-[#6A6A6A] text-[15px]">
             <a
               href="#how-it-works"
-              className="hover:text-[#0285FF] transition-colors duration-200"
+              className="hover:text-[#000] transition-colors duration-200"
             >
               How it works
             </a>
             <a
               href="#sample-report"
-              className="hover:text-[#0285FF] transition-colors duration-200"
+              className="hover:text-[#000] transition-colors duration-200"
             >
               Sample report
             </a>
@@ -294,7 +296,7 @@ export function HomePage({
               onClick={()=>{
                 navigate('/Login')
               }}
-              className="hover:text-[#0285FF] cursor-pointer transition-colors duration-200"
+              className="hover:text-[#000] cursor-pointer transition-colors duration-200"
             >
               Partners
             </span>
@@ -303,39 +305,56 @@ export function HomePage({
       </header>
 
       {/* Hero Section */}
-      <section className="max-w-5xl mx-auto px-6 lg:px-8 pt-20 lg:pt-24 pb-16 lg:pb-14 text-center relative">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-[#005BFF]/10 via-[#005BFF]/5 to-transparent border border-[#005BFF]/10 text-[#005BFF] text-sm mb-8 backdrop-blur-xl">
-          <div className="w-1.5 h-1.5 rounded-full bg-[#005BFF] animate-pulse"></div>
+
+      <img src={HouseBanner} alt="" />
+  
+    <div className='flex items-center max-w-6xl mx-auto px-6 lg:px-8 pt-20 lg:pt-24 pb-16 lg:pb-14'>
+         <section className=" text-center relative w-[50%]">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-[#000] to-[#000]  border border-[#0A2540]/10 text-[#fff] text-sm mb-8 backdrop-blur-xl">
+          <div className="w-1.5 h-1.5 rounded-full bg-[#005bff] animate-pulse"></div>
           <span>AI-Powered Property Intelligence</span>
         </div>
 
-        <h1 className="text-black mb-6 text-[42px] sm:text-[56px] lg:text-[72px] tracking-[-0.04em] relative leading-[1.1] font-[500]">
+        <h1 className="text-black mb-6 text-[42px] sm:text-[56px] lg:text-[56px] tracking-[-0.04em] relative leading-[1.1] font-[700] ">
           Your Property Has a<br />
           Hidden Value.
           <br />
-          <span className="bg-gradient-to-r from-[#005BFF] via-[#0066FF] to-[#005BFF] bg-clip-text text-transparent">
+              <div className='flex gap-4'>
+                  <span className="flex bg-gradient-to-r from-gray-500 via-gray-500 to-gray-500 bg-clip-text text-transparent">
             Our AI Finds It
-          </span>{" "}
-          in 60s.
+          </span>
+          <span>in</span>
+          <span className='flex'>60 <p className = 'italic text-gray-500'>s.</p></span>
+              </div>
         </h1>
-        <p className="text-[#6A6A6A] text-[16px] lg:text-[18px] mb-6 max-w-2xl mx-auto leading-relaxed capitalize">
+        <p className="text-[#6A6A6A] text-[16px] lg:text-[16px] mb-6 max-w-2xl mx-auto leading-relaxed capitalize">
          A free AI-powered report that uncovers your home’s real market value, tappable equity, and how unused capital could perform across diversed assets.
         </p>
-        <p className="text-black text-[21px] lg:text-[24px] mb-12 font-semibold tracking-tight capitalize">
+        <p className="text-black text-[21px] lg:text-[20px] mb-12 font-semibold tracking-tight capitalize">
           Your Home Isn’t Just a Place to Live - It’s a Powerful Financial Engine - Let's Activate It !
         </p>
 
+      
+      </section>
+
+      <section className='w-[50%]'>
+        <img src={HouseImage} alt="" />
+      </section>
+    </div>
+     
+
+     <div className='flex flex-col items-center max-w-6xl mx-auto w-full mb-10'>
         {/* Address Input */}
-        <form className="mb-8">
+        <form className="mb-8 w-full">
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr,400px] gap-6 items-start">
             {/* Left: Address Input */}
             <div className="space-y-4">
               <div className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#005BFF] to-[#0066FF] rounded-[20px] opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 blur-sm transition-opacity duration-500"></div>
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#000] to-[#000] rounded-[20px] opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 blur-sm transition-opacity duration-500"></div>
 
                 <div className="relative bg-white rounded-[18px] shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_2px_4px_rgba(0,0,0,0.02),0_12px_24px_rgba(0,0,0,0.04)] group-focus-within:shadow-[0_0_0_1px_rgba(0,91,255,0.2),0_8px_16px_rgba(0,91,255,0.08),0_24px_48px_rgba(0,91,255,0.12)] transition-all duration-300">
                   <MapPin
-                    className={`absolute left-5 top-1/2 -translate-y-1/2   transition-colors z-10 ${emtpyError?'text-red-500':'text-[#6A6A6A] group-focus-within:text-[#005BFF]'}`}
+                    className={`absolute left-5 top-1/2 -translate-y-1/2   transition-colors z-10 ${emtpyError?'text-red-500':'text-[#6A6A6A] group-focus-within:text-[#0A2540]'}`}
                     size={20}
                   />
                   <input
@@ -359,7 +378,7 @@ export function HomePage({
     })
               }}
                 type="button"
-                className="w-full bg-gradient-to-b from-[#005BFF] to-[#0047CC] hover:from-[#0052E6] hover:to-[#003DB8] text-white px-8 py-6 rounded-[18px] flex items-center justify-center gap-2 transition-all duration-200 h-auto shadow-[0_1px_2px_rgba(0,0,0,0.12),0_8px_16px_rgba(0,91,255,0.24)] hover:shadow-[0_1px_2px_rgba(0,0,0,0.16),0_16px_32px_rgba(0,91,255,0.32)] hover:translate-y-[-1px] active:translate-y-0 text-[15px] font-medium"
+                className="w-full bg-gradient-to-b from-gray-700 to-gray-800 hover:from-[#000] hover:to-[#000] text-white px-8 py-6 rounded-[18px] flex items-center justify-center gap-2 transition-all duration-200 h-auto shadow-[0_1px_2px_rgba(0,0,0,0.12),0_8px_16px_rgba(0,0,0,0.24)] hover:shadow-[0_1px_2px_rgba(0,0,0,0.16),0_16px_32px_rgba(0,0,0,0.32)] hover:translate-y-[-1px] active:translate-y-0 text-[15px] font-medium"
               >
                 {loading?'Get My AI Report...':'Get My AI Report'}
                 <ChevronRight size={20} />
@@ -385,13 +404,14 @@ export function HomePage({
                     }
                   }}
                   variant="ghost"
-                  className="text-[#005BFF] hover:text-[#0047CC] text-xs flex items-center gap-1.5 h-auto py-1.5 px-2 sm:px-3"
+                  className="text-[#0A2540] hover:text-[#0A2540] text-xs flex items-center gap-1.5 h-auto py-1.5 px-2 sm:px-3"
                 >
                   <Navigation size={14} />
                   <span className="hidden sm:inline">Use My Location</span>
                   <span className="sm:hidden">GPS</span>
                 </Button>
               </div>
+
               <LocationMap
                 location={location}
                 setLocation={setLocation}
@@ -407,12 +427,12 @@ export function HomePage({
         </p>
 
         {/* Property Type Toggle */}
-        <div className="flex items-center justify-center gap-2 sm:gap-3 bg-[#F7F7F7]/80 backdrop-blur-sm border border-[#ECECEC]/50 rounded-full p-1.5 inline-flex shadow-sm">
+        <div className="flex items-center justify-center gap-2 sm:gap-1 bg-[#F7F7F7]/80 backdrop-blur-sm border border-[#ECECEC]/50 rounded-full p-1.5 inline-flex shadow-sm">
           <label
             className="flex items-center gap-2 sm:gap-2.5 cursor-pointer px-4 sm:px-6 py-2 sm:py-2.5 rounded-full transition-all duration-300 hover:bg-white/50"
             style={{
               backgroundColor:
-                propertyType === "residential" ? "white" : "transparent",
+                propertyType === "residential" ? "black" : "transparent",
               boxShadow:
                 propertyType === "residential"
                   ? "0 2px 8px rgba(0,0,0,0.06)"
@@ -425,9 +445,9 @@ export function HomePage({
               value="residential"
               checked={propertyType === "residential"}
               onChange={(e) => setPropertyType(e.target.value as "residential")}
-              className="w-3.5 h-3.5 sm:w-4 sm:h-4 accent-[#005BFF]"
+              className="w-3.5 h-3.5 sm:w-4 sm:h-4 accent-[#fff]"
             />
-            <span className="text-black text-xs sm:text-sm">Residential</span>
+            <span className="text-white text-xs sm:text-sm">Residential</span>
           </label>
           <label
             className="flex items-center gap-2 sm:gap-2.5 cursor-pointer px-4 sm:px-6 py-2 sm:py-2.5 rounded-full transition-all duration-300 hover:bg-white/50"
@@ -446,7 +466,7 @@ export function HomePage({
               value="commercial"
               checked={propertyType === "commercial"}
               // onChange={(e) => setPropertyType(e.target.value as 'commercial')}
-              className="w-3.5 h-3.5 sm:w-4 sm:h-4 accent-[#005BFF]"
+              className="w-3.5 h-3.5 sm:w-4 sm:h-4 accent-[#0A2540]"
             />
             <span className="text-black text-xs sm:text-sm">
               Commercial
@@ -468,8 +488,9 @@ export function HomePage({
             </span>
           </label>
         </div>
-      </section>
+     </div>
 
+   
       {/* Intelligence Cards */}
       <IntelligenceCards />
 

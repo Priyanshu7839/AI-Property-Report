@@ -47,6 +47,7 @@ import {
   Activity,
   ShieldCheck,
   Layers,
+  Newspaper,
 } from "lucide-react";
 
 import {
@@ -83,6 +84,7 @@ import { TimelineVisualization } from "./TimelineVisualization";
 import { StrategyCustomizer } from "./StrategyCustomizer";
 import Frame from "../assets/Frame.png";
 import Frame1 from "../assets/Frame1.png";
+import Equity from "../assets/Equity.png";
 import CustomTab from "./ui/CustomTab";
 import { Label } from "./ui/label";
 import {
@@ -97,6 +99,8 @@ import { Doughnut, Pie } from "react-chartjs-2";
 import Bullseye from "../assets/Bullseye.png";
 import { trackEvent } from "../GoogleAnalytics/Analytics";
 import { toast } from "sonner";
+import { GrowthChart } from "./GrowthCharts";
+import { AppreciationChart } from "./AppreciationChart";
 
 type StrategyType = "Baseline" | "Basic" | "Popular" | "High" | "Custom";
 
@@ -128,14 +132,14 @@ const assetsSvg = {
     >
       <path
         d="M12.8346 4.27637L7.8763 9.2347L4.95964 6.31803L1.16797 10.1097"
-        stroke="#2A69DB"
+        stroke="#fff"
         stroke-width="1.16667"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
       <path
         d="M9.33203 4.27637H12.832V7.77637"
-        stroke="#2A69DB"
+        stroke="#fff"
         stroke-width="1.16667"
         stroke-linecap="round"
         stroke-linejoin="round"
@@ -153,25 +157,25 @@ const assetsSvg = {
     >
       <path
         d="M18.5 17.838C19.5305 17.6867 20.2627 17.3941 20.8284 16.8284C22 15.6569 22 13.7712 22 10C22 6.22876 22 4.34315 20.8284 3.17157C19.6569 2 17.7712 2 14 2H10C6.22876 2 4.34315 2 3.17157 3.17157C2 4.34315 2 6.22876 2 10C2 13.7712 2 15.6569 3.17157 16.8284C3.97975 17.6366 5.1277 17.8873 7 17.965"
-        stroke="#6DBFD5"
+        stroke="#fff"
         stroke-width="1.5"
         stroke-linecap="round"
       />
       <path
         d="M17 7H7"
-        stroke="#6DBFD5"
+        stroke="#fff"
         stroke-width="1.5"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
       <path
         d="M14.5 14.5C14.5 15.8807 13.3807 17 12 17C10.6193 17 9.5 15.8807 9.5 14.5C9.5 13.1193 10.6193 12 12 12C13.3807 12 14.5 13.1193 14.5 14.5Z"
-        stroke="#6DBFD5"
+        stroke="#fff"
         stroke-width="1.5"
       />
       <path
         d="M9.5 14.5C9.5 18.5659 11.2222 20.8706 12 22L13.5 19L15.25 20L17 21C16.2653 20.2888 15.5058 18.0471 15.5058 18.0471"
-        stroke="#6DBFD5"
+        stroke="#fff"
         stroke-width="1.5"
         stroke-linecap="round"
         stroke-linejoin="round"
@@ -185,7 +189,7 @@ const assetsSvg = {
       height="17"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="#FF6F00"
+      stroke="#fff"
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
@@ -201,7 +205,7 @@ const assetsSvg = {
       height="17"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="#3C998F"
+      stroke="#fff"
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
@@ -244,24 +248,24 @@ const EmailGateScreen = ({ setScreen }) => {
       <div className="max-w-2xl w-[500px] relative">
         <div
           onClick={() => setScreen(3)}
-          className="absolute top-6 right-10 text-[16px] text-[#0b85ff]  cursor-pointer border-b border-[#0b85ff]"
+          className="absolute top-6 right-10 text-[16px] text-[#000]  cursor-pointer border-b border-[#000]"
         >
           Skip
         </div>
 
         <div className="bg-white border border-black/[0.08] rounded-3xl p-8 sm:p-12 shadow-2xl">
           <div className="text-center mb-8">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0b85ff]/10 to-[##0b855ff]/5 flex items-center justify-center mx-auto mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#000]/10 to-[#000]/5 flex items-center justify-center mx-auto mb-3">
               {/* <Lock className="w-6 h-6 text-[#18A36F]" /> */}
 
-              <img src={Bullseye} />
+             <Newspaper/>
             </div>
 
             <h2 className="text-[20px] sm:text-[24px] tracking-[-0.03em] font-[500] mb-2 capitalize">
-              To generate a more accurate estimate
+              Activate Your Personalized Strategy Plan
             </h2>
             <p className="text-[#6A6A6A] text-[12px] leading-relaxed mb-8 capitalize">
-              We'll save your report and refine the numbers. No spam.
+              Enter your email to receive your detailed strategy breakdown and next-step recommendations.
             </p>
           </div>
 
@@ -276,7 +280,7 @@ const EmailGateScreen = ({ setScreen }) => {
                 setEmail(e.target.value);
               }}
               placeholder="you@example.com"
-              className="w-full px-3 py-2 bg-[#FAFBFC] border border-black/[0.1] rounded-md focus:outline-none focus:border-[#0b85ff] focus:ring-2 focus:ring-[#0b85ff]/50 transition-all text-[16px]"
+              className="w-full px-3 py-2 bg-[#FAFBFC] border border-black/[0.1] rounded-md focus:outline-none focus:border-[#000] focus:ring-2 focus:ring-[#000]/50 transition-all text-[16px]"
             />
           </div>
 
@@ -284,7 +288,7 @@ const EmailGateScreen = ({ setScreen }) => {
             onClick={() => {
               handleEmailSubmit();
             }}
-            className="w-full py-2 bg-gradient-to-b from-[#005BFF] to-[#0047CC] hover:from-[#0052E6] text-white rounded-md font-medium text-[14px] shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 group mb-4"
+            className="w-full py-2 bg-gradient-to-b from-[#0A0A0A] to-[#161718] text-white rounded-md font-medium text-[14px] shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 group mb-4"
           >
             Get My Detailed Estimate
             {uploading ? (
@@ -322,20 +326,18 @@ const EmailFlowCloseScreen = ({ setScreen }) => (
     <div className="max-w-2xl w-[500px] relative">
       <div className="bg-white border border-black/[0.08] rounded-3xl p-8 sm:p-12 shadow-2xl">
         <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0b85ff]/10 to-[##0b855ff]/5 flex items-center justify-center mx-auto mb-3">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#000]/10 to-[#000]/5 flex items-center justify-center mx-auto mb-3">
             {/* <Lock className="w-6 h-6 text-[#18A36F]" /> */}
 
-            <img src={Bullseye} />
+            <Check />
           </div>
 
           <h2 className="text-[20px] sm:text-[24px] tracking-[-0.03em] font-[500] mb-2 capitalize">
-            Your Detailed Report Is Being Prepared
+            Strategy request received.
+
           </h2>
           <p className="text-[#6A6A6A] text-[12px] leading-relaxed mb-2 capitalize">
-            A Property advisor is now refining your report based on your home
-            and financial profile. You will recieve you personalised report
-            shortly, and out of our advisor may reach out to you to walk you
-            through your best options.
+           Generate your full AI Property Report now by entering your property address — an advisor may also reach out to review your unlock potential.
           </p>
         </div>
 
@@ -343,7 +345,7 @@ const EmailFlowCloseScreen = ({ setScreen }) => (
           onClick={() => {
             setScreen(2);
           }}
-          className="w-full py-2 bg-gradient-to-b from-[#005BFF] to-[#0047CC] hover:from-[#0052E6] text-white rounded-md font-medium text-[14px] shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 group mb-4"
+          className="w-full py-2  bg-gradient-to-b from-[#0A0A0A] to-[#161718] text-white rounded-md font-medium text-[14px] shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 group mb-4"
         >
           Continue To Report
           <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -385,13 +387,14 @@ const Badge = ({
   color = "blue",
 }: {
   children: React.ReactNode;
-  color?: "blue" | "green" | "gray" | "orange";
+  color?: "blue" | "green" | "gray" | "orange" | "red";
 }) => {
   const styles = {
     blue: "bg-[#005BFF]/10 text-[#005BFF]",
     green: "bg-[#18A36F]/10 text-[#18A36F]",
     gray: "bg-gray-100 text-gray-600",
     orange: "bg-orange-500/10 text-orange-600",
+    red:'bg-red-100 text-red-600'
   };
   return (
     <span
@@ -563,6 +566,8 @@ export function ReportPage({
       TotalReturnsBeforeTax:0,
        projectAnnualReturn: 0,
       totalassetsvalueinfiveYears: 0,
+      TotalReturnsAfterTaxOptimized:0,
+
       netgaininpercent: 0,
       netgainvalue: 0,
        capitalGainsTaxPaid:0,
@@ -579,6 +584,8 @@ export function ReportPage({
        projectAnnualReturn: 0,
       totalassetsvalueinfiveYears: 0,
       netgaininpercent: 0,
+      TotalReturnsAfterTaxOptimized:0,
+
       netgainvalue: 0,
        capitalGainsTaxPaid:0,
       color: "blue",
@@ -594,6 +601,7 @@ export function ReportPage({
       Risk: "Medium Risk",
       projectAnnualReturn: 0,
       totalassetsvalueinfiveYears: 0,
+      TotalReturnsAfterTaxOptimized:0,
       netgaininpercent: 0,
       netgainvalue: 0,
        capitalGainsTaxPaid:0,
@@ -610,6 +618,8 @@ export function ReportPage({
       Risk: "High Risk",
        projectAnnualReturn: 0,
       totalassetsvalueinfiveYears: 0,
+      TotalReturnsAfterTaxOptimized:0,
+
       netgaininpercent: 0,
       netgainvalue: 0,
        capitalGainsTaxPaid:0,
@@ -629,6 +639,9 @@ export function ReportPage({
       netgaininpercent: 0,
       netgainvalue: 0,
       capitalGainsTaxPaid:0,
+      TotalReturnsAfterTaxOptimized:0,
+
+
       color: "gray",
       borderColor: "border-[#cfcfd7]",
       bgColor: "bg-white",
@@ -843,7 +856,7 @@ export function ReportPage({
       {
         label: "Invested%",
         data: [getAllocation('Popular').sp500, getAllocation('Popular').bonds, getAllocation('Popular').crypto, getAllocation('Popular').cash], // MUST be numbers
-        backgroundColor: ["#2A69DB", "#6DBFD5", "#F7C34C", "#3C998F"],
+        backgroundColor: ["#000000", "#666666", "#333333", "#E3E3E3"],
         borderWidth: 1,
       },
     ],
@@ -945,6 +958,15 @@ export function ReportPage({
  
 
   const CalculateReturns= (strategy)=> {
+
+    
+    let houseAppreciation = 0
+    if(AnnualGrowth.house > 5) {
+      houseAppreciation = 5
+    }
+    else{
+      houseAppreciation = AnnualGrowth.house
+    }
           const ReinvestHouseAmount = 0.3375 * housePrice //considering 60% margin and 8.75% heloc paid for 5 years
           
 
@@ -958,9 +980,10 @@ export function ReportPage({
            const BondsReturn = bondsAmount * Math.pow(1 + (AnnualGrowth.bonds/100),5) - bondsAmount
            const CashReturn = cashAmount * Math.pow(1.02 , 5) - cashAmount
            const CryptoReturn = cryptoAmount * Math.pow(1 + (AnnualGrowth.crypto/100),5) - cryptoAmount
-           const HouseReturn = housePrice * Math.pow(1.02,5) - housePrice
+            const HouseReturn = (housePrice * (1+((houseAppreciation*5)/100) ) - housePrice)
 
-           const TotalReturns = Number(SandPReturn) +  Number(BondsReturn) +  Number(CashReturn) +  Number(CryptoReturn) +  Number(HouseReturn);
+
+           const TotalReturns = Number(SandPReturn) +  Number(BondsReturn) +  Number(CashReturn) +  Number(CryptoReturn)
 
            const CapitalGainsTax =( Number(SandPReturn) +  Number(BondsReturn) +  Number(CashReturn) +  Number(CryptoReturn)) * 0.15 //Assuming 15% capital gains Tax
 
@@ -978,7 +1001,8 @@ export function ReportPage({
             TotalReturnsAfterTaxOptimized:TotalReturnsAfterTaxOptimized,
             TotalReturnsAfterTaxNotOptimized:TotalReturnsAfterTaxNotOptimized,
             NetGainFromOptimization:NetGainFromOptimization,
-            FiveYearsReturnPercent:FiveYearsReturnPercent
+            FiveYearsReturnPercent:FiveYearsReturnPercent,
+            
 
 
            }
@@ -1002,7 +1026,9 @@ export function ReportPage({
               netgaininpercent: 0,
               netgainvalue: 0,
                capitalGainsTaxPaid:0,
-               TotalReturnsBeforeTax:0
+               TotalReturnsBeforeTax:0,
+               TotalReturnsAfterTaxNotOptimized:parseInt((CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized)).toFixed(1)
+               
             }
           :
 
@@ -1015,6 +1041,9 @@ export function ReportPage({
               netgaininpercent: parseInt(CalculateReturns('Basic').FiveYearsReturnPercent).toFixed(1),
               TotalReturnsBeforeTax:parseInt(CalculateReturns('Basic').TotalRetrunBeforeTax).toFixed(1),
                capitalGainsTaxPaid:parseInt(CalculateReturns('Basic').CapitalGainsTax).toFixed(1),
+               TotalReturnsAfterTaxOptimized:parseInt(CalculateReturns('Basic').TotalReturnsAfterTaxOptimized).toFixed(1),
+               TotalReturnsAfterTaxNotOptimized:parseInt((CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized)).toFixed(1)
+
 
             }
           : i === 2
@@ -1027,6 +1056,9 @@ export function ReportPage({
               netgaininpercent: parseInt(CalculateReturns('Popular').FiveYearsReturnPercent).toFixed(1),
               TotalReturnsBeforeTax:parseInt(CalculateReturns('Popular').TotalRetrunBeforeTax).toFixed(1),
                capitalGainsTaxPaid:parseInt(CalculateReturns('Popular').CapitalGainsTax).toFixed(1),
+               TotalReturnsAfterTaxOptimized:parseInt(CalculateReturns('Popular').TotalReturnsAfterTaxOptimized).toFixed(1),
+               TotalReturnsAfterTaxNotOptimized:parseInt((CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized)).toFixed(1)
+
 
 
               }
@@ -1039,6 +1071,9 @@ export function ReportPage({
               netgaininpercent: parseInt(CalculateReturns('High').FiveYearsReturnPercent).toFixed(1),
               TotalReturnsBeforeTax:parseInt(CalculateReturns('High').TotalRetrunBeforeTax).toFixed(1),
                capitalGainsTaxPaid:parseInt(CalculateReturns('High').CapitalGainsTax).toFixed(1),
+               TotalReturnsAfterTaxOptimized:parseInt(CalculateReturns('High').TotalReturnsAfterTaxOptimized).toFixed(1),
+               TotalReturnsAfterTaxNotOptimized:parseInt((CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized)).toFixed(1)
+
 
 
                 }
@@ -1047,6 +1082,23 @@ export function ReportPage({
       ),
     );
   }, [AnnualGrowth]);
+
+  useEffect(()=>{
+
+    console.log(CalculateReturns(selectedPortfolio.value).TotalReturnsAfterTaxOptimized/5)
+     setdataChart (
+      [
+        { year: '2026', strategy: 0, baseline: 0 },
+    { year: '2027', strategy: parseInt(CalculateReturns(selectedPortfolio.value).TotalReturnsAfterTaxOptimized/5).toFixed(1), baseline: (CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized)/5 },
+    { year: '2028', strategy: parseInt((CalculateReturns(selectedPortfolio.value).TotalReturnsAfterTaxOptimized/5)*2).toFixed(1), baseline: (CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized/5)*2 },
+    { year: '2029', strategy:parseInt((CalculateReturns(selectedPortfolio.value).TotalReturnsAfterTaxOptimized/5)*3).toFixed(1), baseline: (CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized/5)*3 },
+    { year: '2030', strategy: parseInt((CalculateReturns(selectedPortfolio.value).TotalReturnsAfterTaxOptimized/5)*4).toFixed(1), baseline: (CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized/5)*4 },
+    { year: '2031', strategy: parseInt(CalculateReturns(selectedPortfolio.value).TotalReturnsAfterTaxOptimized).toFixed(1), baseline: CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized },
+      ]
+    )
+  },[selectedPortfolio.value])
+
+  
 
   // Calculator
 
@@ -1089,11 +1141,35 @@ export function ReportPage({
     ValueNotOptimized:'',
     NetGainAfterOptimization:'',
     NetGainAfterOptimizationpercent:'',
+    TotalGain:'',
+    HouseReturn:'',
     PortfolioGain:''
   });
 
+   const [datachart,setdataChart] =useState( [
+    { year: '2026', strategy: 100000, baseline: 100000 },
+    { year: '2027', strategy: 112000, baseline: 105000 },
+    { year: '2028', strategy: 128000, baseline: 111000 },
+    { year: '2029', strategy: 145000, baseline: 118000 },
+    { year: '2030', strategy: 168000, baseline: 126000 },
+    { year: '2031', strategy: 195000, baseline: 135000 },
+  ])
+  
+   
 
   useEffect(()=>{
+
+    let houseAppreciation = 0
+    if(AnnualGrowth.house > 5) {
+      houseAppreciation = 5
+    }
+    else{
+      houseAppreciation = AnnualGrowth.house
+    }
+
+   
+   
+
     const SandPAmount = reinvestAmount.AmtToReinvest * (equities / 100)
     const bondsAmount = reinvestAmount.AmtToReinvest * (bonds / 100)
     const cashAmount = reinvestAmount.AmtToReinvest * (cash / 100)
@@ -1104,17 +1180,18 @@ export function ReportPage({
     const BondsReturn = bondsAmount * Math.pow(1 + (AnnualGrowth.bonds/100),5) - bondsAmount
     const CashReturn = cashAmount * Math.pow(1.02 , 5) - cashAmount
     const CryptoReturn = cryptoAmount * Math.pow(1 + (AnnualGrowth.crypto/100),5) - cryptoAmount
-    const HouseReturn = housePrice * Math.pow(1.02,5) - housePrice
+    const HouseReturn = (housePrice * (1+((houseAppreciation*5)/100) ) - housePrice)
    
 
-    const TotalReturnAmount = SandPReturn + BondsReturn + CryptoReturn + CashReturn + HouseReturn
+    const TotalReturnAmount = SandPReturn + BondsReturn + CryptoReturn + CashReturn
     const GainsTaxAmount =  (SandPReturn + BondsReturn + CryptoReturn + CashReturn) * (0.15)
-    const GainsAfterTaxAmount = TotalReturnAmount - GainsTaxAmount;
+    const GainsAfterTaxAmount = TotalReturnAmount - GainsTaxAmount; //only from portfolio
     const ValueOptimizedAmount = housePrice + GainsAfterTaxAmount
     const ValueNotOptimizedAmount  = housePrice + HouseReturn 
     const NetGainAfterOptimizationAmount = ValueOptimizedAmount - ValueNotOptimizedAmount
     const NetGainAfterOptimizationpercent =(Math.pow( (ValueOptimizedAmount / housePrice), 0.2) - 1 ) * 100
     const PortfolioGain = SandPReturn + BondsReturn + CryptoReturn + CashReturn
+    const TotalGain = GainsAfterTaxAmount + HouseReturn
 
     setReturnsInAssets({...ReturnsAssets,
       TotalReturns:parseFloat(TotalReturnAmount).toFixed(1),
@@ -1124,9 +1201,13 @@ export function ReportPage({
       ValueNotOptimized:parseFloat(ValueNotOptimizedAmount).toFixed(1),
       NetGainAfterOptimization:parseFloat(NetGainAfterOptimizationAmount).toFixed(1),
       NetGainAfterOptimizationpercent:parseFloat(NetGainAfterOptimizationpercent).toFixed(1),
-      PortfolioGain: parseFloat(PortfolioGain).toFixed(1)
+    TotalGain:parseFloat(TotalGain).toFixed(1),
+    HouseReturn:parseFloat(HouseReturn).toFixed(1),
+    PortfolioGain:parseFloat(PortfolioGain).toFixed(1)
     
     })
+
+   
   },[reinvestAmount,equities,bonds,cash,crypto,AnnualGrowth])
 
   const projectionData = [
@@ -1148,10 +1229,29 @@ export function ReportPage({
   // },[])
 
 
- 
+   const [isAppreciationOpen, setIsAppreciationOpen] = useState(false);
 
-  
-   
+    const generateHouseAppreciationData = () => {
+    const data = [];
+    const baselineRate = 0.032; // 3.2% Historical Avg
+    const aiProjectedRate = 0.055; // 5.5% AI Model
+
+    for (let year = 0; year <= 5; year++) {
+      data.push({
+        year: `Year ${year}`,
+        Historical: Math.round(10000 * Math.pow(1 + baselineRate, year)),
+        Projected: Math.round(100000 * Math.pow(1 + aiProjectedRate, year)),
+      });
+    }
+    return data;
+  };
+
+  const houseData = generateHouseAppreciationData();
+  const currentHouseValue = houseData[0].Projected;
+  const futureHouseValue = houseData[5].Projected;
+  const houseAppreciationGain = futureHouseValue - currentHouseValue;
+
+ 
 
   return (
     <div className="min-h-screen bg-[#FAFBFC] relative">
@@ -1168,18 +1268,18 @@ export function ReportPage({
       {/* ----------------------------- */}
 
       {/* Mesh Gradient Background */}
-      <div className="fixed inset-0 pointer-events-none">
+      {/* <div className="fixed inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(0,91,255,0.08)_0%,transparent_50%),radial-gradient(circle_at_80%_80%,rgba(24,163,111,0.06)_0%,transparent_50%),radial-gradient(circle_at_50%_50%,rgba(0,91,255,0.04)_0%,transparent_50%)]"></div>
-      </div>
+      </div> */}
 
       {/* Floating dots pattern */}
-      <div
+      {/* <div
         className="fixed inset-0 pointer-events-none opacity-[0.03]"
         style={{
           backgroundImage: "radial-gradient(circle, #000 1px, transparent 1px)",
           backgroundSize: "32px 32px",
         }}
-      ></div>
+      ></div> */}
 
       {/* ====================================================================
            SECTION 1 — HEADER WITH PROPERTY IMAGE
@@ -1255,7 +1355,7 @@ export function ReportPage({
                   }
                   ${
                     item.name === selectedButton
-                      ? "bg-gradient-to-b from-[#005BFF] to-[#0047CC] hover:from-[#0052E6] text-white rounded-md py-1.5 sm:py-1 px-2 sm:px-3 transition-all duration-[300]"
+                      ? "bg-gradient-to-b from-[#0A0A0A] to-[#161718] text-white rounded-md py-1.5 sm:py-1 px-2 sm:px-3 transition-all duration-[300]"
                       : "border-r pr-4 border-[#6A6A6A]"
                   } whitespace-nowrap`}
               >
@@ -1282,33 +1382,33 @@ export function ReportPage({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-2">
               {/* Current Value Card */}
               <Card className="flex flex-col justify-between h-full w-full relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#005BFF]/10 to-transparent rounded-bl-[100px] -mr-8 -mt-8" />
+                {/* <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#005BFF]/10 to-transparent rounded-bl-[100px] -mr-8 -mt-8" /> */}
                 <div>
                   <div className="flex items-center gap-2 mb-4">
-                    <Home size={18} className="text-[#005BFF]" />
-                    <span className="text-xs font-bold text-[#6A6A6A] uppercase tracking-wider">
+                    <Home size={18} className="text-[#000]" />
+                    <span className="text-xs font-bold text-[#000] uppercase tracking-wider">
                       Current Value
                     </span>
                   </div>
-                  <div className="text-4xl font-bold text-[#0b85ff] tracking-tighter mb-1">
+                  <div className="text-4xl font-[700] text-[#000] tracking-tighter mb-1">
                     <CountUp value={HomesData?.price} prefix="$" />
                   </div>
                   {state?.state?.data?.data?.zestimate !== null && (
                     <div className="flex items-center gap-2 text-sm">
                       {(AnnualGrowth?.house / 5)?.toFixed(2) > 0 && (
                         <span className="bg-green-50 text-[#18A36F] px-2 py-0.5 rounded font-bold text-xs flex items-center gap-1">
-                          <TrendingUp size={12} /> +$
-                          {Math.abs(AnnualGrowth?.house / 5)?.toFixed(2)}
+                          <TrendingUp size={12} /> +
+                          {Math.abs(AnnualGrowth?.house)?.toFixed(2)}%
                         </span>
                       )}
                       {(AnnualGrowth?.house / 5)?.toFixed(2) < 0 && (
                         <span className="bg-red-50 text-[red] px-2 py-0.5 rounded font-bold text-xs flex items-center gap-1">
                           <TrendingDown size={12} /> -
-                          {Math.abs((AnnualGrowth?.house / 5)?.toFixed(2))}%
+                          {Math.abs((AnnualGrowth?.house)?.toFixed(2))}%
                         </span>
                       )}
                       <span className="text-[#6A6A6A]">
-                        YoY{" "}
+                      Current  5Y{" "}
                         {`${(AnnualGrowth?.house / 5)?.toFixed(2) > 0 ? "Appreciation" : "Depreciation"}  `}
                       </span>
                     </div>
@@ -1341,38 +1441,39 @@ export function ReportPage({
               </Card>
 
               {/* Total Opportunity Card */}
-              <Card className="flex w-full flex-col justify-between h-full relative overflow-hidden ring-1 ring-[#18A36F]/20">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#18A36F]/10 to-transparent rounded-bl-[100px] -mr-8 -mt-8" />
+              <Card className="flex w-full flex-col justify-between h-full relative overflow-hidden bg-gradient-to-b from-[#0A0A0A] to-[#161718]">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#fff]/20 to-transparent rounded-bl-[100px] -mr-8 -mt-8" />
                 <div>
                   <div className="flex items-center gap-2 mb-4">
-                    <Activity size={18} className="text-[#18A36F]" />
-                    <span className="text-xs font-bold text-[#18A36F] uppercase tracking-wider">
+                    <Activity size={18} className="text-[#ffd400]" />
+                    <span className="text-xs font-bold text-[#fff] uppercase tracking-wider">
                       Total Opportunity
                     </span>
                   </div>
-                  <div className="text-4xl font-bold text-[#18A36F] tracking-tighter mb-1">
+                  <div className="text-4xl font-bold text-[#fff] tracking-tighter mb-1">
                     <CountUp
                       value={PortfolioOptions?.filter((item)=>item.value === 'Popular')?.[0].TotalReturnsBeforeTax}
+                      
                       prefix="+$"
                     />
                   </div>
-                  <p className="text-xs text-[#6A6A6A] mt-2 leading-relaxed max-w-[80%]">
+                  <p className="text-xs text-[#fff] mt-2 leading-relaxed max-w-[80%]">
                     Total 5-year value across all optimisation strategies.
-                    <span className="block mt-1 text-[10px] opacity-70">
+                    <span className="block mt-1 text-[10px] opacity-80">
                       (Before Taxes & Capital Cost)
                     </span>
                   </p>
                 </div>
                 <div className="mt-6">
-                  <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                  <div className="w-full bg-gray-400 rounded-full h-1.5 overflow-hidden">
                     <div
-                      className="bg-[#18A36F] h-full rounded-full"
+                      className="bg-[#fff] h-full rounded-full"
                       style={{ width: "75%" }}
                     />
                   </div>
-                  <div className="flex justify-between text-[10px] text-[#6A6A6A] mt-2 font-bold uppercase tracking-wider">
+                  <div className="flex justify-between text-[10px] text-[#fff] mt-2 font-bold uppercase tracking-wider">
                     <span>Potential Realized</span>
-                    <span>75%</span>
+                    <span className='text-[#ffd400]'>75%</span>
                   </div>
                 </div>
               </Card>
@@ -1382,14 +1483,14 @@ export function ReportPage({
                 <div className="flex items-start justify-between mb-4 ">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <Layers size={18} className="text-[#005BFF]" />
-                      <span className="text-xs font-bold text-[#005BFF] uppercase tracking-wider">
+                      <Layers size={18} className="text-[#000]" />
+                      <span className="text-xs font-bold text-[#000] uppercase tracking-wider">
                         Our Recommendation
                       </span>
                     </div>
                     {/* <h3 className="text-lg text-black font-bold">Deployment Strategy</h3> */}
                   </div>
-                  <Badge color="blue">Top Pick</Badge>
+                  <Badge color="green">Top Pick</Badge>
                 </div>
 
                 <div className="flex-1 flex flex-col items-center justify-between gap-4 ">
@@ -1408,7 +1509,7 @@ export function ReportPage({
                         name: "S&P 500",
                         value: `${getAllocation('Popular').sp500}%`,
                         return: `${AnnualGrowth?.sp500}%`,
-                        color: "#2A69DB",
+                        color: "#000000",
                         bgcolor: "#2A69DB33",
                         code: (
                           <svg
@@ -1439,7 +1540,7 @@ export function ReportPage({
                         name: "Bonds",
                         value: `${getAllocation('Popular').bonds}%`,
                         return: `${AnnualGrowth?.bonds}%`,
-                        color: "#6DBFD5",
+                        color: "#666666",
                         bgcolor: "#6DBFD533",
                         code: (
                           <svg
@@ -1481,7 +1582,7 @@ export function ReportPage({
                         name: "Crypto",
                         value: `${getAllocation('Popular').crypto}%`,
                         return: `${AnnualGrowth?.crypto}%`,
-                        color: "#F7C34C",
+                        color: "#333333",
                         bgcolor: "#F7C34C33",
                         code: (
                           <svg
@@ -1504,7 +1605,7 @@ export function ReportPage({
                         name: "Cash",
                         value: `${getAllocation('Popular').cash}%`,
                         return: `${AnnualGrowth?.cash}%`,
-                        color: "#3C998F",
+                        color: "#E3E3E3",
                         bgcolor: "#3C998F33",
                         code: (
                           <svg
@@ -1530,7 +1631,7 @@ export function ReportPage({
                         className="group flex items-center justify-between gap-4  w-full  cursor-default"
                       >
                         <div className="flex items-center gap-3 md:gap-4">
-                          <div className='h-[8px] rounded-md w-[20px] bg-[red]' style = {{backgroundColor:item.color}}>  
+                          <div className='h-[8px] rounded-md w-[20px] ' style = {{backgroundColor:item.color}}>  
 
                           </div>
                         
@@ -1556,16 +1657,16 @@ export function ReportPage({
                   </div>
                 </div>
                   <div>
-                    <div className="text-xs text-gray-400">
+                    <div className="text-xs text-[#18a36f] p-2 rounded-md shadow-sm shadow-[#18a36f]/20 capitalize bg-[#18a36f]/20">
                       <span className="text-sm font-bold tracking-tight">
                         ~{PortfolioOptions?.filter((item)=>item.value === 'Popular')?.[0].netgaininpercent}%{" "}
                       </span>
                       More growth potential with
-                      <span className="text-sm font-bold text-[#18A36F] tracking-tight">
+                      <span className="text-sm font-bold text-[#18A36F]  tracking-tight">
                         {" "}
                         ~{(PortfolioOptions?.filter((item)=>item.value === 'Popular')?.[0].netgaininpercent)/5}%{" "}
                       </span>
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs">
                         Annual returns
                       </span>
                     </div>
@@ -1599,8 +1700,8 @@ export function ReportPage({
                 <div className="h-full flex flex-col justify-between gap-2 p-2 sm:p-5 bg-[white] rounded-xl">
                   <div className="px-6 py-3 border-b border-black/[0.06] bg-gradient-to-r from-[#FAFBFC] to-white">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-[#005BFF]/10">
-                        <BarChart3 className="text-[#005BFF]" size={18} />
+                      <div className="p-2 rounded-lg bg-[#000]">
+                        <BarChart3 className="text-[#fff]" size={18} />
                       </div>
                       <h2 className="text-black text-[18px] sm:text-[20px] font-medium tracking-tight">
                         Price Per Square Foot Comparison
@@ -1609,7 +1710,7 @@ export function ReportPage({
                   </div>
 
                   <div className="space-y-3 flex flex-wrap max-[600px]:flex-col items-stretch justify-between">
-                    <div className="flex items-center justify-between p-4 rounded-xl bg-[#EFF6FF] border border-[#BEDBFF] hover:border-[#BEDBFF]/20 transition-all duration-200 group w-[49%] max-[600px]:w-full h-[92px]">
+                    <div className="flex items-center justify-between p-4 rounded-xl bg-gray-200 border border-black/30 hover:border-[#BEDBFF]/20 transition-all duration-200 group w-[49%] max-[600px]:w-full h-[92px]">
                       <div className="flex items-center gap-3">
                         <div className="flex flex-col gap-1">
                           <p className="text-black text-[16px] font-medium">
@@ -1758,13 +1859,16 @@ export function ReportPage({
                   <div className="mb-6 flex justify-between items-start">
                     <div>
                       <h3 className="text-lg font-bold text-black flex items-center gap-2">
-                        <PieChart size={18} className="text-[#005BFF]" />
+                        <PieChart size={18} className="text-[#000]" />
                         Asset Allocation
                       </h3>
                       <div className="text-xs text-[#6A6A6A] font-medium mt-1">
                         Recommended split based on strategy
                       </div>
                     </div>
+                 
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md  text-[11px] font-medium mb-2 border border-[#005bff]/20  bg-gradient-to-r from-[#005bff]/10 to-[#005bff]/5 text-[#005bff]">
+                 
                     <button
                       onClick={() => {
                       setSelectedButton('Equity/Growth Comparison')
@@ -1776,6 +1880,7 @@ export function ReportPage({
                     >
                       Edit Strategy
                     </button>
+                </div>
                   </div>
 
                   <div className="flex-1 flex flex-col justify-center space-y-3">
@@ -1784,8 +1889,8 @@ export function ReportPage({
                         name: "S&P 500",
                         value: `${getAllocation('Popular').sp500}%`,
                         return: `${AnnualGrowth?.sp500}%`,
-                        color: "#2A69DB",
-                        bgcolor: "#2A69DB33",
+                        color: "#000",
+                        bgcolor: "#000000",
                         code: (
                           <svg
                             width="17"
@@ -1796,14 +1901,14 @@ export function ReportPage({
                           >
                             <path
                               d="M12.8346 4.27637L7.8763 9.2347L4.95964 6.31803L1.16797 10.1097"
-                              stroke="#2A69DB"
+                              stroke="#fff"
                               stroke-width="1.16667"
                               stroke-linecap="round"
                               stroke-linejoin="round"
                             />
                             <path
                               d="M9.33203 4.27637H12.832V7.77637"
-                              stroke="#2A69DB"
+                              stroke="#fff"
                               stroke-width="1.16667"
                               stroke-linecap="round"
                               stroke-linejoin="round"
@@ -1815,8 +1920,8 @@ export function ReportPage({
                         name: "Bonds",
                         value: `${getAllocation('Popular').bonds}%`,
                         return: `${AnnualGrowth?.bonds}%`,
-                        color: "#6DBFD5",
-                        bgcolor: "#6DBFD533",
+                        color: "#000",
+                        bgcolor: "#000000",
                         code: (
                           <svg
                             width="24"
@@ -1827,25 +1932,25 @@ export function ReportPage({
                           >
                             <path
                               d="M18.5 17.838C19.5305 17.6867 20.2627 17.3941 20.8284 16.8284C22 15.6569 22 13.7712 22 10C22 6.22876 22 4.34315 20.8284 3.17157C19.6569 2 17.7712 2 14 2H10C6.22876 2 4.34315 2 3.17157 3.17157C2 4.34315 2 6.22876 2 10C2 13.7712 2 15.6569 3.17157 16.8284C3.97975 17.6366 5.1277 17.8873 7 17.965"
-                              stroke="#6DBFD5"
+                              stroke="#fff"
                               stroke-width="1.5"
                               stroke-linecap="round"
                             />
                             <path
                               d="M17 7H7"
-                              stroke="#6DBFD5"
+                              stroke="#fff"
                               stroke-width="1.5"
                               stroke-linecap="round"
                               stroke-linejoin="round"
                             />
                             <path
                               d="M14.5 14.5C14.5 15.8807 13.3807 17 12 17C10.6193 17 9.5 15.8807 9.5 14.5C9.5 13.1193 10.6193 12 12 12C13.3807 12 14.5 13.1193 14.5 14.5Z"
-                              stroke="#6DBFD5"
+                              stroke="#fff"
                               stroke-width="1.5"
                             />
                             <path
                               d="M9.5 14.5C9.5 18.5659 11.2222 20.8706 12 22L13.5 19L15.25 20L17 21C16.2653 20.2888 15.5058 18.0471 15.5058 18.0471"
-                              stroke="#6DBFD5"
+                              stroke="#fff"
                               stroke-width="1.5"
                               stroke-linecap="round"
                               stroke-linejoin="round"
@@ -1857,8 +1962,8 @@ export function ReportPage({
                         name: "Crypto",
                         value: `${getAllocation('Popular').crypto}%`,
                         return: `${AnnualGrowth?.crypto}%`,
-                        color: "#F7C34C",
-                        bgcolor: "#F7C34C33",
+                        color: "#000",
+                        bgcolor: "#000000",
                         code: (
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -1866,7 +1971,7 @@ export function ReportPage({
                             height="17"
                             viewBox="0 0 24 24"
                             fill="none"
-                            stroke="#FF6F00"
+                            stroke="#fff"
                             stroke-width="2"
                             stroke-linecap="round"
                             stroke-linejoin="round"
@@ -1880,8 +1985,8 @@ export function ReportPage({
                         name: "Cash",
                         value: `${getAllocation('Popular').cash}%`,
                         return: `${AnnualGrowth?.cash}%`,
-                        color: "#3C998F",
-                        bgcolor: "#3C998F33",
+                        color: "#000",
+                        bgcolor: "#000000",
                         code: (
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -1889,7 +1994,7 @@ export function ReportPage({
                             height="17"
                             viewBox="0 0 24 24"
                             fill="none"
-                            stroke="#3C998F"
+                            stroke="#fff"
                             stroke-width="2"
                             stroke-linecap="round"
                             stroke-linejoin="round"
@@ -1947,26 +2052,28 @@ export function ReportPage({
 
             <button
               onClick={onShowMethodology}
-              className="w-full p-4 rounded-lg bg-gradient-to-br from-[white] to-white shadow-sm transition-all duration-200 group/method"
+              className="w-full  p-6 rounded-2xl bg-gradient-to-br from-[black] to-black  backdrop-blur-2xl shadow-sm transition-all duration-200 group/method "
             >
-              <div className="flex items-center justify-between h-full">
+              <div className="flex items-center justify-between h-full bg-white/25 border border-white/30 backdrop-blur-md rounded-lg p-4 px-4">
                 <div className="flex items-center gap-2">
-                  <div className="p-2 rounded bg-[#005BFF]/10">
-                    <FileCheck className="text-[#005BFF]" size={24} />
+                  <div className="p-2 rounded bg-[#000]">
+                    <FileCheck className="text-[#fff]" size={24} />
                   </div>
                   <div className="text-left">
-                    <div className="text-black text-[15px] font-medium">
+                    <div className="text-white text-[15px] font-medium">
                       How We Calculated This
                     </div>
-                    <div className="text-[#6A6A6A] text-[10px]">
+                    <div className="text-[#fff] text-[10px]">
                       MLS Data • Public Records • AI Valuation Model
                     </div>
                   </div>
                 </div>
-                <ChevronRight
-                  className="text-[#005BFF] group-hover/method:translate-x-0.5 transition-transform"
+               <div className='flex items-center justify-center p-2 rounded-full bg-black'> 
+                 <ChevronRight
+                  className="text-[#fff] group-hover/method:translate-x-0.5 transition-transform"
                   size={16}
                 />
+               </div>
               </div>
             </button>
           </div>
@@ -2430,7 +2537,7 @@ export function ReportPage({
                     }}
                     className={`relative z-10 px-4 md:px-6 py-2 w-full rounded-[10px] text-sm font-bold capitalize transition-colors duration-200 whitespace-nowrap ${
                       activeButton === item.value
-                        ? "text-[#005bff]"
+                        ? "text-[#000]"
                         : "text-[#6A6A6A] hover:text-black"
                     }`}
                   >
@@ -2461,12 +2568,12 @@ export function ReportPage({
                 <Card className="min-h-[400px] flex flex-col">
                   <div className="flex justify-between items-center mb-8">
                     <h3 className="font-bold text-black flex items-center gap-2">
-                      <Activity size={18} className="text-[#005BFF]" />
+                      <Activity size={18} className="text-[#000]" />
                       Growth Projection (5 Years)
                     </h3>
                     <div className="flex gap-4 text-xs font-bold">
                       <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-[#005BFF]" />
+                        <div className="w-2 h-2 rounded-full bg-[#000]" />
                         <span className="capitalize">
                           {selectedPortfolio?.value === "Baseline"
                             ? "Baseline"
@@ -2481,46 +2588,7 @@ export function ReportPage({
                     </div>
                   </div>
 
-                  <div
-                    className="w-full h-[300px]"
-                    style={{ minHeight: "300px" }}
-                  >
-                    <ResponsiveContainer width="100%" height={300}>
-                           <AreaChart data={projectionData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                              <defs>
-                                 <linearGradient id="colorPortfolio" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#0A2540" stopOpacity={0.3}/>
-                                    <stop offset="95%" stopColor="#0A2540" stopOpacity={0}/>
-                                 </linearGradient>
-                              </defs>
-                              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-                              <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6A6A6A' }} dy={10} />
-                              <YAxis 
-                                 axisLine={false} 
-                                 tickLine={false} 
-                                 tick={{ fontSize: 12, fill: '#6A6A6A' }} 
-                                 tickFormatter={(val) => `$${(val/1000).toFixed(0)}k`}
-                              />
-                              <Tooltip content={<CustomTooltip />} />
-                              <Area 
-                                 type="monotone" 
-                                 dataKey="Portfolio" 
-                                 stroke="#0A2540" 
-                                 strokeWidth={3} 
-                                 fillOpacity={1} 
-                                 fill="url(#colorPortfolio)" 
-                              />
-                              <Area 
-                                 type="monotone" 
-                                 dataKey="Baseline" 
-                                 stroke="#CBD5E0" 
-                                 strokeWidth={2} 
-                                 strokeDasharray="5 5"
-                                 fill="transparent" 
-                              />
-                           </AreaChart>
-                        </ResponsiveContainer>
-                  </div>
+                  <GrowthChart data = {datachart}/>
                 </Card>
 
                 {/* Summary Stats Grid */}
@@ -2592,30 +2660,30 @@ export function ReportPage({
                         <div className="relative z-10">
                             <div className="flex items-center gap-2 mb-2">
                                <Home size={16} className="text-[#0A2540]" />
-                               <div className="text-[10px] text-[#6A6A6A] uppercase tracking-wider font-bold">House Value (Yr 5)</div>
+                               <div className="text-[10px] text-[#6A6A6A] uppercase tracking-wider font-bold">Estimated House Value (Yr 5)</div>
                             </div>
                             <div className="text-2xl font-bold tracking-tight text-[#0A2540] tabular-nums mb-1">
                              ${Number(ReturnsAssets.ValueNotOptimized).toLocaleString('en-us')}
                             </div>
                             <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-gray-100 text-[#6A6A6A] text-[10px] font-bold">
                                <span className="w-1.5 h-1.5 rounded-full bg-[#6A6A6A]" />
-                               Conservative 3.2% Growth
+                               Conservative {AnnualGrowth?.house/5 > 5 ?'25':AnnualGrowth?.house}% Growth
                             </div>
                         </div>
                      </Card>
                      
                      {/* 2. Portfolio Value (Yr 5) */}
-                     <Card className="bg-[#005BFF] text-[#005bff] border border-blue-500 shadow-[0_8px_20px_-6px_rgba(0,91,255,0.4)] relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-[#005bff]/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110 duration-500" />
+                     <Card className="bg-gradient-to-b from-[#0A0A0A] to-[#161718] text-[#fff] shadow-[0_8px_20px_-6px_rgba(0,91,255,0.4)] relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-[#fff]/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110 duration-500" />
                         <div className="relative z-10">
                             <div className="flex items-center gap-2 mb-2">
-                               <TrendingUp size={16} className="text-[#005bff]" />
-                               <div className="text-[10px] text-[#005bff] uppercase tracking-wider font-bold opacity-90">Portfolio Value (Yr 5)</div>
+                               <TrendingUp size={16} className="text-[#fff]" />
+                               <div className="text-[10px] text-[#fff] uppercase tracking-wider font-bold opacity-90">Estimated Portfolio Value (Yr 5)</div>
                             </div>
-                            <div className="text-2xl font-bold tracking-tight tabular-nums mb-1 text-[#005bff]">
-                               ${Number(ReturnsAssets.PortfolioGain).toLocaleString('en-us')}
+                            <div className="text-2xl font-bold tracking-tight tabular-nums mb-1 text-[#fff]">
+                               ${selectedPortfolio?.value !=='Custom' && selectedPortfolio.value!=='Baseline' ?Number(selectedPortfolio.TotalReturnsAfterTaxOptimized).toLocaleString('en-us'):selectedPortfolio.value === 'Custom' ? Number(ReturnsAssets.ReturnAfterTax).toLocaleString('en-us'):'0'}
                             </div>
-                            <div className="text-[11px] font-medium text-[#005bff] opacity-80">
+                            <div className="text-[11px] font-medium text-[#fff] opacity-80">
                                From ${(selectedPortfolio?.value !== 'Baseline' && selectedPortfolio?.value !=='Custom')? Number(0.3375 * housePrice).toLocaleString("en-US") :selectedPortfolio?.value==='Custom'?Number(reinvestAmount.AmtToReinvest).toLocaleString("en-US"):'0'} equity unlocked
                             </div>
                         </div>
@@ -2630,10 +2698,12 @@ export function ReportPage({
                                <div className="text-[10px] text-[#166534] uppercase tracking-wider font-bold">Total Gain (5 Yr)</div>
                             </div>
                             <div className="text-2xl font-bold tracking-tight text-[#18A36F] tabular-nums mb-1">
-                               +$ {Number(ReturnsAssets.TotalReturns).toLocaleString('en-us')}
+                             
+
+                                ${selectedPortfolio?.value !=='Custom' && selectedPortfolio.value!=='Baseline' ?(Number(selectedPortfolio.TotalReturnsAfterTaxOptimized) + Number(selectedPortfolio.TotalReturnsAfterTaxNotOptimized)).toLocaleString('en-us'):selectedPortfolio.value === 'Custom' ? Number(ReturnsAssets.TotalGain).toLocaleString('en-us'):Number(ReturnsAssets.HouseReturn).toLocaleString('en-us')}
                             </div>
                             <div className="text-[11px] font-medium text-[#166534] flex items-center gap-1">
-                               Appreciation + Portfolio Profit
+                               Appreciation {selectedPortfolio.value === 'Baseline' ?'':'+ Portfolio Profit'}
                             </div>
                         </div>
                      </Card>
@@ -2647,7 +2717,7 @@ export function ReportPage({
                   >
                     <div className="flex items-center gap-4">
                       <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${isBreakdownOpen ? "bg-[#0A2540] text-white shadow-lg shadow-blue-500/30 scale-110" : "bg-white border border-gray-100 text-[#6A6A6A]   group-hover:scale-105"}`}
+                        className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg shadow-black/30 ${isBreakdownOpen ? "bg-[#0A2540] text-white  scale-110" : "bg-gradient-to-b from-[#0A0A0A] to-[#161718] from-100% text-[#fff]   group-hover:scale-105"}`}
                       >
                         <ShieldCheck size={18} />
                       </div>
@@ -2655,7 +2725,7 @@ export function ReportPage({
                         <span
                           className={`text-sm font-bold transition-colors duration-300 ${isBreakdownOpen ? "text-[#0A2540]" : "text-[#0A2540] group-hover:text-black"}`}
                         >
-                          Taxation & Capital Cost Breakdown
+                          HELOC Reinvestment Breakdown
                         </span>
                         <span className="text-[10px] text-[#6A6A6A] font-medium mt-0.5 tracking-wide">
                           Transparent assumptions. No hidden math.
@@ -2703,7 +2773,7 @@ export function ReportPage({
                             {/* 1. Equity Unlocked */}
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-[#6A6A6A]">
-                                Equity Line Of Credit
+                                Equity Line Of Credit (60%)
                               </span>
                               <span className="font-medium text-black">
                                 $ 
@@ -2723,7 +2793,7 @@ export function ReportPage({
                             <div className="space-y-2">
                               <div className="flex justify-between items-center text-sm">
                                 <span className="text-[#6A6A6A]">
-                                  HELOC interest rate
+                                  HELOC Interest Rate
                                 </span>
                                 <span className="font-medium text-black ">
                                
@@ -2732,7 +2802,7 @@ export function ReportPage({
                               </div>
                               <div className="flex justify-between items-center text-sm">
                                 <span className="text-[#6A6A6A]">
-                                  HELOC interest paid (5 yrs)
+                                  HELOC Interest Paid (5 yrs)
                                 </span>
                                 <span className="font-medium text-red-500 ">
                                   -$
@@ -2754,7 +2824,7 @@ export function ReportPage({
                             {/* 3. Investable Amount */}
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-[#6A6A6A]">
-                                Net Investable capital
+                                Net Investable Capital
                               </span>
                               <span className="font-medium text-black ">
                                 $
@@ -2764,15 +2834,28 @@ export function ReportPage({
                             </div>
                             <div className="w-full h-px bg-gray-100" />
 
+                             {/* 3. Investable Amount */}
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-[#6A6A6A]">
+                               House Appreciation Amount (5yrs) by <span className='font-bold text-[#000]'>LIAM</span>
+                              </span>
+                              <span className="font-medium text-black ">
+                                $
+                                  { Number(ReturnsAssets.HouseReturn).toLocaleString('en-us') }
+
+                              </span>
+                            </div>
+                            <div className="w-full h-px bg-gray-100" />
+
                             {/* 4. Growth Assumptions */}
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-[#6A6A6A]">
-                                Projected portfolio return
+                                Estimated Portfolio Return (5yr)
                               </span>
                               <span className="font-medium text-[#005BFF] ">
                                
                                 
-                         {selectedPortfolio?.value !== 'Custom' ?Number((selectedPortfolio?.netgaininpercent)/5).toLocaleString("en-US", {
+                         {selectedPortfolio?.value !== 'Custom' ?Number((selectedPortfolio?.netgaininpercent)).toLocaleString("en-US", {
         minimumFractionDigits: 1,
         maximumFractionDigits: 1,
       })?.toLocaleString("en-us"):Number(ReturnsAssets.NetGainAfterOptimizationpercent).toLocaleString("en-US", {
@@ -2789,7 +2872,7 @@ export function ReportPage({
                             {/* 5. Taxation */}
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-[#6A6A6A]">
-                                Capital gains tax (15%)
+                                Capital Gains Tax (15%)
                               </span>
                               <span className="font-medium text-red-500">
                                 -$
@@ -2802,7 +2885,7 @@ export function ReportPage({
       }):Number(ReturnsAssets.GainsTax).toLocaleString("en-US", {
         minimumFractionDigits: 1,
         maximumFractionDigits: 1,
-      })}% p.a.
+      })}
                               </span>
                             </div>
                             <div className="w-full h-px bg-black/10" />
@@ -2814,18 +2897,12 @@ export function ReportPage({
                               </span>
                               <div className="text-right">
                                 <span className="block text-xl font-medium text-[#18A36F] tracking-tight glow-text-green">
-                                  $
+                                  
                                 
 
 
 
- {selectedPortfolio?.value !== 'Custom' ?Number(selectedPortfolio.totalassetsvalueinfiveYears - housePrice).toLocaleString("en-US", {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
-      }):Number(Number(ReturnsAssets.ReturnAfterTax) + Number(housePrice)).toLocaleString("en-US", {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
-      })} p.a.
+  ${selectedPortfolio?.value !=='Custom' && selectedPortfolio.value!=='Baseline' ?(Number(selectedPortfolio.TotalReturnsAfterTaxOptimized) + Number(selectedPortfolio.TotalReturnsAfterTaxNotOptimized)).toLocaleString('en-us'):selectedPortfolio.value === 'Custom' ? Number(ReturnsAssets.TotalGain).toLocaleString('en-us'):Number(ReturnsAssets.HouseReturn).toLocaleString('en-us')}
 
                                 
     
@@ -2851,15 +2928,94 @@ export function ReportPage({
                   </AnimatePresence>
                 </div>
 
-                <div className="bg-blue-50 p-6 rounded-[20px] border border-blue-100 flex gap-4">
-                  <div className="min-w-[40px] h-10 rounded-full bg-[#005BFF] flex items-center justify-center text-white shadow-md">
-                    <Info size={20} />
+
+                      {/* -House Appreciation Graph */}
+
+                 <div className="mt-6 rounded-[16px] border border-[#E6ECF5] bg-white shadow-[0_8px_32px_-8px_rgba(0,0,0,0.05)] overflow-hidden transition-all duration-300">
+                    <button 
+                      onClick={() => setIsAppreciationOpen(!isAppreciationOpen)}
+                      className="w-full flex items-center justify-between p-5 cursor-pointer hover:bg-gray-50 transition-all duration-300 group"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg shadow-black/30 ${isAppreciationOpen ? 'bg-[#000] text-white shadow-lg  scale-110' : 'bg-black text-[#000] group-hover:bg-black group-hover:text-white group-hover:scale-105'}`}>
+                           <div className="flex -space-x-1">
+                              <Home size={14} color={'#fff'} />
+                              <TrendingUp size={14} color={'#fff'} className="-mt-1" />
+                           </div>
+                        </div>
+                        <div className="flex flex-col items-start text-left">
+                          <span className="text-sm font-bold text-[#0A2540] group-hover:text-black transition-colors">
+                             House Value & Appreciation Projection
+                          </span>
+                        </div>
+                      </div>
+                      <motion.div
+                        animate={{ rotate: isAppreciationOpen ? 90 : 0 }}
+                        transition={{ duration: 0.4, type: "spring", stiffness: 260, damping: 20 }}
+                        className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isAppreciationOpen ? 'bg-[#000]/10 text-[#000]' : 'text-[#000] group-hover:bg-black group-hover:text-white'}`}
+                      >
+                         <ChevronRight size={16} />
+                      </motion.div>
+                    </button>
+
+                    <AnimatePresence>
+                      {isAppreciationOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        >
+                          <div className="px-6 pb-6 pt-2 space-y-6">
+                             
+                             {/* Section 1: Chart */}
+                             <AppreciationChart/>
+                             <div className= 'text-[12px] text-[#000] px-8 flex flex-col gap-4  p-4 sm:p-5 rounded-xl bg-gradient-to-br from-[#000]/5 to-[#000]/10 border-2 border-[#000]/60'>
+                             <h1 className='font-bold text-[14px]'>How LIAM Estimates House Appreciation (LIAM - Liquidity Investment Analysis Model)</h1>
+
+
+
+
+
+<div className='capitalize'>
+Projections generated by Liam our proprietary AI property intelligence model using multi-factor analysis across historical sales data, regional growth cycles, macro rate environments, and volatility filters.
+
+</div>
+
+
+<div className='capitalize'>
+ 
+The model applies normalization and risk controls to reduce distortion from short-term spikes or crashes, producing a stability-adjusted 5-year projection range rather than  <span className='font-bold'>a speculative forecast.</span>
+</div>
+
+
+
+                             </div>
+                             {/* Section 2: Summary Cards */}
+                         
+
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
+
+                {/* What is Equity Unlock */}
+
+                <div className="bg-gradient-to-b from-[#0A0A0A] to-[#161718] p-6 rounded-[20px] border border-blue-100 flex items-center gap-4">
+                    <img
+                    src={Equity}
+                    alt=""
+                    className="w-[20%] "
+                  />
+                  {/* <div className="min-w-[40px] h-10 rounded-full bg-[#000] flex items-center justify-center text-[#ffd400] shadow-md]">
+                    <Info size={24} />
+                  </div> */}
                   <div>
-                    <h4 className="font-bold text-[#0A2540] mb-1">
+                    <h4 className="font-bold text-white mb-1">
                       What is "Equity Unlock"?
                     </h4>
-                    <p className="text-sm text-[#4A5568] leading-relaxed">
+                    <p className="text-sm text-[#fff]/60 leading-relaxed">
                       Instead of keeping all your wealth locked in your home
                       (which grows at ~3-4% annually), you can access some
                       equity through a HELOC or refinance, then invest it in
@@ -2867,11 +3023,12 @@ export function ReportPage({
                       You keep your home while your money works harder.
                     </p>
                   </div>
+                   
                 </div>
               </div>
                 {/* Right Column: Strategy Inputs */}
               <div className="lg:col-span-4 space-y-6">
-                <Card className="h-full border-[#005BFF]/20 ring-4 ring-[#005BFF]/5">
+                <Card className="h-full border-[#0A2540]/20 ring-4 ring-[#0A2540]/5">
                   <div className="mb-6">
                     <div className="flex items-center gap-2 mb-2">
                       {/* <Badge color={selectedPortfolio?.color}>{selectedPortfolio?.value}</Badge> */}
@@ -2905,7 +3062,7 @@ export function ReportPage({
                         Projected Annual Return
                       </div>
                       <div
-                        className={`text-3xl font-bold tracking-tight ${selectedPortfolio?.textColor}`}
+                        className={`text-3xl font-bold tracking-tight text-[#0A2540]`}
                       >
                         ${" "}
                         
@@ -2938,9 +3095,9 @@ export function ReportPage({
                           <div className="flex justify-between items-center mb-2">
                             <div className="flex items-center gap-2">
                               <div
-                                className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-sm shrink-0 "
+                                className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md shadow-black/60 shrink-0 "
                                 style={{
-                                  backgroundColor: `${COLORS[key as keyof typeof COLORS]}33`,
+                                  backgroundColor: `#000`,
                                 }}
                               >
                                 {assetsSvg[key as keyof typeof assetsSvg]}
@@ -2977,11 +3134,14 @@ export function ReportPage({
                           )}
 
                           <div className="text-right mt-1">
-                            <span
-                              className={`text-[10px] font-bold ${AnnualGrowth[key as keyof typeof AnnualGrowth] >= 0 ? "text-[#18A36F]" : "text-red-500"}`}
+                          
+                            
+  <span
+                              className={`text-[10px] font-bold px-2.5 py-1 rounded-sm  ${AnnualGrowth[key as keyof typeof AnnualGrowth] >= 0 ? "text-[#18A36F] bg-[#18a36f]/10" : "text-red-500 bg-red-100"}`}
                             >
                               {AnnualGrowth[key]}% P.A.
                             </span>
+                            
                           </div>
                         </div>
                       ),
@@ -2989,8 +3149,10 @@ export function ReportPage({
                   </div>
 
                   <button
-                  onclick={()=>{setScreen(4)}}
-                  className="w-full mt-8 py-4 bg-gradient-to-r from-[#18A36F] to-[#18A36F] text-white font-bold rounded-xl shadow-lg shadow-blue-900/20 hover:bg-[#005BFF] transition-all flex items-center justify-center gap-2 group">
+                 onClick={()=>{
+                  setScreen(4)
+                 }}
+                  className="w-full mt-8 py-4 bg-gradient-to-b from-[#0A0A0A] to-[#161718]  text-white font-bold rounded-xl shadow-lg shadow-blue-900/20 hover:bg-[#005BFF] transition-all flex items-center justify-center gap-2 group">
                     Apply This Strategy
                     <ArrowUpRight
                       size={18}
@@ -3579,12 +3741,12 @@ export function ReportPage({
 
             <div className="border-t border-black/[0.04] pt-6">
               <h3 className="text-black text-[15px] font-medium mb-4 flex items-center gap-2">
-                <AlertCircle className="text-[#005BFF]" size={16} />
+                <AlertCircle className="text-[#000]" size={16} />
                 Important Disclaimers
               </h3>
-              <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-[#F8FAFF] to-white border-2 border-[#005BFF]/20 mb-4">
+              <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-br from-[#000]/5 to-[#000]/10 border-2 border-[#000]/60 mb-4">
                 <p className="text-black text-[14px] font-medium mb-2 flex items-center gap-2">
-                  <Shield className="text-[#005BFF]" size={16} />
+                  <Shield className="text-[#000]" size={16} />
                   This is NOT Financial Advice
                 </p>
                 <p className="text-[#6A6A6A] text-[12px] leading-relaxed mb-3">
@@ -3641,7 +3803,7 @@ export function ReportPage({
         </div>
 
         <div className="items-stretch flex justify-center gap-2 max-[1100px]:flex-col">
-          <div className="max-[1100px]:w-[100%] w-[100%] flex flex-col gap-[8px] rounded-[6px] bg-white">
+          <div className="max-[1100px]:w-[100%] w-[100%] flex flex-col gap-[8px] rounded-[6px] bg-gradient-to-b from-[#0A0A0A] to-[#161718]">
             <div className="py-[12px] px-[22px] flex flex-col justify-between h-full  gap-[16px]  rounded-md">
               <div className="flex items-center justify-center">
                 <div className="flex items-center justify-center w-[25%]">
@@ -3656,11 +3818,11 @@ export function ReportPage({
 
                 <div className="w-[50%] flex flex-col  gap-3 ml-4 ">
                   <div className="flex-1">
-                    <h3 className="text-[20px] sm:text-[22px] font-medium tracking-tight mb-2">
+                    <h3 className="text-[20px] text-white sm:text-[22px] font-medium tracking-tight mb-2">
                       Unlock ${(housePrice * 0.5)?.toLocaleString("en-us")} With
                       Expert Guidance
                     </h3>
-                    <p className="text-[#6a6a6a] text-[14px] leading-relaxed max-w-2xl">
+                    <p className="text-[#fff] text-[14px] leading-relaxed max-w-2xl">
                       Talk to our certified financial advisors who've helped
                       homeowners unlocks hidden equity.
                     </p>
@@ -3674,10 +3836,10 @@ export function ReportPage({
                     ].map((feature, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center gap-2 text-[13px] text-[#6A6A6A]"
+                        className="flex items-center gap-2 text-[13px] text-[#fff]"
                       >
-                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#005bff]/10 flex items-center justify-center">
-                          <Check className="text-[#005bff]" size={12} />
+                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff] flex items-center justify-center">
+                          <Check className="text-[#000]" size={12} />
                         </div>
                         <span>{feature}</span>
                       </div>
@@ -3689,7 +3851,7 @@ export function ReportPage({
                   <img
                     src={Frame1}
                     alt=""
-                    className="w-[70%] transform -scale-x-100"
+                    className="w-[70%]"
                   />
                 </div>
               </div>
@@ -3700,13 +3862,13 @@ export function ReportPage({
                   setActiveButton("Custom");
                   setSelectedButton("Equity/Growth Comparison");
                 }}
-                className="w-full  bg-gradient-to-b from-[#005BFF] to-[#0047CC] hover:from-[#0052E6] hover:to-[#003DB8] text-white px-6 py-4 rounded-xl text-[15px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
+                className="w-full  bg-white text-black px-6 py-4 rounded-xl text-[15px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
               >
                 Connect With Expert
                 <ChevronRight size={18} />
               </Button>
 
-              <div className="flex items-center justify-center gap-4  text-[11px] text-[#6a6a6a]">
+              <div className="flex items-center justify-center gap-4  text-[11px] text-[#fff]">
                 <div className="flex items-center gap-1.5">
                   <Star
                     className="text-yellow-300"
@@ -3715,7 +3877,7 @@ export function ReportPage({
                   />
                   <span>4.9/5 Rating</span>
                 </div>
-                <div className="w-px h-4 bg-white/30"></div>
+                <div className="w-px h-4 bg-white"></div>
                 <div className="flex items-center gap-1.5">
                   <Users size={14} />
                   <span>2,340+ Homeowners Helped</span>
@@ -3792,11 +3954,11 @@ export function ReportPage({
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           onClick={() => setIsChatbotOpen(true)}
-          className="bg-gradient-to-r from-[#005BFF] to-[#0066FF] hover:from-[#0047CC] hover:to-[#0052E0] text-white px-6 py-4 rounded-full text-[15px] font-medium transition-all duration-200 shadow-[0_8px_24px_rgba(0,91,255,0.4)] hover:shadow-[0_12px_32px_rgba(0,91,255,0.5)] hover:scale-105 flex items-center gap-2"
+          className="bg-gradient-to-b from-[#0A0A0A] to-[#161718] text-white px-6 py-4 rounded-full text-[15px] font-medium transition-all duration-200 shadow-[0_8px_24px_rgba(0,91,255,0.4)] hover:shadow-[0_12px_32px_rgba(0,91,255,0.5)] hover:scale-105 flex items-center gap-2"
         >
           <Phone size={18} />
           Ask LIAM
-          <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
+          <div className="w-2 h-2 rounded-full bg-[#18a36f] animate-pulse"></div>
         </Button>
       </div>
 
