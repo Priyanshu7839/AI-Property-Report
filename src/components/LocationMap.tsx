@@ -55,7 +55,7 @@ function Recenter({ lat, lng,zoom }) {
    <div>
         <MapContainer center={center} zoom={zoom}>
            <TileLayer
-  url="https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=OZEa61WSyXmjJ1oVz3Xc"
+  url="https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=TmdxmmVXR8b5bMCsbHvA"
 />
              <LocationMarker setLocation={setLocation} />
 

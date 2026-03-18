@@ -46,7 +46,7 @@ export function SampleReportPreview() {
           </p>
         </div>
         
-        <div className="grid lg:grid-cols-[1.2fr,1fr] gap-8 lg:gap-12 items-start">
+        <div className="grid lg:grid-cols-2 lg:grid-cols-[1.2fr,1fr] gap-8 lg:gap-12 items-start">
           {/* Report Preview - Floating Card */}
           <div className="relative group">
             {/* Glow effect */}
@@ -55,7 +55,7 @@ export function SampleReportPreview() {
             <div className="relative bg-white/70 backdrop-blur-2xl border border-white/60 rounded-[28px] shadow-[0_0_0_1px_rgba(255,255,255,0.8)_inset,0_24px_48px_rgba(0,0,0,0.10),0_8px_16px_rgba(0,91,255,0.08)] overflow-hidden hover:shadow-[0_0_0_1px_rgba(255,255,255,0.9)_inset,0_32px_64px_rgba(0,0,0,0.12),0_12px_24px_rgba(0,91,255,0.12)] transition-all duration-500 hover:translate-y-[-4px]">
               {/* Lock overlay */}
               <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-white/30 to-white/75 backdrop-blur-[0.5px] z-10 flex items-end justify-center pb-8">
-                <div className="bg-black backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-[0_0_0_1px_rgba(0,91,255,0.1),0_20px_40px_rgba(0,0,0,0.15)] group-hover:scale-105 transition-all duration-500 flex items-center gap-2.5 border border-[#005BFF]/10">
+                {/* <div className="bg-black backdrop-blur-xl rounded-xl px-4 py-2.5 shadow-[0_0_0_1px_rgba(0,91,255,0.1),0_20px_40px_rgba(0,0,0,0.15)] group-hover:scale-105 transition-all duration-500 flex items-center gap-2.5 border border-[#005BFF]/10">
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#fff] to-[#fff] flex items-center justify-center flex-shrink-0">
                     <Lock className="text-[#000]" size={16} strokeWidth={2} />
                   </div>
@@ -64,7 +64,7 @@ export function SampleReportPreview() {
                     <p className="text-[#fff] text-[11px]">Enter any address above</p>
                   </div>
                   <ChevronRight className="text-[#fff]" size={16} strokeWidth={2.5} />
-                </div>
+                </div> */}
               </div>
               
               {/* Mock Report Content - More realistic */}
@@ -106,7 +106,7 @@ export function SampleReportPreview() {
             </div>
             
             {/* Floating badge */}
-            <div className="absolute -top-4 -right-4 px-4 py-2 rounded-full bg-gradient-to-r from-[#000] to-[#000] text-[#ffd400] text-[11px] font-medium shadow-[0_8px_16px_rgba(24,163,111,0.3)] border border-white/20 flex items-center gap-1.5 backdrop-blur-xl">
+            <div className="absolute -top-4 -right-4 px-4 py-2 rounded-full bg-gradient-to-r from-[#000] to-[#000] text-[#ffd400] text-[11px] font-medium shadow-[0_8px_16px_rgba(0,0,0,0.3)] border border-white/20 flex items-center gap-1.5 backdrop-blur-xl">
               <Check size={12} strokeWidth={3} />
               <span>Live Example</span>
             </div>
@@ -125,8 +125,12 @@ export function SampleReportPreview() {
               </div>
             ))}
             
-            <Button 
-              className="mt-6 w-full bg-gradient-to-b from-[#000] to-[#000] hover:from-[#000] hover:to-[#000] text-white px-8 py-6 rounded-[20px] inline-flex items-center justify-center gap-2.5 transition-all duration-200 shadow-[0_0_0_1px_rgba(255,255,255,0.1)_inset,0_1px_2px_rgba(0,0,0,0.12),0_12px_24px_rgba(0,91,255,0.3)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2)_inset,0_1px_2px_rgba(0,0,0,0.16),0_20px_40px_rgba(0,91,255,0.4)] hover:translate-y-[-2px] active:translate-y-0 text-[15px] font-medium group"
+         
+          </div>
+        </div>
+
+           <Button 
+              className="mt-6 w-full bg-gradient-to-b from-[#000] to-[#000] hover:from-[#000] hover:to-[#000] text-white px-8 py-6 rounded-[20px] inline-flex items-center justify-center gap-2.5 transition-all duration-200 shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_1px_2px_rgba(0,0,0,0.12),0_12px_24px_rgba(0,0,0,0.3)] hover:shadow-[0_0_0_1px_rgba(0,0,0,0.2)_inset,0_1px_2px_rgba(0,0,0,0.16),0_20px_40px_rgba(0,0,0,0.4)] hover:translate-y-[-2px] active:translate-y-0 text-[15px] font-medium group"
             >
               <span>View Full Sample Report</span>
               <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />
@@ -135,8 +139,6 @@ export function SampleReportPreview() {
             <p className="text-center text-[#6A6A6A] text-[13px] mt-4">
               No signup required • Instant access
             </p>
-          </div>
-        </div>
       </div>
     </section>
   );

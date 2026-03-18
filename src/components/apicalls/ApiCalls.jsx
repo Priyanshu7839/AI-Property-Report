@@ -1,7 +1,8 @@
 import axios from "axios";
 import OpenAI from "openai";
-import { getFirestore,addDoc,collection, getDocs, serverTimestamp } from "firebase/firestore";
-import { db } from "../../Utils/firebase";
+import { getFirestore,addDoc,collection, getDocs, serverTimestamp, getDoc, doc, query, where, updateDoc } from "firebase/firestore";
+import { auth, db } from "../../Utils/firebase";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 const openai = new OpenAI({
   apiKey:
@@ -10,98 +11,88 @@ const openai = new OpenAI({
 });
 
 function computeCagr(data){
-    const firstYearClose = data?.[0]?.close
-    const secondYearClose =data?.[12]?.close
-    const thirdYearClose = data?.[36]?.close
-    const fourthYearClose = data?.[60]?.close
+    const currentYearClose = data?.[0]?.close //treated as final value
+    const fourthYearClose = data?.[60]?.close //treated as initial value
 
-    console.log(firstYearClose,secondYearClose,thirdYearClose,fourthYearClose)
+    console.log(data?.[0],data?.[60])
 
-    const cagr1 = ((firstYearClose - secondYearClose) / firstYearClose) * 100;
-    console.log(cagr1)
-
-    const cagr3 = ((firstYearClose - thirdYearClose) / firstYearClose) * 100;
-    console.log(cagr3)
-    const cagr5 = ((firstYearClose - fourthYearClose) / firstYearClose) * 100;
-    console.log(cagr5)
+ const AnnualGrowth = ((currentYearClose / fourthYearClose) ** (1 / 5) - 1) * 100;
+  console.log(AnnualGrowth)
 
 
     return {
-        cagr1,cagr3,cagr5
+      AnnualGrowth
     }
 
 
 }
 
 
-export const gettimeSeriesData = async(zpid) => {
+export const gettimeSeriesData = async(House) => {
+  console.log('Apicalled')
     try {
-         const [SandP, Bonds, Bitcoin, House] = await Promise.all([
+         const [SandP, Bonds, Bitcoin] = await Promise.all([
       axios.get(
-        "https://api.twelvedata.com/time_series?apikey=9d3b914c31d5414b94858399343c5cfa&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2025-12-02 02:57:00&symbol=SPY"
+        "https://api.twelvedata.com/time_series?apikey=7b5359b56dc14d0790c7da284692a107&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2026-02-02 02:57:00&symbol=SPY"
       ),
       axios.get(
-        "https://api.twelvedata.com/time_series?apikey=9d3b914c31d5414b94858399343c5cfa&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2025-12-02 02:57:00&symbol=BND"
+        "https://api.twelvedata.com/time_series?apikey=7b5359b56dc14d0790c7da284692a107&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2026-02-02 02:57:00&symbol=BND"
       ),
       axios.get(
-        "https://api.twelvedata.com/time_series?apikey=9d3b914c31d5414b94858399343c5cfa&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2025-12-02 02:57:00&symbol=BTC/USD"
+        "https://api.twelvedata.com/time_series?apikey=7b5359b56dc14d0790c7da284692a107&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2026-02-02 02:57:00&symbol=BTC/USD"
       ),
-      axios.get(
-        `https://zhomes-realty-us.p.rapidapi.com/properties/zestimate-history?zpid=${zpid}`,
-        {
-          headers: {
-            "X-RapidAPI-Key":
-              "69953a3276msh1fffb8e07d13516p11031ejsnfd55185a907e",
-            "X-RapidAPI-Host": "zhomes-realty-us.p.rapidapi.com",
-          },
-        }
-      ),
+      // axios.get(
+      //   `https://zhomes-realty-us.p.rapidapi.com/properties/search-address?address=${address}`,
+      //   {
+      //     headers: {
+      //       "X-RapidAPI-Key":
+      //         "69953a3276msh1fffb8e07d13516p11031ejsnfd55185a907e",
+      //       "X-RapidAPI-Host": "zhomes-realty-us.p.rapidapi.com",
+      //     },
+      //   }
+      // ),
     ]);
 
     console.log(House)
     console.log(SandP)
+    
 
+    const response1 = computeCagr(SandP?.data?.values);
+    const response2 = computeCagr(Bonds?.data?.values);
+    const response3 = computeCagr(Bitcoin?.data?.values);
+
+    console.log(response1)
+    console.log(response2)
+    console.log(response3)
+    const now = new Date();
+
+
+
+
+    const currentYearClose = House?.homeValueChartData?.[0]?.points?.find((item)=>`${new Date(item.x).getFullYear()}-${String(new Date(item.x).getMonth()+1).padStart(2,'0')}`===`${now.getFullYear()}-${String(now.getMonth()).padStart(2, '0')}`).y
   
+    const fifthYearClose = House?.homeValueChartData?.[0]?.points?.find((item)=>`${new Date(item.x).getFullYear()}-${String(new Date(item.x).getMonth()+1).padStart(2,'0')}`===`${now.getFullYear()-5}-${String(now.getMonth()).padStart(2, '0')}`).y
+   
 
-
-const response1 = computeCagr(SandP?.data?.values);
-const response2 = computeCagr(Bonds?.data?.values);
-const response3 = computeCagr(Bitcoin?.data?.values);
-
-console.log(response1.cagr1,response1.cagr3,response1.cagr5);
-console.log(response2.cagr1,response2.cagr3,response2.cagr5);
-console.log(response3.cagr1,response3.cagr3,response3.cagr5);
-
-
-
-
-    const firstYearClose = House?.data?.data?.homeValueChartData?.[0]?.points?.reverse()?.[0]?.value
-    const secondYearClose =House?.data?.data?.homeValueChartData?.[0]?.points?.[12]?.value
-    const thirdYearClose = House?.data?.data?.homeValueChartData?.[0]?.points?.[36]?.value
-    const fourthYearClose = House?.data?.data?.homeValueChartData?.[0]?.points?.[60]?.value
-    const fifthYearClose = House?.data?.data?.homeValueChartData?.[0]?.points?.[72]?.value
-
-    console.log(firstYearClose,secondYearClose,thirdYearClose,fourthYearClose)
+    console.log(currentYearClose,fifthYearClose)
 
     
 
-    const cagr1 = ((firstYearClose - secondYearClose) / firstYearClose) * 100;
-    console.log(cagr1)
+   
+    const AnnualHouseGrowthRate = ((Math.pow((currentYearClose / fifthYearClose),0.2)) - 1 )*100   ;
 
-    const cagr3 = ((firstYearClose - thirdYearClose) / firstYearClose) * 100;
-    console.log(cagr3)
-    const cagr5 = ((Math.pow((firstYearClose / fifthYearClose),0.2)) - 1 )*100   ;
-    console.log(cagr5)
+    console.log(AnnualHouseGrowthRate)
+   
 
     
 
 
     return {
-        SandP: [response1.cagr5],
-        Bonds: [response2.cagr5],
-        Bitcoin: [response3.cagr5],
-        HousePoints: [cagr1,cagr3,cagr5],
-        HousePrices:House?.data?.data?.homeValueChartData?.[0]?.points
+        SandP: [response1.AnnualGrowth],
+        Bonds: [response2.AnnualGrowth],
+        Bitcoin: [response3.AnnualGrowth],
+        HouseRate: AnnualHouseGrowthRate,
+        HousePrices:House?.homeValueChartData?.[0]?.points
 
     }
     } catch (error) {
@@ -112,7 +103,7 @@ console.log(response3.cagr1,response3.cagr3,response3.cagr5);
 
 export const openaiapicall = async (similarHomes,HousePrices,HouseDescription,zes) => {
 
-console.log(similarHomes,HousePrices)
+// console.log(similarHomes,HousePrices)
  
 
     
@@ -367,6 +358,9 @@ export const UploadEmailToFirebase = async(email) => {
 }
 
 
+
+
+
 export const GetReports = async()=>{
   try {
     const reports = await getDocs(collection(db,"reports"))
@@ -389,3 +383,109 @@ reportArray.push({
 }
 
 
+export const CreateUser = async(formData)=>{
+
+    try {
+      
+      const userCredentials =await createUserWithEmailAndPassword(auth,formData.email,formData.password)
+    
+      const user = userCredentials.user
+      
+
+       const upload = await addDoc(collection(db,"Users"),{
+      email:user.email,
+      uid:user.uid,
+      password:formData.password,
+      name:formData.name,
+       createdAt: serverTimestamp(),
+    })
+
+    return user
+
+    } catch (error) {
+      console.log(error.code,error.message)
+      return error
+    }
+
+
+  }
+
+
+export const LoginUser = async(formData) => {
+  try {
+        const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
+    const user = userCredential.user;
+console.log(user.uid)
+   const q = query(collection(db, "Users"), where("uid", "==", user.uid));
+const snapshot = await getDocs(q);
+const dbuser = snapshot.docs[0].data();
+return dbuser
+ 
+  } catch (error) {
+    console.log(error.code,error.message)
+    return error
+  }
+}
+
+
+export const SaveReportsToFirebase = async(uid,houseValue,totalOpportunity,address,hiddencash,growthRate) => {
+  try {
+     const upload = await addDoc(collection(db,"UserReports"),{
+      uid:uid,
+      houseValue:houseValue,
+      totalOpportunity:totalOpportunity,
+      address:address,
+      hiddencash:hiddencash,
+      growthRate:growthRate,
+      savedToPortfolio:false,
+       createdAt: serverTimestamp(),
+    })
+
+    return upload.id
+  } catch (error) {
+    console.log(error)
+    return error
+  }
+}
+
+
+export const FetchSavedUserReports = async(uid) => {
+  try {
+    const q = query(collection(db, "UserReports"), where("uid", "==", uid));
+const snapshot = await getDocs(q);
+ const reports = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+return reports
+  } catch (error) {
+    console.log(error)
+    return []
+  }
+}
+export const FetchPortfolioSavedUserReports = async(uid) => {
+  try {
+    const q = query(collection(db, "UserReports"), where("uid", "==", uid),  where("savedToPortfolio", "==", true));
+const snapshot = await getDocs(q);
+ const reports = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+return reports
+  } catch (error) {
+    console.log(error)
+    return []
+  }
+}
+
+export const SaveReportToPortfolio = async(reportId) => {
+  try {
+    const reportRef = doc(db, "UserReports", reportId);
+
+await updateDoc(reportRef, {
+  savedToPortfolio: true
+});
+  } catch (error) {
+    console.log(error)
+  }
+}

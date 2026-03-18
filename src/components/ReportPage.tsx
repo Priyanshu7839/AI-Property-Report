@@ -78,6 +78,7 @@ import {
   GeneratePdf,
   UploadToFirebase,
   UploadEmailToFirebase,
+  SaveReportsToFirebase,
 } from "./apicalls/ApiCalls";
 import { InfoTooltip } from "./InfoTooltip";
 import { TimelineVisualization } from "./TimelineVisualization";
@@ -101,8 +102,9 @@ import { trackEvent } from "../GoogleAnalytics/Analytics";
 import { toast } from "sonner";
 import { GrowthChart } from "./GrowthCharts";
 import { AppreciationChart } from "./AppreciationChart";
+import { useSelector } from "react-redux";
 
-type StrategyType = "Baseline" | "Basic" | "Popular" | "High" | "Custom";
+type StrategyType = "Baseline" | "LIAM Basic" | "LIAM Plus" | "LIAM Pro" | "Custom";
 
 interface Allocation {
   sp500: number;
@@ -237,6 +239,8 @@ const EmailGateScreen = ({ setScreen }) => {
     }
     setUploading(false);
   };
+
+   
 
   return (
     <motion.div
@@ -376,7 +380,7 @@ const Card = ({
     viewport={{ once: true, margin: "-50px" }}
     whileHover={{ y: -4, shadow: "0 20px 40px -12px rgba(0,0,0,0.1)" }}
     transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-    className={`bg-white rounded-xl border border-black/[0.04] shadow-[0_8px_32px_-8px_rgba(0,0,0,0.05)] p-4 md:p-6 ${className}`}
+    className={`bg-white rounded-xl border border-black/[0.08] shadow-[0_8px_32px_-8px_rgba(0,0,0,0.05)] p-4 md:p-6 ${className}`}
   >
     {children}
   </motion.div>
@@ -387,14 +391,15 @@ const Badge = ({
   color = "blue",
 }: {
   children: React.ReactNode;
-  color?: "blue" | "green" | "gray" | "orange" | "red";
+  color?: "blue" | "green" | "gray" | "orange" | "red"|"yellow";
 }) => {
   const styles = {
     blue: "bg-[#005BFF]/10 text-[#005BFF]",
     green: "bg-[#18A36F]/10 text-[#18A36F]",
     gray: "bg-gray-100 text-gray-600",
     orange: "bg-orange-500/10 text-orange-600",
-    red:'bg-red-100 text-red-600'
+    red:'bg-red-100 text-red-600',
+    yellow:'bg-yellow-50 text-yellow-500'
   };
   return (
     <span
@@ -514,7 +519,7 @@ export function ReportPage({
 
   // /*----------------------------Chat bot Funtion-----------------------------------------------------
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
-  const [chatbotMode, setChatbotMode] = useState<
+  const [chatbotMode, setChatbotMode] = useState<span
     | "general"
     | "schedule-call"
     | "advisor"
@@ -527,6 +532,7 @@ export function ReportPage({
     setIsChatbotOpen(true);
   };
 
+   
   // /*-----------------------------------------------------------------------------------------------------
 
 
@@ -563,14 +569,13 @@ export function ReportPage({
     {
       value: "Baseline",
       Risk: "No Risk",
-      TotalReturnsBeforeTax:0,
-       projectAnnualReturn: 0,
-      totalassetsvalueinfiveYears: 0,
-      TotalReturnsAfterTaxOptimized:0,
-
-      netgaininpercent: 0,
-      netgainvalue: 0,
-       capitalGainsTaxPaid:0,
+     ReturnsFromHouse:'',
+              portfoliopercentReturn:'',
+              PortfolioReturns:'',
+              profitAfterTax:'',
+              EstimatedHousePrice:'',
+              CapitalGainsTax:'',
+              PortfolioReturnsBeforeTax:'',
        textColor: "text-[#000]",
       borderColor: "border-[#cfcfd7]",
       gradientBg: "bg-black/10",
@@ -579,15 +584,15 @@ export function ReportPage({
     },
 
     {
-      value: "Basic",
-      Risk: "Low Risk",
-       projectAnnualReturn: 0,
-      totalassetsvalueinfiveYears: 0,
-      netgaininpercent: 0,
-      TotalReturnsAfterTaxOptimized:0,
-
-      netgainvalue: 0,
-       capitalGainsTaxPaid:0,
+      value: 'LIAM Basic',
+      Risk: "Cash Preservation",
+     ReturnsFromHouse:'',
+              portfoliopercentReturn:'',
+              PortfolioReturns:'',
+              profitAfterTax:'',
+              EstimatedHousePrice:'',
+              CapitalGainsTax:'',
+                PortfolioReturnsBeforeTax:'',
       color: "blue",
       borderColor: "border-[#005BFF]/20",
       bgColor: "bg-[#005BFF]",
@@ -597,14 +602,15 @@ export function ReportPage({
       icon2: <Sprout size={14} />,
     },
     {
-      value: "Popular",
-      Risk: "Medium Risk",
-      projectAnnualReturn: 0,
-      totalassetsvalueinfiveYears: 0,
-      TotalReturnsAfterTaxOptimized:0,
-      netgaininpercent: 0,
-      netgainvalue: 0,
-       capitalGainsTaxPaid:0,
+      value: 'LIAM Plus',
+      Risk: "Medium Growth",
+      ReturnsFromHouse:'',
+              portfoliopercentReturn:'',
+              PortfolioReturns:'',
+              profitAfterTax:'',
+              EstimatedHousePrice:'',
+              CapitalGainsTax:'',
+                PortfolioReturnsBeforeTax:'',
       color: "green",
       borderColor: "border-[#18A36F]/20",
       bgColor: "bg-[#18a36f]",
@@ -614,32 +620,33 @@ export function ReportPage({
       icon2: <BanknoteArrowUp size={14} />,
     },
     {
-      value: "High",
-      Risk: "High Risk",
-       projectAnnualReturn: 0,
-      totalassetsvalueinfiveYears: 0,
-      TotalReturnsAfterTaxOptimized:0,
-
-      netgaininpercent: 0,
-      netgainvalue: 0,
-       capitalGainsTaxPaid:0,
-      color: "orange",
+      value:'LIAM Pro',
+      Risk: "High Growth",
+     ReturnsFromHouse:'',
+              portfoliopercentReturn:'',
+              PortfolioReturns:'',
+              profitAfterTax:'',
+              EstimatedHousePrice:'',
+              CapitalGainsTax:'',
+                PortfolioReturnsBeforeTax:'',
+      color: "yellow",
       borderColor: "border-orange-200",
-      bgColor: "bg-orange-500",
-      textColor: "text-orange-600",
-      gradientBg: "bg-orange-500/10",
+      bgColor: "bg-yellow-300",
+      textColor: "text-yellow-400",
+      gradientBg: "bg-yellow-400/10",
       icon: <AlertCircle size={10} />,
       icon2: <Rocket size={14} />,
     },
     {
       value: "Custom",
       Risk: "High Risk",
-      projectAnnualReturn: 0,
-      totalassetsvalueinfiveYears: 0,
-      netgaininpercent: 0,
-      netgainvalue: 0,
-      capitalGainsTaxPaid:0,
-      TotalReturnsAfterTaxOptimized:0,
+     ReturnsFromHouse:'',
+              portfoliopercentReturn:'',
+              PortfolioReturns:'',
+              profitAfterTax:'',
+              EstimatedHousePrice:'',
+              CapitalGainsTax:'',
+                PortfolioReturnsBeforeTax:'',
 
 
       color: "gray",
@@ -663,7 +670,7 @@ export function ReportPage({
     }
   }, [PortfolioOptions]); //this useEffect is important as it sets portfol 
 
-  const [activeButton, setActiveButton] = useState("Basic");
+  const [activeButton, setActiveButton] = useState("LIAM Basic");
 
   useEffect(() => {
     if (state.state !== null) setHomesData(state?.state?.data?.data);
@@ -731,20 +738,28 @@ export function ReportPage({
   
   const housePrice = parseInt(HomesData?.price);
 
-  const [HousePrices, setHousePrices] = useState([]); //prices for the similar homes in the area
+  const [HousePrices, setHousePrices] = useState([]); //House Prices sent to the openai api to fetch negiotiation intelligence
 
   useEffect(() => {
     const getTimeSeries = async () => {
-      const { SandP, Bonds, Bitcoin, HousePoints, HousePrices } =
-        await gettimeSeriesData(HomesData?.zpid);
+      const { SandP, Bonds, Bitcoin, HouseRate, HousePrices } =
+        await gettimeSeriesData(HomesData);
       setHousePrices(HousePrices);
 
+       let houseGrowthModified = 0;
+
+    if(HouseRate>5) houseGrowthModified = 5
+    else if(HouseRate< -2) houseGrowthModified = -2
+    else houseGrowthModified = HouseRate
+
+
       setAnnualGrowth({
-        sp500: parseFloat(Number(SandP) / 5).toFixed(1),
-        bonds: parseFloat(Number(Bonds) / 5).toFixed(1),
-        crypto: parseFloat(Number(Bitcoin) / 5).toFixed(1),
+        sp500: parseInt(Number(SandP)),
+        bonds: parseInt(Number(Bonds)),
+        crypto: parseInt(Number(Bitcoin)),
         cash:2,
-        house:parseFloat(Number(HousePoints?.[2])).toFixed(1)
+        house:Number(HouseRate),
+        conservativeHouseGrowth:houseGrowthModified
       });
 
     
@@ -830,11 +845,11 @@ export function ReportPage({
     switch (strategy) {
       case "Baseline":
         return { sp500: 0, bonds: 0, crypto: 0, cash: 0 }; 
-      case "Basic":
+      case "LIAM Basic":
         return { sp500: 36, bonds: 39, crypto: 10, cash: 15 };
-      case "Popular":
+      case "LIAM Plus":
         return { sp500: 49, bonds: 21, crypto: 20, cash: 10 };
-      case "High":
+      case "LIAM Pro":
         return { sp500: 56, bonds: 10, crypto: 29, cash: 5 };
       case "Custom":
         return customAllocation;
@@ -855,7 +870,7 @@ export function ReportPage({
     datasets: [
       {
         label: "Invested%",
-        data: [getAllocation('Popular').sp500, getAllocation('Popular').bonds, getAllocation('Popular').crypto, getAllocation('Popular').cash], // MUST be numbers
+        data: [getAllocation('LIAM Plus').sp500, getAllocation('LIAM Plus').bonds, getAllocation('LIAM Plus').crypto, getAllocation('LIAM Plus').cash], // MUST be numbers
         backgroundColor: ["#000000", "#666666", "#333333", "#E3E3E3"],
         borderWidth: 1,
       },
@@ -957,16 +972,8 @@ export function ReportPage({
 
  
 
-  const CalculateReturns= (strategy)=> {
+  const CalculateReturns= (strategy:StrategyType)=> {
 
-    
-    let houseAppreciation = 0
-    if(AnnualGrowth.house > 5) {
-      houseAppreciation = 5
-    }
-    else{
-      houseAppreciation = AnnualGrowth.house
-    }
           const ReinvestHouseAmount = 0.3375 * housePrice //considering 60% margin and 8.75% heloc paid for 5 years
           
 
@@ -980,39 +987,43 @@ export function ReportPage({
            const BondsReturn = bondsAmount * Math.pow(1 + (AnnualGrowth.bonds/100),5) - bondsAmount
            const CashReturn = cashAmount * Math.pow(1.02 , 5) - cashAmount
            const CryptoReturn = cryptoAmount * Math.pow(1 + (AnnualGrowth.crypto/100),5) - cryptoAmount
-            const HouseReturn = (housePrice * (1+((houseAppreciation*5)/100) ) - housePrice)
+            const HouseReturn = (housePrice * Math.pow(1+(AnnualGrowth.conservativeHouseGrowth/100),5 ) - housePrice)
 
 
-           const TotalReturns = Number(SandPReturn) +  Number(BondsReturn) +  Number(CashReturn) +  Number(CryptoReturn)
+           const TotalReturns = Number(SandPReturn) +  Number(BondsReturn) +  Number(CashReturn) +  Number(CryptoReturn) // Returns From Portfolio
 
-           const CapitalGainsTax =( Number(SandPReturn) +  Number(BondsReturn) +  Number(CashReturn) +  Number(CryptoReturn)) * 0.15 //Assuming 15% capital gains Tax
+           const CapitalGainsTax =TotalReturns * 0.15 //Assuming 15% capital gains Tax
 
-           const TotalReturnsAfterTaxOptimized = TotalReturns - CapitalGainsTax
-           const TotalReturnsAfterTaxNotOptimized = HouseReturn
 
-           const NetGainFromOptimization = TotalReturnsAfterTaxOptimized - TotalReturnsAfterTaxNotOptimized
-          
+           const ReturnsFromHouse = HouseReturn // By how much the house have grown
 
-           const FiveYearsReturnPercent = (TotalReturnsAfterTaxOptimized/housePrice)*100 //net gain percent in 5 years 
+           const portfoliopercentReturn = (getAllocation(strategy).sp500 / 100)*AnnualGrowth.sp500 + (getAllocation(strategy).bonds / 100)*AnnualGrowth.bonds + (getAllocation(strategy).crypto / 100)* AnnualGrowth.crypto + (getAllocation(strategy).cash / 100)*AnnualGrowth.cash //weighted return of the portfolio 
 
+
+           const PortfolioReturns = TotalReturns - CapitalGainsTax 
+
+           const profitAfterTax = PortfolioReturns + HouseReturn 
+
+          const EstimatedHousePrice = HouseReturn + housePrice
+
+          const   PortfolioReturnsBeforeTax = TotalReturns
            return {
-            TotalRetrunBeforeTax:TotalReturns,
-            CapitalGainsTax:CapitalGainsTax,
-            TotalReturnsAfterTaxOptimized:TotalReturnsAfterTaxOptimized,
-            TotalReturnsAfterTaxNotOptimized:TotalReturnsAfterTaxNotOptimized,
-            NetGainFromOptimization:NetGainFromOptimization,
-            FiveYearsReturnPercent:FiveYearsReturnPercent,
-            
-
-
+              ReturnsFromHouse:ReturnsFromHouse,
+              portfoliopercentReturn:portfoliopercentReturn*5,
+              PortfolioReturns:PortfolioReturns,
+              profitAfterTax:profitAfterTax, //total gain
+              EstimatedHousePrice:EstimatedHousePrice,
+              CapitalGainsTax:CapitalGainsTax,
+              PortfolioReturnsBeforeTax:PortfolioReturnsBeforeTax
+         
            }
   }
 
    useEffect(() => {
    
-    console.log(CalculateReturns('Popular'))
-    console.log(CalculateReturns('Basic'))
-    console.log(CalculateReturns('High'))
+    console.log(CalculateReturns('LIAM Plus'))
+    console.log(CalculateReturns('LIAM Basic'))
+    console.log(CalculateReturns('LIAM Pro'))
     console.log(CalculateReturns('Baseline'))
    
     
@@ -1021,13 +1032,13 @@ export function ReportPage({
         i === 0
           ? {
               ...item,
-              projectAnnualReturn: parseInt((CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized)/5).toFixed(1),
-              totalassetsvalueinfiveYears: parseInt(Number(CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized) + housePrice).toFixed(1),
-              netgaininpercent: 0,
-              netgainvalue: 0,
-               capitalGainsTaxPaid:0,
-               TotalReturnsBeforeTax:0,
-               TotalReturnsAfterTaxNotOptimized:parseInt((CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized)).toFixed(1)
+              ReturnsFromHouse:parseInt(CalculateReturns('Baseline').ReturnsFromHouse),
+              portfoliopercentReturn:0,
+              PortfolioReturns:0,
+              profitAfterTax:parseInt(CalculateReturns('Baseline').ReturnsFromHouse),
+              EstimatedHousePrice:parseInt(CalculateReturns('Baseline').EstimatedHousePrice),
+              CapitalGainsTax:0,
+              PortfolioReturnsBeforeTax:0
                
             }
           :
@@ -1035,29 +1046,26 @@ export function ReportPage({
         i === 1
           ? {
               ...item,
-              projectAnnualReturn: parseInt((CalculateReturns('Basic').TotalReturnsAfterTaxOptimized)/5).toFixed(1),
-              totalassetsvalueinfiveYears: parseInt(Number(CalculateReturns('Basic').TotalReturnsAfterTaxOptimized) + housePrice).toFixed(1),
-              netgainvalue: parseInt(CalculateReturns('Basic').NetGainFromOptimization).toFixed(1),
-              netgaininpercent: parseInt(CalculateReturns('Basic').FiveYearsReturnPercent).toFixed(1),
-              TotalReturnsBeforeTax:parseInt(CalculateReturns('Basic').TotalRetrunBeforeTax).toFixed(1),
-               capitalGainsTaxPaid:parseInt(CalculateReturns('Basic').CapitalGainsTax).toFixed(1),
-               TotalReturnsAfterTaxOptimized:parseInt(CalculateReturns('Basic').TotalReturnsAfterTaxOptimized).toFixed(1),
-               TotalReturnsAfterTaxNotOptimized:parseInt((CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized)).toFixed(1)
+               ReturnsFromHouse:parseInt(CalculateReturns('LIAM Basic').ReturnsFromHouse),
+              portfoliopercentReturn:parseInt(CalculateReturns('LIAM Basic').portfoliopercentReturn),
+              PortfolioReturns:parseInt(CalculateReturns('LIAM Basic').PortfolioReturns),
+              profitAfterTax:parseInt(CalculateReturns('LIAM Basic').profitAfterTax),
+              EstimatedHousePrice:parseInt(CalculateReturns('LIAM Basic').EstimatedHousePrice),
+              CapitalGainsTax:parseInt(CalculateReturns('LIAM Basic').CapitalGainsTax),
+              PortfolioReturnsBeforeTax:parseInt(CalculateReturns('LIAM Basic').PortfolioReturnsBeforeTax)
 
 
             }
           : i === 2
             ? {
                 ...item,
-                ...item,
-              projectAnnualReturn: parseInt((CalculateReturns('Popular').TotalReturnsAfterTaxOptimized)/5).toFixed(1),
-              totalassetsvalueinfiveYears: parseInt(Number(CalculateReturns('Popular').TotalReturnsAfterTaxOptimized) + housePrice).toFixed(1),
-              netgainvalue: parseInt(CalculateReturns('Popular').NetGainFromOptimization).toFixed(1),
-              netgaininpercent: parseInt(CalculateReturns('Popular').FiveYearsReturnPercent).toFixed(1),
-              TotalReturnsBeforeTax:parseInt(CalculateReturns('Popular').TotalRetrunBeforeTax).toFixed(1),
-               capitalGainsTaxPaid:parseInt(CalculateReturns('Popular').CapitalGainsTax).toFixed(1),
-               TotalReturnsAfterTaxOptimized:parseInt(CalculateReturns('Popular').TotalReturnsAfterTaxOptimized).toFixed(1),
-               TotalReturnsAfterTaxNotOptimized:parseInt((CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized)).toFixed(1)
+               ReturnsFromHouse:parseInt(CalculateReturns('LIAM Plus').ReturnsFromHouse),
+              portfoliopercentReturn:parseInt(CalculateReturns('LIAM Plus').portfoliopercentReturn),
+              PortfolioReturns:parseInt(CalculateReturns('LIAM Plus').PortfolioReturns),
+              profitAfterTax:parseInt(CalculateReturns('LIAM Plus').profitAfterTax),
+              EstimatedHousePrice:parseInt(CalculateReturns('LIAM Plus').EstimatedHousePrice),
+              CapitalGainsTax:parseInt(CalculateReturns('LIAM Plus').CapitalGainsTax),
+              PortfolioReturnsBeforeTax:parseInt(CalculateReturns('LIAM Plus').PortfolioReturnsBeforeTax)
 
 
 
@@ -1065,14 +1073,13 @@ export function ReportPage({
             : i === 3
               ? {
                   ...item,
-              projectAnnualReturn: parseInt((CalculateReturns('High').TotalReturnsAfterTaxOptimized)/5).toFixed(1),
-              totalassetsvalueinfiveYears: parseInt(Number(CalculateReturns('High').TotalReturnsAfterTaxOptimized) + housePrice).toFixed(1),
-              netgainvalue: parseInt(CalculateReturns('High').NetGainFromOptimization).toFixed(1),
-              netgaininpercent: parseInt(CalculateReturns('High').FiveYearsReturnPercent).toFixed(1),
-              TotalReturnsBeforeTax:parseInt(CalculateReturns('High').TotalRetrunBeforeTax).toFixed(1),
-               capitalGainsTaxPaid:parseInt(CalculateReturns('High').CapitalGainsTax).toFixed(1),
-               TotalReturnsAfterTaxOptimized:parseInt(CalculateReturns('High').TotalReturnsAfterTaxOptimized).toFixed(1),
-               TotalReturnsAfterTaxNotOptimized:parseInt((CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized)).toFixed(1)
+              ReturnsFromHouse:parseInt(CalculateReturns('LIAM Pro').ReturnsFromHouse),
+              portfoliopercentReturn:parseInt(CalculateReturns('LIAM Pro').portfoliopercentReturn),
+              PortfolioReturns:parseInt(CalculateReturns('LIAM Pro').PortfolioReturns),
+              profitAfterTax:parseInt(CalculateReturns('LIAM Pro').profitAfterTax),
+              EstimatedHousePrice:parseInt(CalculateReturns('LIAM Pro').EstimatedHousePrice),
+              CapitalGainsTax:parseInt(CalculateReturns('LIAM Pro').CapitalGainsTax),
+                 PortfolioReturnsBeforeTax:parseInt(CalculateReturns('LIAM Pro').PortfolioReturnsBeforeTax)
 
 
 
@@ -1083,21 +1090,7 @@ export function ReportPage({
     );
   }, [AnnualGrowth]);
 
-  useEffect(()=>{
-
-    console.log(CalculateReturns(selectedPortfolio.value).TotalReturnsAfterTaxOptimized/5)
-     setdataChart (
-      [
-        { year: '2026', strategy: 0, baseline: 0 },
-    { year: '2027', strategy: parseInt(CalculateReturns(selectedPortfolio.value).TotalReturnsAfterTaxOptimized/5).toFixed(1), baseline: (CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized)/5 },
-    { year: '2028', strategy: parseInt((CalculateReturns(selectedPortfolio.value).TotalReturnsAfterTaxOptimized/5)*2).toFixed(1), baseline: (CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized/5)*2 },
-    { year: '2029', strategy:parseInt((CalculateReturns(selectedPortfolio.value).TotalReturnsAfterTaxOptimized/5)*3).toFixed(1), baseline: (CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized/5)*3 },
-    { year: '2030', strategy: parseInt((CalculateReturns(selectedPortfolio.value).TotalReturnsAfterTaxOptimized/5)*4).toFixed(1), baseline: (CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized/5)*4 },
-    { year: '2031', strategy: parseInt(CalculateReturns(selectedPortfolio.value).TotalReturnsAfterTaxOptimized).toFixed(1), baseline: CalculateReturns('Baseline').TotalReturnsAfterTaxNotOptimized },
-      ]
-    )
-  },[selectedPortfolio.value])
-
+  
   
 
   // Calculator
@@ -1116,11 +1109,11 @@ export function ReportPage({
   });
 
   useEffect(() => {
-    const EquityLine = parseFloat(housePrice * (Margin / 100)).toFixed(2);
-    const HELOCInterestPaid = parseFloat(
+    const EquityLine = parseInt(housePrice * (Margin / 100)).toFixed(2);
+    const HELOCInterestPaid = parseInt(
       EquityLine * (HELOCRate / 100) * 5,
     ).toFixed(2);
-    const AmountReinvest = parseFloat(EquityLine - HELOCInterestPaid).toFixed(
+    const AmountReinvest = parseInt(EquityLine - HELOCInterestPaid).toFixed(
       2,
     );
 
@@ -1134,16 +1127,13 @@ export function ReportPage({
  
 
   const [ReturnsAssets,setReturnsInAssets] = useState({
-    TotalReturns:'',
-    GainsTax:'',
-    ReturnAfterTax:'',
-    ValueOptimized:'',
-    ValueNotOptimized:'',
-    NetGainAfterOptimization:'',
-    NetGainAfterOptimizationpercent:'',
-    TotalGain:'',
-    HouseReturn:'',
-    PortfolioGain:''
+   ReturnsFromHouse:'',
+              portfoliopercentReturn:'',
+              PortfolioReturns:'',
+              profitAfterTax:'',
+              EstimatedHousePrice:'',
+              CapitalGainsTax:'',
+              PortfolioReturnsBeforeTax:''
   });
 
    const [datachart,setdataChart] =useState( [
@@ -1159,17 +1149,7 @@ export function ReportPage({
 
   useEffect(()=>{
 
-    let houseAppreciation = 0
-    if(AnnualGrowth.house > 5) {
-      houseAppreciation = 5
-    }
-    else{
-      houseAppreciation = AnnualGrowth.house
-    }
-
-   
-   
-
+  
     const SandPAmount = reinvestAmount.AmtToReinvest * (equities / 100)
     const bondsAmount = reinvestAmount.AmtToReinvest * (bonds / 100)
     const cashAmount = reinvestAmount.AmtToReinvest * (cash / 100)
@@ -1180,32 +1160,43 @@ export function ReportPage({
     const BondsReturn = bondsAmount * Math.pow(1 + (AnnualGrowth.bonds/100),5) - bondsAmount
     const CashReturn = cashAmount * Math.pow(1.02 , 5) - cashAmount
     const CryptoReturn = cryptoAmount * Math.pow(1 + (AnnualGrowth.crypto/100),5) - cryptoAmount
-    const HouseReturn = (housePrice * (1+((houseAppreciation*5)/100) ) - housePrice)
+    const HouseReturn = housePrice * Math.pow((1+((AnnualGrowth.conservativeHouseGrowth)/100) ) ,5) -  housePrice
    
 
-    const TotalReturnAmount = SandPReturn + BondsReturn + CryptoReturn + CashReturn
-    const GainsTaxAmount =  (SandPReturn + BondsReturn + CryptoReturn + CashReturn) * (0.15)
-    const GainsAfterTaxAmount = TotalReturnAmount - GainsTaxAmount; //only from portfolio
-    const ValueOptimizedAmount = housePrice + GainsAfterTaxAmount
-    const ValueNotOptimizedAmount  = housePrice + HouseReturn 
-    const NetGainAfterOptimizationAmount = ValueOptimizedAmount - ValueNotOptimizedAmount
-    const NetGainAfterOptimizationpercent =(Math.pow( (ValueOptimizedAmount / housePrice), 0.2) - 1 ) * 100
-    const PortfolioGain = SandPReturn + BondsReturn + CryptoReturn + CashReturn
-    const TotalGain = GainsAfterTaxAmount + HouseReturn
+    
+
+
+           const TotalReturns = Number(SandPReturn) +  Number(BondsReturn) +  Number(CashReturn) +  Number(CryptoReturn) // Returns From Portfolio
+
+           const CapitalGainsTax =TotalReturns * 0.15 //Assuming 15% capital gains Tax
+
+
+           const ReturnsFromHouse = HouseReturn // By how much the house have grown
+
+           const portfoliopercentReturn = (equities/ 100)*AnnualGrowth.sp500 + (bonds/100)*AnnualGrowth.bonds + (crypto / 100)* AnnualGrowth.crypto + (cash / 100)*AnnualGrowth.cash //weighted return of the portfolio 
+
+
+           const PortfolioReturns = TotalReturns - CapitalGainsTax 
+
+           const profitAfterTax = PortfolioReturns + HouseReturn 
+
+           const EstimatedHousePrice = HouseReturn + housePrice
+
+           const PortfolioReturnsBeforeTax = TotalReturns
+           
 
     setReturnsInAssets({...ReturnsAssets,
-      TotalReturns:parseFloat(TotalReturnAmount).toFixed(1),
-      GainsTax:parseFloat(GainsTaxAmount).toFixed(1),
-      ReturnAfterTax:parseFloat(GainsAfterTaxAmount).toFixed(1),
-      ValueOptimized:parseFloat(ValueOptimizedAmount).toFixed(1),
-      ValueNotOptimized:parseFloat(ValueNotOptimizedAmount).toFixed(1),
-      NetGainAfterOptimization:parseFloat(NetGainAfterOptimizationAmount).toFixed(1),
-      NetGainAfterOptimizationpercent:parseFloat(NetGainAfterOptimizationpercent).toFixed(1),
-    TotalGain:parseFloat(TotalGain).toFixed(1),
-    HouseReturn:parseFloat(HouseReturn).toFixed(1),
-    PortfolioGain:parseFloat(PortfolioGain).toFixed(1)
-    
+      ReturnsFromHouse:parseInt(ReturnsFromHouse),
+      portfoliopercentReturn:parseInt(portfoliopercentReturn*5),
+      PortfolioReturns:parseInt(PortfolioReturns),
+      profitAfterTax:parseInt(profitAfterTax),
+      EstimatedHousePrice:parseInt(EstimatedHousePrice),
+      CapitalGainsTax:parseInt(CapitalGainsTax),
+      PortfolioReturnsBeforeTax:parseInt(PortfolioReturnsBeforeTax)
     })
+
+
+   
 
    
   },[reinvestAmount,equities,bonds,cash,crypto,AnnualGrowth])
@@ -1218,15 +1209,19 @@ export function ReportPage({
   { year: 2028, Portfolio: 189000, Baseline: 108243 },
 ];
 
-  //  useEffect(()=>{
-  //   setTimeout(()=>{
-  //     setScreen(4)
-  //   },10000)
+   useEffect(()=>{
+    if(
+      !UserDetails.loggedIn
+    ){
+      setTimeout(()=>{
+      setScreen(4)
+    },10000)
+    }
 
-  //      trackEvent("Report Generated", {
-  //         location: "Report Page",
-  //       })
-  // },[])
+       trackEvent("Report Generated", {
+          location: "Report Page",
+        })
+  },[])
 
 
    const [isAppreciationOpen, setIsAppreciationOpen] = useState(false);
@@ -1251,6 +1246,64 @@ export function ReportPage({
   const futureHouseValue = houseData[5].Projected;
   const houseAppreciationGain = futureHouseValue - currentHouseValue;
 
+
+  useEffect(()=>{
+
+    console.log(CalculateReturns(selectedPortfolio.value).PortfolioReturns/5)
+     setdataChart (
+      [
+        { year: '2026', strategy: 0, baseline: 0 },
+    { year: '2027', strategy: parseInt(CalculateReturns(selectedPortfolio.value).PortfolioReturns/5), baseline: parseInt((CalculateReturns('Baseline').ReturnsFromHouse)/5) },
+    { year: '2028', strategy: parseInt((CalculateReturns(selectedPortfolio.value).PortfolioReturns/5)*2), baseline: parseInt((CalculateReturns('Baseline').ReturnsFromHouse/5)*2) },
+    { year: '2029', strategy:parseInt((CalculateReturns(selectedPortfolio.value).PortfolioReturns/5)*3), baseline: parseInt((CalculateReturns('Baseline').ReturnsFromHouse/5)*3) },
+    { year: '2030', strategy: parseInt((CalculateReturns(selectedPortfolio.value).PortfolioReturns/5)*4), baseline: parseInt((CalculateReturns('Baseline').ReturnsFromHouse/5)*4) },
+    { year: '2031', strategy: parseInt(CalculateReturns(selectedPortfolio.value).PortfolioReturns), baseline: parseInt(CalculateReturns('Baseline').ReturnsFromHouse) },
+      ]
+    )
+  },[selectedPortfolio.value])
+  useEffect(()=>{
+
+    
+     setdataChart (
+      [
+        { year: '2026', strategy: 0, baseline: 0 },
+    { year: '2027', strategy: parseInt(ReturnsAssets.PortfolioReturns/5), baseline: parseInt((ReturnsAssets.ReturnsFromHouse)/5) },
+    { year: '2028', strategy: parseInt((ReturnsAssets.PortfolioReturns/5)*2), baseline: parseInt((ReturnsAssets.ReturnsFromHouse/5)*2) },
+    { year: '2029', strategy:parseInt((ReturnsAssets.PortfolioReturns/5)*3), baseline: parseInt((ReturnsAssets.ReturnsFromHouse/5)*3) },
+    { year: '2030', strategy: parseInt((ReturnsAssets.PortfolioReturns/5)*4), baseline: parseInt((ReturnsAssets.ReturnsFromHouse/5)*4) },
+    { year: '2031', strategy: parseInt(ReturnsAssets.PortfolioReturns), baseline: parseInt(ReturnsAssets.ReturnsFromHouse) },
+      ]
+    )
+  },[ReturnsAssets])
+
+
+  const UserDetails = useSelector((state) => state.UserDetails);
+
+  const [savingReport,setSavingReport] = useState(false)
+
+  const saveReports = async() => {
+    setSavingReport(true)
+      try {
+        const result = await SaveReportsToFirebase(UserDetails.uid,housePrice,PortfolioOptions?.[2].profitAfterTax,address,0.3375 * housePrice,AnnualGrowth.house)
+
+        toast.success('Report Saved')
+                  navigate('/userDashboard')
+
+      } catch (error) {
+        toast.error('Failed To Save Report')
+        console.log(error)
+      }
+      setSavingReport(false)
+  }
+  
+
+
+  // useEffect(()=>{
+  //     if(UserDetails.loggedIn){
+  //       saveReports()
+  //     }
+  // },[UserDetails.loggedIn])
+
  
 
   return (
@@ -1267,19 +1320,7 @@ export function ReportPage({
 
       {/* ----------------------------- */}
 
-      {/* Mesh Gradient Background */}
-      {/* <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(0,91,255,0.08)_0%,transparent_50%),radial-gradient(circle_at_80%_80%,rgba(24,163,111,0.06)_0%,transparent_50%),radial-gradient(circle_at_50%_50%,rgba(0,91,255,0.04)_0%,transparent_50%)]"></div>
-      </div> */}
-
-      {/* Floating dots pattern */}
-      {/* <div
-        className="fixed inset-0 pointer-events-none opacity-[0.03]"
-        style={{
-          backgroundImage: "radial-gradient(circle, #000 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-        }}
-      ></div> */}
+    
 
       {/* ====================================================================
            SECTION 1 — HEADER WITH PROPERTY IMAGE
@@ -1367,7 +1408,7 @@ export function ReportPage({
 
         {selectedButton === "Summary" && (
           <div className="flex flex-col gap-2">
-            <div className="flex flex-col md:flex-row justify-between items-end gap-4 mb-2">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold text-black tracking-tight mb-2">
                   Executive Summary
@@ -1376,12 +1417,45 @@ export function ReportPage({
                   Your personalised property intelligence report
                 </p>
               </div>
+              
+             <div className='flex items-center gap-2'>
+               <Button
+                onClick={() => {
+                if(UserDetails.loggedIn){
+                saveReports()
+
+                }else{
+                   navigate('/userLoginScreen')
+                }
+
+                }}
+                className="w-fit text-white  bg-gradient-to-b from-[#0A0A0A] to-[#161718] px-6 py-4 rounded-xl text-[15px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
+              >
+               {savingReport?'Saving...':'Save Report'}
+                <ChevronRight size={18} />
+              </Button>
+              <Button
+                onClick={() => {
+                if(UserDetails.loggedIn){
+               navigate('/userDashboard')
+
+                }else{
+                   navigate('/userLoginScreen')
+                }
+
+                }}
+                className="w-fit text-black   bg-gradient-to-b from-[#fff] to-[#fff] px-6 py-4 rounded-xl text-[15px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
+              >
+              View Dashboard
+                <ChevronRight size={18} />
+              </Button>
+             </div>
             </div>
 
             {/* Top Row Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-2">
               {/* Current Value Card */}
-              <Card className="flex flex-col justify-between h-full w-full relative overflow-hidden group">
+              <Card className="flex flex-col justify-between h-full w-full relative group">
                 {/* <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#005BFF]/10 to-transparent rounded-bl-[100px] -mr-8 -mt-8" /> */}
                 <div>
                   <div className="flex items-center gap-2 mb-4">
@@ -1395,21 +1469,22 @@ export function ReportPage({
                   </div>
                   {state?.state?.data?.data?.zestimate !== null && (
                     <div className="flex items-center gap-2 text-sm">
-                      {(AnnualGrowth?.house / 5)?.toFixed(2) > 0 && (
+                      {(AnnualGrowth?.house)?.toFixed(2) > 0 && (
                         <span className="bg-green-50 text-[#18A36F] px-2 py-0.5 rounded font-bold text-xs flex items-center gap-1">
                           <TrendingUp size={12} /> +
-                          {Math.abs(AnnualGrowth?.house)?.toFixed(2)}%
+                          {Math.abs(parseFloat(AnnualGrowth?.house).toFixed(2))}%
                         </span>
                       )}
                       {(AnnualGrowth?.house / 5)?.toFixed(2) < 0 && (
                         <span className="bg-red-50 text-[red] px-2 py-0.5 rounded font-bold text-xs flex items-center gap-1">
                           <TrendingDown size={12} /> -
-                          {Math.abs((AnnualGrowth?.house)?.toFixed(2))}%
+                          {Math.abs(parseFloat(AnnualGrowth?.house)?.toFixed(2))}%
+                          
                         </span>
                       )}
                       <span className="text-[#6A6A6A]">
                       Current  5Y{" "}
-                        {`${(AnnualGrowth?.house / 5)?.toFixed(2) > 0 ? "Appreciation" : "Depreciation"}  `}
+                        {`${(AnnualGrowth?.house)?.toFixed(2) > 0 ? "Appreciation" : "Depreciation"}  `}
                       </span>
                     </div>
                   )}
@@ -1419,22 +1494,32 @@ export function ReportPage({
                     <div className="flex justify-between text-sm">
                       <span className="text-[#6A6A6A]">
                         1-Year
-                        {(AnnualGrowth?.house / 5)?.toFixed(2) > 0
+                        {(AnnualGrowth?.house)?.toFixed(2) > 0
                           ? " Gain"
                           : " Loss"}
                       </span>
                       <span className="font-bold">
-                        {(AnnualGrowth?.house / 5)?.toFixed(2) > 0 ? "+" : "-"}$
+                        {(AnnualGrowth?.house)?.toFixed(2) > 0 ? "+" : "-"}$
                         {parseInt(
-                          Math.abs(housePrice * (AnnualGrowth?.house / 5)) / 100,
+                          Math.abs(housePrice * (AnnualGrowth?.house)) / 100,
                         ).toLocaleString("en-us")}
                       </span>
                     </div>
                   )}
                   <div className="flex justify-between text-sm mt-2">
-                    <span className="text-[#6A6A6A]">Unlockable Equity</span>
+                    <span className="text-[#6A6A6A] flex gap-2 items-center relative group/card ">Hidden Cash In House
+
+                      <Info size={14} className='cursor-pointer'/>
+
+                      <div className='bg-gray-300 text-black py-4 px-4 absolute w-[300px] bottom-full rounded-xl opacity-0 group-hover/card:opacity-100 text-xs'>
+                        Unlockable Cash is the estimated portion of your home’s value that may be accessed without selling, based on current valuation, outstanding loans, and standard lending limits. 
+
+                      </div>
+                    </span>
+
+
                     <span className="font-bold text-[#005BFF]">
-                      <CountUp value={housePrice * 0.5} prefix="$" />
+                      <CountUp value={0.3375 * housePrice} prefix="$" />
                     </span>
                   </div>
                 </div>
@@ -1452,19 +1537,19 @@ export function ReportPage({
                   </div>
                   <div className="text-4xl font-bold text-[#fff] tracking-tighter mb-1">
                     <CountUp
-                      value={PortfolioOptions?.filter((item)=>item.value === 'Popular')?.[0].TotalReturnsBeforeTax}
-                      
+                      value={PortfolioOptions?.[2].profitAfterTax}
                       prefix="+$"
                     />
                   </div>
-                  <p className="text-xs text-[#fff] mt-2 leading-relaxed max-w-[80%]">
-                    Total 5-year value across all optimisation strategies.
-                    <span className="block mt-1 text-[10px] opacity-80">
-                      (Before Taxes & Capital Cost)
+                 
+                </div>
+                 <p className="text-sm text-[#fff]  leading-relaxed max-w-[100%]  w-full mt-6 pt-6 border-t border-dashed border-gray-100">
+                    Total 5-year Value In The LIAM Plus Strategies.
+                    <span className="block mt-1 text-sm opacity-80">
+                      (After Taxes & Capital Cost)
                     </span>
                   </p>
-                </div>
-                <div className="mt-6">
+                {/* <div className="mt-6">
                   <div className="w-full bg-gray-400 rounded-full h-1.5 overflow-hidden">
                     <div
                       className="bg-[#fff] h-full rounded-full"
@@ -1475,7 +1560,7 @@ export function ReportPage({
                     <span>Potential Realized</span>
                     <span className='text-[#ffd400]'>75%</span>
                   </div>
-                </div>
+                </div> */}
               </Card>
 
               {/* Recommendation Card */}
@@ -1507,7 +1592,7 @@ export function ReportPage({
                     {[
                       {
                         name: "S&P 500",
-                        value: `${getAllocation('Popular').sp500}%`,
+                        value: `${getAllocation('LIAM Plus').sp500}%`,
                         return: `${AnnualGrowth?.sp500}%`,
                         color: "#000000",
                         bgcolor: "#2A69DB33",
@@ -1538,7 +1623,7 @@ export function ReportPage({
                       },
                       {
                         name: "Bonds",
-                        value: `${getAllocation('Popular').bonds}%`,
+                        value: `${getAllocation('LIAM Plus').bonds}%`,
                         return: `${AnnualGrowth?.bonds}%`,
                         color: "#666666",
                         bgcolor: "#6DBFD533",
@@ -1580,7 +1665,7 @@ export function ReportPage({
                       },
                       {
                         name: "Crypto",
-                        value: `${getAllocation('Popular').crypto}%`,
+                        value: `${getAllocation('LIAM Plus').crypto}%`,
                         return: `${AnnualGrowth?.crypto}%`,
                         color: "#333333",
                         bgcolor: "#F7C34C33",
@@ -1603,7 +1688,7 @@ export function ReportPage({
                       },
                       {
                         name: "Cash",
-                        value: `${getAllocation('Popular').cash}%`,
+                        value: `${getAllocation('LIAM Plus').cash}%`,
                         return: `${AnnualGrowth?.cash}%`,
                         color: "#E3E3E3",
                         bgcolor: "#3C998F33",
@@ -1625,7 +1710,10 @@ export function ReportPage({
                           </svg>
                         ),
                       },
-                    ].map((item, i) => (
+                    ].map((item, i) =>{
+
+                      
+                      return(
                       <div
                         key={i}
                         className="group flex items-center justify-between gap-4  w-full  cursor-default"
@@ -1652,23 +1740,32 @@ export function ReportPage({
                           
                         </div>
                       </div>
-                    ))}
+                    )
+                    })}
                   </div>
                   </div>
                 </div>
                   <div>
-                    <div className="text-xs text-[#18a36f] p-2 rounded-md shadow-sm shadow-[#18a36f]/20 capitalize bg-[#18a36f]/20">
+                    <div className="text-xs text-[#18a36f] flex items-center gap-2 p-2 rounded-md shadow-sm shadow-[#18a36f]/20 capitalize bg-[#18a36f]/20 group/card1 relative">
+                     <Info size={14} className='cursor-pointer'/>
+
+                      <div className='bg-gray-300 text-black py-4 px-4 absolute w-[300px] bottom-full rounded-xl opacity-0 group-hover/card1:opacity-100 text-xs'>
+                       ~{parseInt(PortfolioOptions?.[2]?.portfoliopercentReturn/5)}%{" "} is the Annual Returns in the LIAM Plus Portfolio option with a total of  ~{PortfolioOptions?.[2]?.portfoliopercentReturn}%{" "} growth in 5 years.
+
+                      </div>
                       <span className="text-sm font-bold tracking-tight">
-                        ~{PortfolioOptions?.filter((item)=>item.value === 'Popular')?.[0].netgaininpercent}%{" "}
+                        ~{parseInt(PortfolioOptions?.[2]?.portfoliopercentReturn/5)}%{" "}
                       </span>
-                      More growth potential with
+                      More Annual growth with
                       <span className="text-sm font-bold text-[#18A36F]  tracking-tight">
                         {" "}
-                        ~{(PortfolioOptions?.filter((item)=>item.value === 'Popular')?.[0].netgaininpercent)/5}%{" "}
+                        ~{PortfolioOptions?.[2]?.portfoliopercentReturn}%{" "}
                       </span>
                       <span className="text-xs">
-                        Annual returns
+                        5Y returns
                       </span>
+
+                       
                     </div>
                   </div>
                 </div>
@@ -1704,13 +1801,14 @@ export function ReportPage({
                         <BarChart3 className="text-[#fff]" size={18} />
                       </div>
                       <h2 className="text-black text-[18px] sm:text-[20px] font-medium tracking-tight">
-                        Price Per Square Foot Comparison
+                        {/* Price Per Square Foot Comparison */}
+                        House Trend Chart
                       </h2>
                     </div>
                   </div>
 
                   <div className="space-y-3 flex flex-wrap max-[600px]:flex-col items-stretch justify-between">
-                    <div className="flex items-center justify-between p-4 rounded-xl bg-gray-200 border border-black/30 hover:border-[#BEDBFF]/20 transition-all duration-200 group w-[49%] max-[600px]:w-full h-[92px]">
+                    {/* <div className="flex items-center justify-between p-4 rounded-xl bg-gray-200 border border-black/30 hover:border-[#BEDBFF]/20 transition-all duration-200 group w-[49%] max-[600px]:w-full h-[92px]">
                       <div className="flex items-center gap-3">
                         <div className="flex flex-col gap-1">
                           <p className="text-black text-[16px] font-medium">
@@ -1758,101 +1856,13 @@ export function ReportPage({
                             </div>
                           </div>
                         </div>
-                      ))}
+                      ))} */}
+
+                      <AppreciationChart HousePrices={HousePrices} growthRate={AnnualGrowth.house}/>
                   </div>
                 </div>
               </div>
-              {/* <div className="max-[1100px]:w-[100%] w-[50%] flex flex-col gap-2">
-            
-
-              <div className="flex flex-col gap-2 bg-[white] h-full  border-2 border-[#fff]/30 rounded-xl">
-                <div className="flex flex-col  gap-6 items-stretch justify-center h-full ">
-                 
-             
-                 <div>
-                 
-        
-
-                   <div className="h-full relative p-4 sm:p-5   text-white flex flex-col gap-[8px]">
-                
-                  <div className="text-black/80 text-[11px] uppercase tracking-wide flex items-center gap-4 justify-between">
-                    Our Recommendation
-                   
-                <div 
-                onClick={()=>{setparallelEnginesPopup(!parallelEnginesPopup)}}
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-md  text-[11px] font-medium  border border-[#18A36F]/20  bg-gradient-to-r from-[#18A36F]/10 to-[#18A36F]/5 text-[#18A36F] cursor-pointer ">
-                  
-                  <span>How LIAM Calculates this ?</span>
-
-                </div>
-             
-                  </div>
-                  <div className="text-black text-[20px] sm:text-[24px] font-semibold">
-                  Deployment Strategy
-                  </div>
-                  <div className="text-black/90 text-[10px] sm:text-[10px] capitalize flex flex-col gap-[12px]">
-                   <p>
-                    ~ {parseFloat(growth?.highGrowth)?.toFixed(2)}% more growth potential with ~ {parseFloat(growth?.highGrowth / 5) ?.toFixed(2)}% annual returns
-                   </p>
-                   <p className='font-medium text-black/60 text-[16px] '>
-                    Investing in
-                   </p>
-                  
-
-              
-
-                   <div className=' flex items-center justify-center w-full gap-2 '>
-                   <div className = 'w-[50%] h-full  flex flex-1 items-center justify-center  '>
-                     <Pie data={data} options={options}/>
-                   </div>
-                  
-
-                      <div className="flex-1 flex flex-col justify-between space-y-3 h-full">
-                     {[
-                        { name: 'S&P 500', value: '49%', return: '9.03%', color: COLORS.sp500, code: 'VOO' },
-                        { name: 'Bonds', value: '21%', return: '-3.81%', color: COLORS.bonds, code: 'TLT' },
-                        { name: 'Crypto', value: '29%', return: '13.37%', color: COLORS.crypto, code: 'BTC' },
-                        { name: 'Cash', value: '5%', return: '2.00%', color: COLORS.cash, code: 'USD' },
-                     ].map((item, i) => (
-                        <div key={i} className="group flex items-center justify-between p-3 md:py-2 md:px-3 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-[#005BFF]/20 transition-all cursor-default">
-                           <div className="flex items-center gap-3 md:gap-4">
-                              <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-[10px] font-bold shadow-sm shrink-0" style={{ backgroundColor: item.color }}>
-                                {item.code}
-                              </div>
-                              <div>
-                                <div className="font-bold text-xs text-black  w-14">{item.name}</div>
-                               
-                              </div>
-                           </div>
-                            <div className="text-left w-6 ">
-                                 <div className="font-bold text-[13px] text-black tracking-tight">{item.value}</div>
-                              </div>
-                           
-                           <div className="flex items-center gap-3 md:gap-8">
-                             
-                              <div className="text-right w-16 md:w-13 ">
-                                 <div className={`font-bold text-[10px] ${item.return.includes('-') ? 'text-red-500' : 'text-[#18A36F]'}`}>
-                                    {item.return}
-                                 </div>
-                                 <div className="text-[8px] text-[#6A6A6A] uppercase font-bold">Ann. Rtn</div>
-                              </div>
-                           </div>
-                        </div>
-                     ))}
-                  </div>
-                    </div>
-                      
-
-                  </div>
-                </div>
-                 </div>
-                </div>
-
-               
-              </div>
-
            
-            </div> */}
 
               <div className="max-[1100px]:w-[100%] w-[50%] flex flex-col gap-2">
                 <Card className="flex flex-col">
@@ -1887,7 +1897,7 @@ export function ReportPage({
                     {[
                       {
                         name: "S&P 500",
-                        value: `${getAllocation('Popular').sp500}%`,
+                        value: `${getAllocation('LIAM Plus').sp500}%`,
                         return: `${AnnualGrowth?.sp500}%`,
                         color: "#000",
                         bgcolor: "#000000",
@@ -1918,7 +1928,7 @@ export function ReportPage({
                       },
                       {
                         name: "Bonds",
-                        value: `${getAllocation('Popular').bonds}%`,
+                        value: `${getAllocation('LIAM Plus').bonds}%`,
                         return: `${AnnualGrowth?.bonds}%`,
                         color: "#000",
                         bgcolor: "#000000",
@@ -1960,7 +1970,7 @@ export function ReportPage({
                       },
                       {
                         name: "Crypto",
-                        value: `${getAllocation('Popular').crypto}%`,
+                        value: `${getAllocation('LIAM Plus').crypto}%`,
                         return: `${AnnualGrowth?.crypto}%`,
                         color: "#000",
                         bgcolor: "#000000",
@@ -1983,7 +1993,7 @@ export function ReportPage({
                       },
                       {
                         name: "Cash",
-                        value: `${getAllocation('Popular').cash}%`,
+                        value: `${getAllocation('LIAM Plus').cash}%`,
                         return: `${AnnualGrowth?.cash}%`,
                         color: "#000",
                         bgcolor: "#000000",
@@ -2079,438 +2089,7 @@ export function ReportPage({
           </div>
         )}
 
-        {/* {selectedButton === "Equity/Growth Comparison" && (
-        
-             
-                 <div className="space-y-8">
-            <div className="text-center max-w-2xl mx-auto mb-8">
-               <h2 className="text-3xl font-bold text-black mb-3">Equity Unlock Growth Comparison</h2>
-               <p className="text-[#6A6A6A]">
-                  How unlocking part of your home's equity compares to keeping it all in your property. 
-                  Based on historical performance benchmarks.
-               </p>
-            </div>
-
-          
-            <div className="flex justify-center mb-8">
-               <div className="inline-flex bg-gray-100 p-1 rounded-xl border border-gray-200">
-                  {PortfolioOptions?.map((item,i) => (
-                     <button
-                        key={i}
-                        onClick={() => {
-                           setSelectedPortfolio(item);
-                        setActiveButton(item.value);
-                        }}
-                        className={`px-6 py-2.5 rounded-[10px] text-sm font-bold capitalize transition-all ${
-                         selectedPortfolio.value === item.value 
-                              ? 'bg-white text-black shadow-sm ring-1 ring-black/[0.04]' 
-                              : 'text-[#6A6A6A] hover:text-black'
-                        }`}
-                     >
-                        {item.value}
-                     </button>
-                  ))}
-               </div>
-            </div>
-            </div>
-              {activeButton !== "Baseline" && activeButton !== 'Custom' ? (
-                <div
-                  className={`border rounded-b-lg pt-0 bg-white  ${selectedPortfolio?.borderColor}`}
-                >
-                  <div
-                    className={`border-b flex flex-col md:flex-row items-center justify-between py-2 px-4 ${selectedPortfolio?.borderColor}`}
-                  >
-                    <div className='flex flex-col gap-1'>
-                      <h3
-                        className={` text-[14px] sm:text-[15px] font-medium text-black`}
-                      >
-                        Strategy Is Dynamic - Not Fixed
-                      </h3>
-<div className="text-[#6A6A6A] text-[10px] uppercase tracking-wide font-medium mb-2 capitalize">
-                     Your allocation may changed based on market conditions,riskprofile,and our AI deployment Model
-                    </div>
-                    </div>
-                    <div
-                      className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-[10px] font-medium ${selectedPortfolio?.gradientBg} ${selectedPortfolio?.textColor}`}
-                    >
-                      {selectedPortfolio?.icon}
-                      {selectedPortfolio?.Risk}
-                    </div>
-                  </div>
-
-                  <div className="py-2 px-4 flex flex-col gap-2">
-                    <div className=" flex items-center justify-between w-full ">
-                      <h3
-                        className={` text-[14px] sm:text-[15px] font-medium text-black`}
-                      >
-                        {selectedPortfolio?.name}
-                      </h3>
-                      <div
-                        className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-[10px] font-medium ${selectedPortfolio?.gradientBg} ${selectedPortfolio?.textColor}`}
-                      >
-                        <span className="text-[16px] font-bold">
-                          {selectedPortfolio?.annualReturn} %
-                        </span>
-                        Annual Return
-                      </div>
-                    </div>
-
-                    <div className="text-[#6A6A6A] text-[10px] uppercase tracking-wide font-medium mb-2">
-                      Portfolio Mix
-                    </div>
-
-   
-                
-                
-
-
-                
-                       <div className='flex flex-col sm:flex-row gap-2'>
-                      <div className='flex items-center justify-center gap-2 w-full'>
-                        <div className='w-full rounded-[6px] px-[6px] py-[10px] flex items-center justify-between border-[0.5px] border-[#3F4254] bg-gradient-to-br from-gray-200 to-[#FFFFFF] text-[#3F4254]'>
-                            <div className='font-medium text-[12px] sm:text-[16px] flex items-center gap-2'>
-                              <svg width="17" height="17" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M12.8346 4.27637L7.8763 9.2347L4.95964 6.31803L1.16797 10.1097" stroke="#3F4254" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M9.33203 4.27637H12.832V7.77637" stroke="#3F4254" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-
-                             <div className='flex flex-col gap-[2px]'>
-                              S&P 500
-                              <span className='font-medium text-[8px] sm:text-[12px]'>(Range ~40-50% )</span>
-                             </div>
-                            </div>
-                            <div className='flex flex-col items-center '>
-                              <p className='font-semibold text-[#18A36F] text-[14px] sm:text-[16px]'>{selectedPortfolio.SandP}</p>
-                              <span className='font-medium text-[8px] sm:text-[12px]'>(~{AnnualGrowth?.SandP} % P.A.)</span>
-                            </div>
-                        </div>
-                        <div className='w-full rounded-[6px] px-[6px] py-[10px] flex items-center justify-between border-[0.5px] border-[#3F4254] bg-gradient-to-br from-gray-200 to-[#FFFFFF] text-[#3F4254]'>
-                          <div className='font-medium text-[12px] sm:text-[16px] flex items-center gap-2'>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M18.5 17.838C19.5305 17.6867 20.2627 17.3941 20.8284 16.8284C22 15.6569 22 13.7712 22 10C22 6.22876 22 4.34315 20.8284 3.17157C19.6569 2 17.7712 2 14 2H10C6.22876 2 4.34315 2 3.17157 3.17157C2 4.34315 2 6.22876 2 10C2 13.7712 2 15.6569 3.17157 16.8284C3.97975 17.6366 5.1277 17.8873 7 17.965" stroke="#141B34" stroke-width="1.5" stroke-linecap="round"/>
-<path d="M17 7H7" stroke="#141B34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M14.5 14.5C14.5 15.8807 13.3807 17 12 17C10.6193 17 9.5 15.8807 9.5 14.5C9.5 13.1193 10.6193 12 12 12C13.3807 12 14.5 13.1193 14.5 14.5Z" stroke="#141B34" stroke-width="1.5"/>
-<path d="M9.5 14.5C9.5 18.5659 11.2222 20.8706 12 22L13.5 19L15.25 20L17 21C16.2653 20.2888 15.5058 18.0471 15.5058 18.0471" stroke="#141B34" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-
-
-
-                             
-
-                              <div className='flex flex-col gap-[2px]'>
-                              Bonds
-                              <span className='font-medium text-[8px] sm:text-[12px]'>(Range ~10-50% )</span>
-                             </div>
-                            </div>
-                            <div className='flex flex-col items-center '>
-                              <p className='font-semibold text-[#18A36F] text-[14px] sm:text-[16px]'>{selectedPortfolio.bonds}</p>
-                              <span className='font-medium text-[8px] sm:text-[12px]'>(~{AnnualGrowth?.Bonds} % P.A.)</span>
-                            </div>
-                        </div>
-                      </div>
-                      <div className='flex items-center justify-center gap-2 w-full'>
-                         <div className='w-full rounded-[6px] px-[6px] py-[10px] flex items-center justify-between border-[0.5px] border-[#3F4254] bg-gradient-to-br from-gray-200 to-[#FFFFFF] text-[#3F4254]'>
-                          <div className='font-medium text-[12px] sm:text-[16px] flex items-center gap-1'>
-                             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bitcoin-icon lucide-bitcoin"><path d="M11.767 19.089c4.924.868 6.14-6.025 1.216-6.894m-1.216 6.894L5.86 18.047m5.908 1.042-.347 1.97m1.563-8.864c4.924.869 6.14-6.025 1.215-6.893m-1.215 6.893-3.94-.694m5.155-6.2L8.29 4.26m5.908 1.042.348-1.97M7.48 20.364l3.126-17.727"/></svg>
-
-                               <div className='flex flex-col gap-[2px]'>
-                              Crypto
-                              <span className='font-medium text-[8px] sm:text-[12px]'>(Range ~10-40% )</span>
-                             </div>
-                            </div>
-                            <div className='flex flex-col items-center '>
-                              <p className='font-semibold text-[#18A36F] text-[14px] sm:text-[16px]'>{selectedPortfolio.bitcoin}</p>
-                              <span className='font-medium text-[8px] sm:text-[12px]'>(~{AnnualGrowth?.Bitcoin} % P.A.)</span>
-                            </div>
-                        </div>
-                        <div className='w-full rounded-[6px] px-[6px] py-[10px] flex items-center justify-between border-[0.5px] border-[#3F4254] bg-gradient-to-br from-gray-200 to-[#FFFFFF] text-[#3F4254]'>
-                          <div className='font-medium text-[12px] sm:text-[16px] flex items-center gap-1'>
-                             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dollar-sign-icon lucide-dollar-sign"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-
-                               <div className='flex flex-col gap-[2px]'>
-                              Cash
-                              <span className='font-medium text-[8px] sm:text-[12px]'>(Range ~5-15% )</span>
-                             </div>
-                            </div>
-                            <div className='flex flex-col items-center '>
-                              <p className='font-semibold text-[#18A36F] text-[14px] sm:text-[16px]'>{selectedPortfolio.cash}</p>
-                              <span className='font-medium text-[8px] sm:text-[12px]'>(~2 % P.A.)</span>
-                            </div>
-                        </div>
-                      </div>
-                   </div>
-
-                    <div className="flex items-stretch gap-2">
-                      <div className="relative p-4 sm:p-5 rounded-xl bg-[#0157F2] border-2 border-[#005BFF]/20 w-full">
-                        <div className="absolute top-3 right-5.5">
-                          <Home className="text-[white]" size={16} />
-                        </div>
-                        <div className="text-white text-[11px] uppercase tracking-wide mb-2">
-                          Total in 5 Years
-                        </div>
-                        <div className="text-white text-[24px] sm:text-[28px] font-medium mb-1 flex items-center justify-between">
-                          {selectedPortfolio?.totalinfiveYears.toLocaleString(
-                            "en-us"
-                          )}
-
-                          <span 
-                           onClick={()=>{setparallelEnginesPopup(!parallelEnginesPopup)}}
-                          className='max-sm:hidden'> <Calculator size={20} /></span>
-                        </div>
-                      </div>
-
-                      <div className="relative p-4 sm:p-5 rounded-xl bg-[#18A36F] border-2 border-[#18A36F]/20 w-full">
-                        <div className="absolute top-3 right-3">
-                          <TrendingUp className="text-[#18A36F]" size={16} />
-                        </div>
-                        <div className="flex items-center gap-1.5 mb-2">
-                          <div className="text-white text-[11px] uppercase tracking-wide flex justify-between w-full">
-                            Your Gain
-                            <span>+ {selectedPortfolio?.gaininpercent} %</span>
-                          </div>
-                        </div>
-                        <div className="text-white text-[24px] sm:text-[28px] font-medium mb-1">
-                          ${" "}
-                          {selectedPortfolio?.gainvalue.toLocaleString("en-us")}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 p-4 rounded-xl bg-gradient-to-br from-[#005BFF]/5 to-white border border-[#005BFF]/20 flex items-center justify-between flex-col md:flex-row gap-2">
-                      <div className="flex items-start gap-3 w-full md:w-[70%] ">
-                        <div className="p-1.5 rounded-lg bg-[#005BFF]/10 flex-shrink-0">
-                          <Info className="text-[#005BFF]" size={14} />
-                        </div>
-                        <div className='flex flex-col '>
-                          <p className="text-black text-[14px] sm:text-[15px] font-medium mb-1">
-                            What is "Equity Unlock"?
-                          </p>
-                          <p className="text-[#6A6A6A] text-[11px] leading-relaxed ">
-                            Instead of keeping all your wealth locked in your
-                            home (which grows at ~3-4% annually), you can access
-                            some equity through a HELOC or refinance, then
-                            invest it in diversified portfolios potentially
-                            earning 6-10% returns. You keep your home while your
-                            money works harder.
-                          </p>
-                        </div>
-                      </div>
-                      <Button
-                onClick={() => {
-                  window.scrollTo(0,0)    
-                 setScreen(4)
-                  setSelectedButton('Equity/Growth Comparison')
-                }}
-                className="  bg-gradient-to-r from-[#18A36F] to-[#18A36F] text-white px-6 py-4 rounded-xl text-[15px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
-              >
-                Apply this Strategy 
-                <ChevronRight size={18} />
-              </Button>
-                    </div>
-
-                    
-                  </div>
-                </div>
-              ) : activeButton !=='Baseline' && activeButton ==='Custom' ?
-              (
-                <div className="bg-white py-8 px-4 border border-[#cfcfd7] rounded-b-lg flex flex-col  gap-4">
-                 <div className='flex flex-col gap-4 w-full'>
-                   <div className='flex flex-col gap-4 w-full'>
-                   <div className='flex items-center justify-between'>
-                       <div className = 'flex flex-col gap-1'>
-                       <h3
-                        className={` text-[14px] sm:text-[15px] font-medium text-black`}
-                      >
-                        {selectedPortfolio?.name}
-                      </h3>
-  <div className="text-[#6A6A6A] text-[10px] uppercase tracking-wide font-medium ">
-                     How much could you realistically access?
-                      </div>
-                    </div>
-
-                     <div 
-                onClick={()=>{setparallelEnginesPopup(!parallelEnginesPopup)}}
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-md  text-[11px] font-medium  border border-[#18A36F]/20  bg-gradient-to-r from-[#18A36F]/10 to-[#18A36F]/5 text-[#18A36F] cursor-pointer ">
-                  
-                  <span>How LIAM Calculates this ?</span>
-
-                </div>
-                   </div>
-
-                    <div className = 'flex flex-col gap-1 rounded-md py-[6px] px-[12px] border border-[#D1D5DC] w-full'>
-                    
-                        <div className='py-3 flex flex-col gap-3'>
-            <div className="flex items-center justify-between ">
-              <div className="flex items-center gap-2">
-                <Label className="text-[12px] md:text-[14px]">Unlocked Equity</Label>
-                <TooltipProvider>
-                  <TooltipFig>
-                    <TooltipTrigger>
-                      <AlertCircle className="w-4 h-4 text-gray-400" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="text-sm">What Percent You Have Unlocked Of Your Property</p>
-                    </TooltipContent>
-                  </TooltipFig>
-                </TooltipProvider>
-              </div>
-              <span className="text-sm font-medium text-gray-900">{Margin}%</span>
-            </div>
-            <Slider
-              value={[Margin]}
-              onValueChange={handleMarginChange}
-              max={100}
-              step={1}
-              className="w-full"
-            />
-          </div>
-
-                    </div>
-
-                    <div className='flex flex-col gap-[14px]'>
-                       
-
-                       
-                        
-                        <div className='w-full flex  gap-[14px]'>
-                         
-                            <div className = 'flex flex-col gap-1 rounded-md py-[6px] px-[12px] border border-[#D1D5DC] w-full'>
-                      <p className = 'text-[12px] text-[#6A6A6A]'>
-                       Prime Rate
-                        
-                      </p>
-                      
-                                          <input 
-                                          value={DeductionRates.PrimeRates}
-                                          onChange={(e)=>{setDeductionRates({...DeductionRates,PrimeRates:e.target.value})}}
-                                          className='text-[16px] text-[#000000] font-semibold outline-none'/>
-
-
-                    </div>
-                    <div className = 'flex flex-col gap-1 rounded-md py-[6px] px-[12px] border border-[#D1D5DC] w-full'>
-                      <p className = 'text-[12px] text-[#6A6A6A]'>
-                        Spread to HELOC
-                        
-                      </p>
-                      
-                     <input
-                      value={DeductionRates.SpreadtoHELOC}
-                      onChange={(e)=>{setDeductionRates({...DeductionRates,SpreadtoHELOC:e.target.value})}}
-                      className='text-[16px] text-[#000000] font-semibold outline-none'/>
-
-                    </div>
-                     <div className = 'flex flex-col gap-1 rounded-md py-[6px] px-[12px] border border-[#D1D5DC] w-full'>
-                      <p className = 'text-[12px] text-[#6A6A6A]'>
-                       HELOC Rate
-                        
-                      </p>
-                      
-                                          <p
-                                          
-                                          className='text-[16px] text-[#000000] font-semibold outline-none'>{DeductionRates.HELOCrate}</p>
-
-
-                    </div>
-                    
-                        
-                         
-
-                        </div>
-                    </div>
-                  
-                  </div>
-
-                    <div className='border-[1px] rounded-md border-[#18A36F80] bg-gradient-to-br from-[#18A36F]/20 to-transparent w-full h-fit flex items-center justify-between'>
-                      <div className='py-[8px] sm:py-[16px] px-[6px] sm:px-[16px] '>
-                        <h1 className='text-[10px] sm:text-[13px] font-semibold'>Equity Line Of Credit</h1>
-                        <div className='flex items-baseline gap-4'>
-                          <h1 className='font-semibold text-[18px] sm:text-[24px] text-[#18A36F]'>$ {parseInt(reinvestAmount.EquityLineOfCredit).toLocaleString('en-us')}</h1> 
-                        </div>
-                      </div>
-                      <div className='py-[8px] sm:py-[16px] px-[6px] sm:px-[16px] '>
-                        <h1 className='text-[10px] sm:text-[13px]  text-[#000000CC]'>HELOC Interest Paid</h1>
-                        <div className='flex items-baseline gap-4'>
-                          <h1 className='font-semibold text-[18px] sm:text-[24px]'>$ {parseInt(reinvestAmount.HELOCInterestPaid).toLocaleString('en-us')}</h1> 
-                        </div>
-                      </div>
-                      <div className='py-[8px] sm:py-[16px] px-[6px] sm:px-[16px] '>
-                        <h1 className='text-[10px] sm:text-[13px]  text-[#000000CC]'>Reinvestment Amount</h1>
-                        <div className='flex items-baseline gap-4'>
-                          <h1 className='font-semibold text-[18px] sm:text-[24px]'>$ {parseInt(reinvestAmount.AmtToReinvest).toLocaleString('en-us')}</h1> 
-                        </div>
-                      </div>
-                    
-
-                    </div>
-                 </div>
-
-                 <div>
-                         <div className='flex items-center justify-center '>
-                          <CustomTab reinvestAmount={reinvestAmount.AmtToReinvest} annualGrowth = {AnnualGrowth} housePrice = {housePrice} />
-                         </div>
-
-                 </div>
-                </div>
-              ):
-               (
-                <div className="bg-white py-2 px-4 border border-[#cfcfd7] rounded-b-lg flex flex-col gap-4">
-                  <div className="flex-col flex gap-1">
-                    <div className="f flex  items-center justify-between ">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="p-1.5 sm:p-2 rounded-lg bg-[#6A6A6A]/10">
-                          <Home className="text-[#6A6A6A]" size={16} />
-                        </div>
-                        <h3 className="text-black text-[14px] sm:text-[15px] font-medium">
-                          Baseline
-                        </h3>
-                      </div>
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-[#6A6A6A]/10 text-[#6A6A6A] rounded-lg text-[10px] font-medium">
-                        <Clock size={10} />
-                        Do Nothing (Keep Equity in Home)
-                      </div>
-                    </div>
-                    <p className="text-[#6A6A6A] text-[11px] leading-relaxed">
-                      Your home{" "}
-                      {growth?.baseGrowth > 0 ? "appreciates" : "depreciates"}{" "}
-                      at typical {(growth?.baseGrowth / 5)?.toFixed(2)}%
-                      annually, but your equity isn't actively invested.
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-10">
-                    <div>
-                      <div className="text-black text-[18px] sm:text-[20px] font-medium">
-                        {(growth?.baseGrowth / 5)?.toFixed(2)}%
-                      </div>
-                      <div className="text-[#6A6A6A] text-[10px] sm:text-[11px] mb-1 sm:mb-1.5">
-                        Annual Rate
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-black text-[18px] sm:text-[20px] font-medium">
-                        ${parseInt((growth.baseGrowth / 100) * housePrice)}
-                      </div>
-                      <div className="text-[#6A6A6A] text-[10px] sm:text-[11px] mb-1 sm:mb-1.5">
-                        5-Year Gain
-                      </div>
-                    </div>
-                    <div className=" ">
-                      <div className="text-black text-[20px] sm:text-[22px] font-medium">
-                        $
-                        {parseInt(
-                          housePrice + (growth.baseGrowth / 100) * housePrice
-                        )}
-                      </div>
-                      <div className="text-[#6A6A6A] text-[10px] sm:text-[11px] mb-1 sm:mb-1.5">
-                        Total in 5 Years
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )} */}
+      
 
         {selectedButton === "Equity/Growth Comparison" && (
           <div className="space-y-8">
@@ -2528,7 +2107,10 @@ export function ReportPage({
             {/* Strategy Selector */}
             <div className="flex justify-start mb-8 w-full overflow-hidden  ">
               <div className="inline-flex bg-gray-50 p-1 rounded-xl border border-gray-200 relative overflow-x-auto no-scrollbar max-w-full w-full">
-                {PortfolioOptions?.map((item, i) => (
+                {PortfolioOptions?.map((item, i) => {
+
+                  const [prefix, tier] = item.value.split(" ");
+                  return(
                   <button
                     key={i}
                     onClick={() => {
@@ -2553,9 +2135,10 @@ export function ReportPage({
                         style={{ zIndex: -1 }}
                       />
                     )}
-                    {item.value}
+                  {prefix} <span className={`italic ${item.textColor}`}>{tier}</span>
                   </button>
-                ))}
+                )
+                })}
               </div>
             </div>
 
@@ -2565,13 +2148,13 @@ export function ReportPage({
               {/* Left Column: Visualization */}
               <div className="lg:col-span-8 space-y-6">
                 {/* Chart Card */}
-                <Card className="min-h-[400px] flex flex-col">
+                <Card className="min-h-[500px] flex flex-col">
                   <div className="flex justify-between items-center mb-8">
                     <h3 className="font-bold text-black flex items-center gap-2">
                       <Activity size={18} className="text-[#000]" />
                       Growth Projection (5 Years)
                     </h3>
-                    <div className="flex gap-4 text-xs font-bold">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:gap-4 text-xs font-bold">
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-[#000]" />
                         <span className="capitalize">
@@ -2591,66 +2174,7 @@ export function ReportPage({
                   <GrowthChart data = {datachart}/>
                 </Card>
 
-                {/* Summary Stats Grid */}
-                {/* <div className="grid grid-cols-3 gap-6">
-                  <Card className="bg-[#0A2540] text-white">
-                    <div
-                      className={`text-xs  uppercase tracking-wider font-bold mb-1  ${selectedPortfolio?.textColor}`}
-                    >
-                      Total in 5 Years
-                    </div>
-                    <div
-                      className={`text-2xl font-bold tracking-tight ${selectedPortfolio?.textColor}`}
-                    >
-                      {" "}
-                      $
-                    
-
-                    {selectedPortfolio?.value !== 'Custom' ?Number(selectedPortfolio?.totalassetsvalueinfiveYears).toLocaleString("en-US", {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
-      }): Number(Number(ReturnsAssets.ReturnAfterTax) + Number(housePrice)).toLocaleString("en-US", {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
-      })}
-
-
-                    </div>
-                  </Card>
-
-                  <Card>
-                    <div className="text-xs text-[#6A6A6A] uppercase tracking-wider font-bold mb-1">
-                      Your Net Gain
-                    </div>
-                    <div className="text-2xl font-bold text-[#18A36F] tracking-tight flex items-center gap-2">
-                      +$
-
-
-            {selectedPortfolio?.value !== 'Custom'? Number(selectedPortfolio?.netgainvalue)?.toLocaleString("en-us"):Number(ReturnsAssets.NetGainAfterOptimization).toLocaleString("en-US", {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
-      })}
-                      <span className="text-xs bg-green-50 text-[#18A36F] px-2 py-0.5 rounded-md border border-green-100">
-                       
-                         {selectedPortfolio?.value !== 'Custom' ?selectedPortfolio?.netgaininpercent?.toLocaleString("en-us"):parseInt(ReturnsAssets.NetGainAfterOptimizationpercent).toFixed(1)}
-                         %
-                      </span>
-                    </div>
-                  </Card>
-
-                  <Card className="flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors group">
-                    <div className="text-center">
-                      <Info
-                        size={24}
-                        className="mx-auto mb-2 text-[#005BFF] group-hover:scale-110 transition-transform"
-                      />
-                      <div className="text-xs font-bold text-[#005BFF]">
-                        What is Equity Unlock?
-                      </div>
-                    </div>
-                  </Card>
-                </div> */}
-
+           
 
                    {/* Summary Stats Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
@@ -2663,11 +2187,13 @@ export function ReportPage({
                                <div className="text-[10px] text-[#6A6A6A] uppercase tracking-wider font-bold">Estimated House Value (Yr 5)</div>
                             </div>
                             <div className="text-2xl font-bold tracking-tight text-[#0A2540] tabular-nums mb-1">
-                             ${Number(ReturnsAssets.ValueNotOptimized).toLocaleString('en-us')}
+                           
+
+                                 ${selectedPortfolio?.value !== 'Custom'?Number(selectedPortfolio?.EstimatedHousePrice).toLocaleString('en-us'):Number(ReturnsAssets?.EstimatedHousePrice).toLocaleString('en-us')}
                             </div>
                             <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-gray-100 text-[#6A6A6A] text-[10px] font-bold">
                                <span className="w-1.5 h-1.5 rounded-full bg-[#6A6A6A]" />
-                               Conservative {AnnualGrowth?.house/5 > 5 ?'25':AnnualGrowth?.house}% Growth
+                               Conservative {parseInt(AnnualGrowth?.conservativeHouseGrowth)}% Growth
                             </div>
                         </div>
                      </Card>
@@ -2678,10 +2204,10 @@ export function ReportPage({
                         <div className="relative z-10">
                             <div className="flex items-center gap-2 mb-2">
                                <TrendingUp size={16} className="text-[#fff]" />
-                               <div className="text-[10px] text-[#fff] uppercase tracking-wider font-bold opacity-90">Estimated Portfolio Value (Yr 5)</div>
+                               <div className="text-[10px] text-[#fff] uppercase tracking-wider font-bold opacity-90">Estimated Portfolio Returns (Yr 5)</div>
                             </div>
                             <div className="text-2xl font-bold tracking-tight tabular-nums mb-1 text-[#fff]">
-                               ${selectedPortfolio?.value !=='Custom' && selectedPortfolio.value!=='Baseline' ?Number(selectedPortfolio.TotalReturnsAfterTaxOptimized).toLocaleString('en-us'):selectedPortfolio.value === 'Custom' ? Number(ReturnsAssets.ReturnAfterTax).toLocaleString('en-us'):'0'}
+                               ${selectedPortfolio?.value !== 'Custom'?Number(selectedPortfolio?.PortfolioReturns).toLocaleString('en-us'):Number(ReturnsAssets?.PortfolioReturns).toLocaleString('en-us')}
                             </div>
                             <div className="text-[11px] font-medium text-[#fff] opacity-80">
                                From ${(selectedPortfolio?.value !== 'Baseline' && selectedPortfolio?.value !=='Custom')? Number(0.3375 * housePrice).toLocaleString("en-US") :selectedPortfolio?.value==='Custom'?Number(reinvestAmount.AmtToReinvest).toLocaleString("en-US"):'0'} equity unlocked
@@ -2698,9 +2224,11 @@ export function ReportPage({
                                <div className="text-[10px] text-[#166534] uppercase tracking-wider font-bold">Total Gain (5 Yr)</div>
                             </div>
                             <div className="text-2xl font-bold tracking-tight text-[#18A36F] tabular-nums mb-1">
-                             
+                             {
+                              (selectedPortfolio?.profitAfterTax < 0 || ReturnsAssets?.profitAfterTax < 0)&&'-'
+                             }
 
-                                ${selectedPortfolio?.value !=='Custom' && selectedPortfolio.value!=='Baseline' ?(Number(selectedPortfolio.TotalReturnsAfterTaxOptimized) + Number(selectedPortfolio.TotalReturnsAfterTaxNotOptimized)).toLocaleString('en-us'):selectedPortfolio.value === 'Custom' ? Number(ReturnsAssets.TotalGain).toLocaleString('en-us'):Number(ReturnsAssets.HouseReturn).toLocaleString('en-us')}
+                                ${selectedPortfolio?.value !== 'Custom'?Math.abs(Number(selectedPortfolio?.profitAfterTax)).toLocaleString('en-us'):Math.abs(Number(ReturnsAssets?.profitAfterTax)).toLocaleString('en-us')}
                             </div>
                             <div className="text-[11px] font-medium text-[#166534] flex items-center gap-1">
                                Appreciation {selectedPortfolio.value === 'Baseline' ?'':'+ Portfolio Profit'}
@@ -2770,10 +2298,22 @@ export function ReportPage({
                               </span>
                             </div>
 
+                             <div className="flex justify-between items-center text-sm">
+                              <span className="text-[#6A6A6A]">
+                                Current House Value
+                              </span>
+                              <span className="font-medium text-black">
+                                $ {Number(housePrice).toLocaleString('en-us')}
+                                      
+
+                              </span>
+                            </div>
+                            <div className="w-full h-px bg-gray-100" />
+
                             {/* 1. Equity Unlocked */}
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-[#6A6A6A]">
-                                Equity Line Of Credit (60%)
+                                Equity Line Of Credit (60% of Current House Value)
                               </span>
                               <span className="font-medium text-black">
                                 $ 
@@ -2840,8 +2380,10 @@ export function ReportPage({
                                House Appreciation Amount (5yrs) by <span className='font-bold text-[#000]'>LIAM</span>
                               </span>
                               <span className="font-medium text-black ">
+                              
+                              {(selectedPortfolio?.ReturnsFromHouse < 0 || ReturnsAssets?.ReturnsFromHouse < 0 )&& '-'}
                                 $
-                                  { Number(ReturnsAssets.HouseReturn).toLocaleString('en-us') }
+                                  {selectedPortfolio?.value !== 'Custom'?Math.abs(Number(selectedPortfolio?.ReturnsFromHouse)).toLocaleString('en-us'):Math.abs(Number(ReturnsAssets?.ReturnsFromHouse)).toLocaleString('en-us')}
 
                               </span>
                             </div>
@@ -2850,18 +2392,26 @@ export function ReportPage({
                             {/* 4. Growth Assumptions */}
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-[#6A6A6A]">
-                                Estimated Portfolio Return (5yr)
+                                Estimated Portfolio Return (5yr)(%)
                               </span>
                               <span className="font-medium text-[#005BFF] ">
                                
                                 
-                         {selectedPortfolio?.value !== 'Custom' ?Number((selectedPortfolio?.netgaininpercent)).toLocaleString("en-US", {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
-      })?.toLocaleString("en-us"):Number(ReturnsAssets.NetGainAfterOptimizationpercent).toLocaleString("en-US", {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
-      })}% p.a.
+                        {selectedPortfolio?.value !== 'Custom'?selectedPortfolio?.portfoliopercentReturn:ReturnsAssets?.portfoliopercentReturn}%
+
+                                
+                 
+                              </span>
+                            </div>
+                            <div className="w-full h-px bg-gray-100" />
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-[#6A6A6A]">
+                                Estimated Portfolio Return (5yr) 
+                              </span>
+                              <span className="font-medium text-[#005BFF] ">
+                               
+                                
+                        ${selectedPortfolio?.value !== 'Custom'?Number(selectedPortfolio?.PortfolioReturnsBeforeTax).toLocaleString('en-us'):Number(ReturnsAssets?.PortfolioReturnsBeforeTax).toLocaleString('en-us')}
 
                                 
                  
@@ -2879,13 +2429,7 @@ export function ReportPage({
                               
 
                                    
-                         {selectedPortfolio?.value !== 'Custom' ? Number(selectedPortfolio?.capitalGainsTaxPaid).toLocaleString("en-US", {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
-      }):Number(ReturnsAssets.GainsTax).toLocaleString("en-US", {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
-      })}
+                         {selectedPortfolio?.value !== 'Custom'?Number(selectedPortfolio?.CapitalGainsTax).toLocaleString('en-us'):Number(ReturnsAssets?.CapitalGainsTax).toLocaleString('en-us')}
                               </span>
                             </div>
                             <div className="w-full h-px bg-black/10" />
@@ -2902,7 +2446,7 @@ export function ReportPage({
 
 
 
-  ${selectedPortfolio?.value !=='Custom' && selectedPortfolio.value!=='Baseline' ?(Number(selectedPortfolio.TotalReturnsAfterTaxOptimized) + Number(selectedPortfolio.TotalReturnsAfterTaxNotOptimized)).toLocaleString('en-us'):selectedPortfolio.value === 'Custom' ? Number(ReturnsAssets.TotalGain).toLocaleString('en-us'):Number(ReturnsAssets.HouseReturn).toLocaleString('en-us')}
+  ${selectedPortfolio?.value !== 'Custom'?Number(selectedPortfolio?.profitAfterTax).toLocaleString('en-us'):Number(ReturnsAssets?.profitAfterTax).toLocaleString('en-us')}
 
                                 
     
@@ -2969,7 +2513,7 @@ export function ReportPage({
                           <div className="px-6 pb-6 pt-2 space-y-6">
                              
                              {/* Section 1: Chart */}
-                             <AppreciationChart/>
+                             <AppreciationChart HousePrices={HousePrices} growthRate={AnnualGrowth.house}/>
                              <div className= 'text-[12px] text-[#000] px-8 flex flex-col gap-4  p-4 sm:p-5 rounded-xl bg-gradient-to-br from-[#000]/5 to-[#000]/10 border-2 border-[#000]/60'>
                              <h1 className='font-bold text-[14px]'>How LIAM Estimates House Appreciation (LIAM - Liquidity Investment Analysis Model)</h1>
 
@@ -3000,31 +2544,7 @@ The model applies normalization and risk controls to reduce distortion from shor
                     </AnimatePresence>
                   </div>
 
-                {/* What is Equity Unlock */}
-
-                <div className="bg-gradient-to-b from-[#0A0A0A] to-[#161718] p-6 rounded-[20px] border border-blue-100 flex items-center gap-4">
-                    <img
-                    src={Equity}
-                    alt=""
-                    className="w-[20%] "
-                  />
-                  {/* <div className="min-w-[40px] h-10 rounded-full bg-[#000] flex items-center justify-center text-[#ffd400] shadow-md]">
-                    <Info size={24} />
-                  </div> */}
-                  <div>
-                    <h4 className="font-bold text-white mb-1">
-                      What is "Equity Unlock"?
-                    </h4>
-                    <p className="text-sm text-[#fff]/60 leading-relaxed">
-                      Instead of keeping all your wealth locked in your home
-                      (which grows at ~3-4% annually), you can access some
-                      equity through a HELOC or refinance, then invest it in
-                      diversified portfolios potentially earning 6-10% returns.
-                      You keep your home while your money works harder.
-                    </p>
-                  </div>
-                   
-                </div>
+               
               </div>
                 {/* Right Column: Strategy Inputs */}
               <div className="lg:col-span-4 space-y-6">
@@ -3047,7 +2567,7 @@ The model applies normalization and risk controls to reduce distortion from shor
                     </p>
                     <p className="text-xs text-[#6A6A6A] mt-1 leading-relaxed">
                       {activeButton === "Baseline"
-                        ? `Your home ${parseInt(AnnualGrowth?.house)?.toFixed(2) > 0 ? "appreciates" : "depreciates"} at typical  ${parseInt(AnnualGrowth?.house)?.toFixed(1)} %    annually, If your equity isn't actively invested.`
+                        ? `Your home ${parseInt(AnnualGrowth?.house)?.toFixed(2) > 0 ? "appreciates" : "depreciates"} at typical  ${parseInt(AnnualGrowth?.house)} %    annually, If your equity isn't actively invested.`
                         : `Your allocation may changed based on market conditions, risk profile, and our AI deployment Model.`}
                     </p>
                   </div>
@@ -3064,17 +2584,13 @@ The model applies normalization and risk controls to reduce distortion from shor
                       <div
                         className={`text-3xl font-bold tracking-tight text-[#0A2540]`}
                       >
-                        ${" "}
-                        
+                      
+                         {
+                              (selectedPortfolio?.profitAfterTax < 0 || ReturnsAssets?.profitAfterTax < 0)&&'-'
+                             }
 
 
-                        {selectedPortfolio?.value !== 'Custom' ?Number(selectedPortfolio?.projectAnnualReturn).toLocaleString("en-US", {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
-      }):Number((ReturnsAssets?.ReturnAfterTax)/5).toLocaleString("en-US", {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
-      })}
+                         ${selectedPortfolio?.value !== 'Custom'?Math.abs(parseInt(selectedPortfolio?.profitAfterTax/5)):Math.abs(parseInt(ReturnsAssets?.profitAfterTax/5))}
                         
 
                       
@@ -3162,6 +2678,32 @@ The model applies normalization and risk controls to reduce distortion from shor
                 </Card>
               </div>
             </div>
+
+             {/* What is Equity Unlock */}
+
+                <div className="bg-gradient-to-b from-[#0A0A0A] to-[#161718] p-6 rounded-[20px] border border-blue-100 flex items-center gap-4">
+                    <img
+                    src={Equity}
+                    alt=""
+                    className="w-[10%] "
+                  />
+                  {/* <div className="min-w-[40px] h-10 rounded-full bg-[#000] flex items-center justify-center text-[#ffd400] shadow-md]">
+                    <Info size={24} />
+                  </div> */}
+                  <div>
+                    <h4 className="font-bold text-white mb-1">
+                      What is "Equity Unlock"?
+                    </h4>
+                    <p className="text-sm text-[#fff]/60 leading-relaxed">
+                      Instead of keeping all your wealth locked in your home
+                      (which grows at ~3-4% annually), you can access some
+                      equity through a HELOC or refinance, then invest it in
+                      diversified portfolios potentially earning 6-10% returns.
+                      You keep your home while your money works harder.
+                    </p>
+                  </div>
+                   
+                </div>
           </div>
         )}
         {selectedButton === "Buy/Sell/Hold Intelligence" && (
@@ -3172,8 +2714,8 @@ The model applies normalization and risk controls to reduce distortion from shor
             <section className="bg-white rounded-2xl overflow-hidden shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_2px_4px_rgba(0,0,0,0.02),0_12px_24px_rgba(0,0,0,0.04)]">
               <div className="px-6 py-5 border-b border-black/[0.06] bg-gradient-to-r from-[#FAFBFC] to-white">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-[#005BFF]/10">
-                    <Target className="text-[#005BFF]" size={18} />
+                  <div className="p-2 rounded-lg bg-gradient-to-b from-[#0A0A0A] to-[#161718] shadow-black shadow-sm">
+                    <Target className="text-[white]" size={18} />
                   </div>
                   <h2 className="text-black text-[18px] sm:text-[20px] font-medium tracking-tight w-full flex items-center justify-between">
                     Buy / Sell / Hold Intelligence
@@ -3183,7 +2725,7 @@ The model applies normalization and risk controls to reduce distortion from shor
                         setScreen(4);
                         setSelectedButton("Equity/Growth Comparison");
                       }}
-                      className="bg-gradient-to-b from-[#005BFF] to-[#0047CC] hover:from-[#0052E6] text-white px-8 py-2 rounded-xl text-[14px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 w-full lg:w-auto flex items-center justify-center gap-2"
+                      className="bg-gradient-to-b from-[#0A0A0A] to-[#161718] text-white px-8 py-2 rounded-xl text-[14px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 w-full lg:w-auto flex items-center justify-center gap-2"
                     >
                       Connect To Expert Agent
                       <ChevronRight size={18} />
@@ -3252,8 +2794,8 @@ The model applies normalization and risk controls to reduce distortion from shor
             <section className="bg-white rounded-2xl overflow-hidden shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_2px_4px_rgba(0,0,0,0.02),0_12px_24px_rgba(0,0,0,0.04)]">
               <div className="px-6 py-5 border-b border-black/[0.06] bg-gradient-to-r from-[#FAFBFC] to-white">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-[#005BFF]/10">
-                    <MessageCircle className="text-[#005BFF]" size={18} />
+                  <div className="p-2 rounded-lg bg-gradient-to-b from-[#0A0A0A] to-[#161718] shadow-sm shadow-black">
+                    <MessageCircle className="text-[#fff]" size={18} />
                   </div>
                   <h2 className="text-black text-[18px] sm:text-[20px] font-medium tracking-tight">
                     Negotiation Strategy & Price Guidance
@@ -3308,7 +2850,7 @@ The model applies normalization and risk controls to reduce distortion from shor
                       </p>
                       <p
                         className={`${
-                          item.highlight ? "text-[#005BFF]" : "text-black"
+                          item.highlight ? "text-[#000]" : "text-black"
                         } text-[18px] sm:text-[20px] font-medium`}
                       >
                         {item.value}
@@ -3319,7 +2861,7 @@ The model applies normalization and risk controls to reduce distortion from shor
 
                 <div className="pt-5 border-t border-black/[0.06]">
                   <h3 className="text-black text-[15px] font-medium mb-4 flex items-center gap-2">
-                    <Target size={16} className="text-[#005BFF]" />
+                    <Target size={16} className="text-[#000]" />
                     Key Negotiation Points - Buying
                   </h3>
                   <ul className="space-y-3 text-[12px] sm:text-[13px] text-[#6A6A6A]">
@@ -3340,7 +2882,7 @@ The model applies normalization and risk controls to reduce distortion from shor
                 </div>
                 <div className="pt-5 border-t border-black/[0.06]">
                   <h3 className="text-black text-[15px] font-medium mb-4 flex items-center gap-2">
-                    <Target size={16} className="text-[#005BFF]" />
+                    <Target size={16} className="text-[#000]" />
                     Key Negotiation Points - Selling
                   </h3>
                   <ul className="space-y-3 text-[12px] sm:text-[13px] text-[#6A6A6A]">
@@ -3371,12 +2913,12 @@ The model applies normalization and risk controls to reduce distortion from shor
           <section className="bg-white rounded-2xl overflow-hidden shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_2px_4px_rgba(0,0,0,0.02),0_12px_24px_rgba(0,0,0,0.04)]">
             <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-black/[0.06] bg-gradient-to-r from-[#FAFBFC] to-white">
               <div className="flex items-center gap-3 mb-2 sm:mb-3">
-                <div className="p-2 rounded-lg bg-[#005BFF]/10">
-                  <Scale className="text-[#005BFF]" size={18} />
+                <div className="p-2 rounded-lg shadow-sm shadow-black bg-gradient-to-b from-[#0A0A0A] to-[#161718]">
+                  <Scale className="text-[#fff]" size={18} />
                 </div>
                 <h2 className="text-black text-[18px] sm:text-[20px] font-medium tracking-tight">
                   Finance-Taxes-Insurance-By LIAM{" "}
-                  <span className="text-[#0b85ff] text-[14px] sm:text-[16px]">
+                  <span className="text-gray-700 text-[14px] sm:text-[16px]">
                     -Coming Soon !
                   </span>
                 </h2>
@@ -3390,25 +2932,25 @@ The model applies normalization and risk controls to reduce distortion from shor
             <div className="p-4 sm:p-6 lg:p-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* Mortgage Rate Negotiation */}
-                <div className="p-5 rounded-xl border-2 border-[#005BFF]/20 bg-gradient-to-br from-[#005BFF]/5 to-white">
+                <div className="p-5 rounded-xl border-2 border-[#000]/20 bg-gradient-to-b from-[#0A0A0A] to-[#161718] ">
                   <div className="flex items-center gap-2 mb-3">
-                    <Landmark className="text-[#005BFF]" size={18} />
-                    <h3 className="text-black text-[15px] font-medium">
+                    <Landmark className="text-[#fff]" size={18} />
+                    <h3 className="text-white text-[15px] font-medium">
                       Refinance Opportunity
                     </h3>
                   </div>
                   <div className="space-y-3 mb-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-[#6A6A6A] text-[12px]">
+                      <span className="text-white/80 text-[12px]">
                         Current Market Rate
                       </span>
-                      <span className="text-black text-[15px] font-medium  relative">
+                      <span className="text-white text-[15px] font-medium  relative">
                         <div className="w-full h-full   rounded-md p-1 absolute bg-white/10 backdrop-blur-[2px]"></div>
                         6.75%
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-[#6A6A6A] text-[12px]">
+                      <span className="text-white/80 text-[12px]">
                         Your Potential Rate
                       </span>
                       <span className="text-[#18A36F] text-[15px] font-medium relative">
@@ -3418,7 +2960,7 @@ The model applies normalization and risk controls to reduce distortion from shor
                     </div>
                     <div className="pt-2 border-t border-black/[0.06]">
                       <div className="flex justify-between items-center">
-                        <span className="text-[#6A6A6A] text-[12px]">
+                        <span className="text-white/80 text-[12px]">
                           Potential Savings
                         </span>
                         <span className="text-[#18A36F] text-[16px] font-medium relative">
@@ -3428,8 +2970,8 @@ The model applies normalization and risk controls to reduce distortion from shor
                       </div>
                     </div>
                   </div>
-                  <div className="p-3 rounded-lg bg-[#F8FAFF]">
-                    <p className="text-[#005BFF] text-[11px]">
+                  <div className="p-3 rounded-lg ">
+                    <p className="text-[#fff] text-[11px]">
                       <span className="font-medium">Negotiation Tip:</span> Your
                       800+ credit score gives you strong leverage for rate
                       reduction.
@@ -3442,7 +2984,7 @@ The model applies normalization and risk controls to reduce distortion from shor
                       setScreen(4);
                       setSelectedButton("Equity/Growth Comparison");
                     }}
-                    className="bg-gradient-to-b from-[#005BFF] to-[#0047CC] hover:from-[#0052E6] text-white px-8 py-2 rounded-xl text-[14px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2 w-full"
+                    className="bg-gradient-to-b from-[#fff] to-[#fff] hover:from-[#fff] text-black px-8 py-2 rounded-xl text-[14px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2 w-full"
                   >
                     Connect To Refinancing Expert
                     <ChevronRight size={18} />
@@ -3450,25 +2992,25 @@ The model applies normalization and risk controls to reduce distortion from shor
                 </div>
 
                 {/* Property Tax Appeal */}
-                <div className="p-5 rounded-xl border-2 border-[#005BFF]/20 bg-gradient-to-br from-[#005BFF]/5 to-white">
+                <div className="p-5 rounded-xl border-2 border-[#000]/20 bg-gradient-to-b from-[#0A0A0A] to-[#161718]">
                   <div className="flex items-center gap-2 mb-3">
-                    <FileText className="text-[#005BFF]" size={18} />
-                    <h3 className="text-black text-[15px] font-medium">
+                    <FileText className="text-[#fff]" size={18} />
+                    <h3 className="text-white text-[15px] font-medium">
                       Tax Assessment Review
                     </h3>
                   </div>
                   <div className="space-y-3 mb-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-[#6A6A6A] text-[12px]">
+                      <span className="text-white/80 text-[12px]">
                         Current Assessment
                       </span>
-                      <span className="text-black text-[15px] font-medium relative">
+                      <span className="text-white text-[15px] font-medium relative">
                         $1,050,000
                         <div className="w-full h-full top-0   rounded-md p-1 absolute bg-white/10 backdrop-blur-[2px]"></div>
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-[#6A6A6A] text-[12px]">
+                      <span className="text-white/80 text-[12px]">
                         Neighborhood Avg
                       </span>
                       <span className="text-[#18A36F] text-[15px] font-medium relative">
@@ -3478,7 +3020,7 @@ The model applies normalization and risk controls to reduce distortion from shor
                     </div>
                     <div className="pt-2 border-t border-black/[0.06]">
                       <div className="flex justify-between items-center">
-                        <span className="text-[#6A6A6A] text-[12px]">
+                        <span className="text-white/80 text-[12px]">
                           Appeal Potential
                         </span>
                         <span className="text-[#18A36F] text-[16px] font-medium relative">
@@ -3488,8 +3030,8 @@ The model applies normalization and risk controls to reduce distortion from shor
                       </div>
                     </div>
                   </div>
-                  <div className="p-3 rounded-lg bg-[#F8FAFF]">
-                    <p className="text-[#005BFF] text-[11px]">
+                  <div className="p-3 rounded-lg ">
+                    <p className="text-[#fff] text-[11px]">
                       <span className="font-medium">Negotiation Tip:</span> 7%
                       over-assessment detected. Strong appeal case based on
                       comparable properties.
@@ -3502,7 +3044,7 @@ The model applies normalization and risk controls to reduce distortion from shor
                       setScreen(4);
                       setSelectedButton("Equity/Growth Comparison");
                     }}
-                    className="bg-gradient-to-b from-[#005BFF] to-[#0047CC] hover:from-[#0052E6] text-white px-8 py-2 rounded-xl text-[14px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2 w-full"
+                    className="bg-gradient-to-b from-[#fff] to-[#fff] hover:from-[#fff] text-black px-8 py-2 rounded-xl text-[14px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2 w-full"
                   >
                     Connect To Tax Expert
                     <ChevronRight size={18} />
@@ -3510,25 +3052,25 @@ The model applies normalization and risk controls to reduce distortion from shor
                 </div>
 
                 {/* HELOC Rate */}
-                <div className="p-5 rounded-xl border-2 border-[#005BFF]/20 bg-gradient-to-br from-[#005BFF]/5 to-white">
+                <div className="p-5 rounded-xl border-2 border-[#000]/20 bg-gradient-to-b from-[#0A0A0A] to-[#161718]">
                   <div className="flex items-center gap-2 mb-3">
-                    <BadgeDollarSign className="text-[#005BFF]" size={18} />
-                    <h3 className="text-black text-[15px] font-medium">
+                    <BadgeDollarSign className="text-[#fff]" size={18} />
+                    <h3 className="text-white text-[15px] font-medium">
                       HELOC Comparison
                     </h3>
                   </div>
                   <div className="space-y-3 mb-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-[#6A6A6A] text-[12px]">
+                      <span className="text-white/80 text-[12px]">
                         Market Average
                       </span>
-                      <span className="text-black text-[15px] font-medium relative">
+                      <span className="text-white text-[15px] font-medium relative">
                         9.25%
                         <div className="w-full h-full top-0   rounded-md p-1 absolute bg-white/10 backdrop-blur-[2px]"></div>
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-[#6A6A6A] text-[12px]">
+                      <span className="text-white/80 text-[12px]">
                         Best Available
                       </span>
                       <span className="text-[#18A36F] text-[15px] font-medium relative">
@@ -3538,7 +3080,7 @@ The model applies normalization and risk controls to reduce distortion from shor
                     </div>
                     <div className="pt-2 border-t border-black/[0.06]">
                       <div className="flex justify-between items-center">
-                        <span className="text-[#6A6A6A] text-[12px]">
+                        <span className="text-white/80 text-[12px]">
                           On $100K Line
                         </span>
                         <span className="text-[#18A36F] text-[16px] font-medium relative">
@@ -3548,8 +3090,8 @@ The model applies normalization and risk controls to reduce distortion from shor
                       </div>
                     </div>
                   </div>
-                  <div className="p-3 rounded-lg bg-[#F8FAFF]">
-                    <p className="text-[#005BFF] text-[11px]">
+                  <div className="p-3 rounded-lg ">
+                    <p className="text-[#fff] text-[11px]">
                       <span className="font-medium">Negotiation Tip:</span>{" "}
                       Multiple lenders competing in your area. Use offers to
                       negotiate better terms.
@@ -3562,7 +3104,7 @@ The model applies normalization and risk controls to reduce distortion from shor
                       setScreen(4);
                       setSelectedButton("Equity/Growth Comparison");
                     }}
-                    className="bg-gradient-to-b from-[#005BFF] to-[#0047CC] hover:from-[#0052E6] text-white px-8 py-2 rounded-xl text-[14px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2 w-full"
+                    className="bg-gradient-to-b from-[#fff] to-[#fff] hover:from-[#fff] text-black px-8 py-2 rounded-xl text-[14px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2 w-full"
                   >
                     Connect To HELOC Expert
                     <ChevronRight size={18} />
@@ -3570,25 +3112,25 @@ The model applies normalization and risk controls to reduce distortion from shor
                 </div>
 
                 {/* Insurance Quote */}
-                <div className="p-5 rounded-xl border-2 border-[#005BFF]/20 bg-gradient-to-br from-[#005BFF]/5 to-white">
+                <div className="p-5 rounded-xl border-2 border-[#000]/20 bg-gradient-to-b from-[#0A0A0A] to-[#161718]">
                   <div className="flex items-center gap-2 mb-3">
-                    <Shield className="text-[#005BFF]" size={18} />
-                    <h3 className="text-black text-[15px] font-medium">
+                    <Shield className="text-[#fff]" size={18} />
+                    <h3 className="text-white text-[15px] font-medium">
                       Insurance Shopping
                     </h3>
                   </div>
                   <div className="space-y-3 mb-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-[#6A6A6A] text-[12px]">
+                      <span className="text-white/80 text-[12px]">
                         Current Premium
                       </span>
-                      <span className="text-black text-[15px] font-medium relative">
+                      <span className="text-white text-[15px] font-medium relative">
                         $2,400/yr
                         <div className="w-full h-full top-0   rounded-md p-1 absolute bg-white/10 backdrop-blur-[2px]"></div>
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-[#6A6A6A] text-[12px]">
+                      <span className="text-white/80 text-[12px]">
                         Competitive Quote
                       </span>
                       <span className="text-[#18A36F] text-[15px] font-medium relative">
@@ -3598,7 +3140,7 @@ The model applies normalization and risk controls to reduce distortion from shor
                     </div>
                     <div className="pt-2 border-t border-black/[0.06]">
                       <div className="flex justify-between items-center">
-                        <span className="text-[#6A6A6A] text-[12px]">
+                        <span className="text-white/80 text-[12px]">
                           Annual Savings
                         </span>
                         <span className="text-[#18A36F] text-[16px] font-medium relative">
@@ -3608,8 +3150,8 @@ The model applies normalization and risk controls to reduce distortion from shor
                       </div>
                     </div>
                   </div>
-                  <div className="p-3 rounded-lg bg-[#F8FAFF]">
-                    <p className="text-[#005BFF] text-[11px]">
+                  <div className="p-3 rounded-lg ">
+                    <p className="text-[#fff] text-[11px]">
                       <span className="font-medium">Negotiation Tip:</span>{" "}
                       Leverage competitor quotes to renegotiate current policy
                       or switch providers.
@@ -3621,7 +3163,7 @@ The model applies normalization and risk controls to reduce distortion from shor
                       setScreen(4);
                       setSelectedButton("Equity/Growth Comparison");
                     }}
-                    className="bg-gradient-to-b from-[#005BFF] to-[#0047CC] hover:from-[#0052E6] text-white px-8 py-2 rounded-xl text-[14px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2 w-full"
+                    className="bg-gradient-to-b from-[#fff] to-[#fff] hover:from-[#fff] text-black px-8 py-2 rounded-xl text-[14px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2 w-full"
                   >
                     Connect To Insurance Expert
                     <ChevronRight size={18} />
@@ -3805,18 +3347,13 @@ The model applies normalization and risk controls to reduce distortion from shor
         <div className="items-stretch flex justify-center gap-2 max-[1100px]:flex-col">
           <div className="max-[1100px]:w-[100%] w-[100%] flex flex-col gap-[8px] rounded-[6px] bg-gradient-to-b from-[#0A0A0A] to-[#161718]">
             <div className="py-[12px] px-[22px] flex flex-col justify-between h-full  gap-[16px]  rounded-md">
-              <div className="flex items-center justify-center">
-                <div className="flex items-center justify-center w-[25%]">
+              <div className="flex flex-col sm:flex-row items-center justify-center">
+                <div className="flex items-center justify-center w-full sm:w-[25%]">
                   <img src={Frame} alt="" className="w-[70%]" />
                 </div>
-                {/* <div className='flex items-start justify-end w-[50%]'>
-                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full  text-[11px] font-medium mb-2 border border-[#005bff]/20  bg-gradient-to-r from-[#005bff]/10 to-[#005bff]/5 text-[#005bff] w-fit">
-              <Sparkles size={12} />
-              <span>Limited Time: Free Consultation</span>
-            </div>
-               </div> */}
+              
 
-                <div className="w-[50%] flex flex-col  gap-3 ml-4 ">
+                <div className="w-full sm:w-[50%] flex flex-col  gap-3 ml-4 ">
                   <div className="flex-1">
                     <h3 className="text-[20px] text-white sm:text-[22px] font-medium tracking-tight mb-2">
                       Unlock ${(housePrice * 0.5)?.toLocaleString("en-us")} With
@@ -3847,7 +3384,7 @@ The model applies normalization and risk controls to reduce distortion from shor
                   </div>
                 </div>
 
-                <div className="flex items-center justify-center w-[25%]">
+                <div className=" items-center justify-center w-[25%] hidden sm:flex">
                   <img
                     src={Frame1}
                     alt=""
@@ -3886,65 +3423,7 @@ The model applies normalization and risk controls to reduce distortion from shor
             </div>
           </div>
 
-          {/* <div className="max-[1100px]:w-[100%] w-[50%] flex flex-col justify-between gap-[8px] p-[12px] rounded-[6px] bg-white">
-            <div className="w-full flex items-start">
-              <div className="w-[50%]">
-                <img src={Frame1} className="w-[75%]" />
-              </div>
-              <div className="w-[50%] flex items-start justify-end  ">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full  text-[11px] font-medium mb-2 border border-[#18A36F]/20  bg-gradient-to-r from-[#18A36F]/10 to-[#18A36F]/5 text-[#18A36F]">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#18A36F] animate-pulse"></div>
-                  <span>PRO Features</span>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <div className="flex-1">
-                <h2 className="text-black text-[20px] sm:text-[22px] font-medium tracking-tight mb-2 capitalize">
-                  Need full refinance & insurance optimisation?
-                </h2>
-                <p className="text-[#6A6A6A] text-[14px] mb-4">
-                  Get deeper insights with advanced analysis and personalised
-                  recommendations.
-                </p>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
-                {[
-                  "Complete refinance analysis",
-                  "Insurance savings calculator",
-                  "HELOC strategy & rates",
-                  "Exact equity calculation",
-                ].map((feature, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center gap-2 text-[13px] text-[#6A6A6A]"
-                  >
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#18A36F]/10 flex items-center justify-center">
-                      <Check className="text-[#18A36F]" size={12} />
-                    </div>
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <Button
-                onClick={() => {
-                  window.scrollTo(0,0)
-                  setActiveButton('Custom')
-                  setSelectedButton('Equity/Growth Comparison')
-                }}
-                className="w-full  bg-gradient-to-r from-[#18A36F] to-[#18A36F] text-white px-6 py-4 rounded-xl text-[15px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
-              >
-                Get Custom Report
-                <ChevronRight size={18} />
-              </Button>
-              <p className="text-[#6A6A6A] text-[11px] text-center mt-3">
-                ✓ Instant access • ✓ Lifetime updates
-              </p>
-            </div>
-          </div> */}
+       
         </div>
       </div>
 
@@ -3954,7 +3433,7 @@ The model applies normalization and risk controls to reduce distortion from shor
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           onClick={() => setIsChatbotOpen(true)}
-          className="bg-gradient-to-b from-[#0A0A0A] to-[#161718] text-white px-6 py-4 rounded-full text-[15px] font-medium transition-all duration-200 shadow-[0_8px_24px_rgba(0,91,255,0.4)] hover:shadow-[0_12px_32px_rgba(0,91,255,0.5)] hover:scale-105 flex items-center gap-2"
+          className="bg-gradient-to-b from-[#0A0A0A] to-[#161718] text-white px-6 py-4 rounded-full text-[15px] font-medium transition-all duration-200 shadow-[0_8px_24px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.5)] hover:scale-105 flex items-center gap-2"
         >
           <Phone size={18} />
           Ask LIAM

@@ -25,7 +25,10 @@ import {CommercialErrorPopup} from '../components/CommercialErrorPopup'
 import {ErrorPopup} from '../components/ErrorPopup';
 import { trackEvent } from "../GoogleAnalytics/Analytics";
 import HouseImage from '../assets/HouseImage.jpeg'
-import HouseBanner from '../assets/Banner.png'
+import HouseBanner from '../assets/Banner2.png'
+import HomePageSection2 from "./HomePageSection2";
+import Footer from "./Footer";
+import FAQSection from "./FAQSection";
 
 interface HomePageProps {
   onGenerateReport: (
@@ -171,6 +174,8 @@ export function HomePage({
             'X-RapidAPI-Host': 'zhomes-realty-us.p.rapidapi.com'
           }
           })
+
+          console.log(response)
           
 
           // if(response.data.data?.zestimate === null) {
@@ -190,6 +195,7 @@ export function HomePage({
           }
 
         } catch (error) {
+          console.log(error)
           
           if(error.response.data.errors.address==='The input is not a detailed address'){
             setError(true);
@@ -213,15 +219,10 @@ export function HomePage({
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F7F7] relative overflow-hidden">
+    <div className="min-h-screen bg-white/60 relative overflow-hidden">
      <CommercialErrorPopup isOpen={Error} onClose={()=>setError(false)}/>
       <ErrorPopup isOpen={DataError} onClose={()=>setDataError(false)}/>
-      {/* Advanced mesh gradient background */}
-      {/* <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(0,91,255,0.08)_0%,transparent_50%),radial-gradient(circle_at_80%_80%,rgba(24,163,111,0.06)_0%,transparent_50%),radial-gradient(circle_at_50%_50%,rgba(0,91,255,0.04)_0%,transparent_50%)]"></div>
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#0A2540]/10 to-transparent"></div>
-      </div> */}
-
+     
       {/* Floating dots pattern */}
       <div
         className="fixed inset-0 pointer-events-none opacity-[0.03]"
@@ -231,15 +232,11 @@ export function HomePage({
         }}
       ></div>
 
-      {/* ProExchange.ai watermark */}
-      <div className="fixed bottom-6 right-6 text-[#6A6A6A] font-medium text-xs tracking-wider pointer-events-none z-50 opacity-20">
-        ProExchange.ai
-      </div>
 
       {/* Header */}
-      <header className="border-b border-black/[0.06] bg-white/80 backdrop-blur-xl sticky top-0 z-50">
+      <header className="border-b border-black/[0.06] bg-white/30 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex items-center justify-between">
-          <div className="text-[#757575] tracking-tight font-medium relative inline-flex items-baseline">
+          <div className="text-[#000] tracking-tight font-medium relative inline-flex items-baseline">
             <span
             >AIPropertyReport</span>
             <span
@@ -279,7 +276,7 @@ export function HomePage({
               />
             </svg>
           </div>
-          <nav className="hidden md:flex items-center gap-8 text-[#6A6A6A] text-[15px]">
+          <nav className="hidden md:flex items-center gap-8 text-[#000]/70 text-[15px]">
             <a
               href="#how-it-works"
               className="hover:text-[#000] transition-colors duration-200"
@@ -306,17 +303,17 @@ export function HomePage({
 
       {/* Hero Section */}
 
-      <img src={HouseBanner} alt="" />
+      <img src={HouseBanner} alt="" className='absolute top-0 left-0 h-[600px] sm:h-[400px] md:h-[800px] lg:h-[800px] xl:h-auto w-full object-cover'/>
   
-    <div className='flex items-center max-w-6xl mx-auto px-6 lg:px-8 pt-20 lg:pt-24 pb-16 lg:pb-14'>
-         <section className=" text-center relative w-[50%]">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-[#000] to-[#000]  border border-[#0A2540]/10 text-[#fff] text-sm mb-8 backdrop-blur-xl">
-          <div className="w-1.5 h-1.5 rounded-full bg-[#005bff] animate-pulse"></div>
+    <div className='flex flex-col items-center justify-center w-full max-w-6xl mx-auto px-6 lg:px-8 '>
+         <section className=" text-center relative flex flex-col items-center justify-center  mt-20 mb-50  xl:mb-60">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-[#000] to-[#000]  border border-[#0A2540]/10 text-[#fff] text-sm mb-3 backdrop-blur-xl max-sm:text-[10px]">
+          <div className="w-1.5 h-1.5 rounded-full bg-[#18a36f] animate-pulse"></div>
           <span>AI-Powered Property Intelligence</span>
         </div>
 
-        <h1 className="text-black mb-6 text-[42px] sm:text-[56px] lg:text-[56px] tracking-[-0.04em] relative leading-[1.1] font-[700] ">
-          Your Property Has a<br />
+        <h1 className="text-black mb-6 text-[32px] sm:text-[42px] md:text-[56px] lg:text-[56px] tracking-[-0.04em] relative leading-[1.1] font-[700] text-center flex items-center justify-center flex-col gap-1">
+          Your Property Has a
           Hidden Value.
           <br />
               <div className='flex gap-4'>
@@ -327,34 +324,34 @@ export function HomePage({
           <span className='flex'>60 <p className = 'italic text-gray-500'>s.</p></span>
               </div>
         </h1>
-        <p className="text-[#6A6A6A] text-[16px] lg:text-[16px] mb-6 max-w-2xl mx-auto leading-relaxed capitalize">
+        {/* <p className="text-[white] text-[16px] lg:text-[16px] mb-6 max-w-2xl mx-auto leading-relaxed capitalize">
          A free AI-powered report that uncovers your home’s real market value, tappable equity, and how unused capital could perform across diversed assets.
-        </p>
-        <p className="text-black text-[21px] lg:text-[20px] mb-12 font-semibold tracking-tight capitalize">
+        </p> */}
+        {/* <p className="text-black text-[21px] lg:text-[20px] mb-12 font-semibold tracking-tight capitalize">
           Your Home Isn’t Just a Place to Live - It’s a Powerful Financial Engine - Let's Activate It !
-        </p>
+        </p> */}
 
       
       </section>
 
-      <section className='w-[50%]'>
+      {/* <section className='w-[50%]'>
         <img src={HouseImage} alt="" />
-      </section>
+      </section> */}
     </div>
      
 
-     <div className='flex flex-col items-center max-w-6xl mx-auto w-full mb-10'>
+     <div className='flex flex-col items-center max-w-6xl mx-auto w-full mb-10 p-2 md:p-0'>
         {/* Address Input */}
-        <form className="mb-8 w-full">
+        <form className="mb-8 w-full  backdrop-blur-lg rounded-[18px] p-4">
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr,400px] gap-6 items-start">
             {/* Left: Address Input */}
             <div className="space-y-4">
               <div className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#000] to-[#000] rounded-[20px] opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 blur-sm transition-opacity duration-500"></div>
+                
 
-                <div className="relative bg-white rounded-[18px] shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_2px_4px_rgba(0,0,0,0.02),0_12px_24px_rgba(0,0,0,0.04)] group-focus-within:shadow-[0_0_0_1px_rgba(0,91,255,0.2),0_8px_16px_rgba(0,91,255,0.08),0_24px_48px_rgba(0,91,255,0.12)] transition-all duration-300">
+                <div className="relative bg-white/70 rounded-[18px] shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_2px_4px_rgba(0,0,0,0.02),0_12px_24px_rgba(0,0,0,0.04)] group-focus-within:shadow-[0_0_0_1px_rgba(0,0,0,0.2),0_8px_16px_rgba(0,0,0,0.08),0_24px_48px_rgba(0,0,0,0.12)] transition-all duration-300 relative py-2">
                   <MapPin
-                    className={`absolute left-5 top-1/2 -translate-y-1/2   transition-colors z-10 ${emtpyError?'text-red-500':'text-[#6A6A6A] group-focus-within:text-[#0A2540]'}`}
+                    className={`absolute left-5 top-1/2 -translate-y-1/2   transition-colors z-10 ${emtpyError?'text-red-500':'text-[#000] group-focus-within:text-[#0A2540]'}`}
                     size={20}
                   />
                   <input
@@ -363,8 +360,22 @@ export function HomePage({
                     onChange={(e) => setAddress(e.target.value)}
                     onKeyDown = {(e)=>{handleEnterPress(e)}}
                     placeholder={emtpyError?'Please Enter an Address':'Enter any U.S. property address'}
-                    className={`w-full pl-14 pr-6 py-5 bg-transparent border-0 rounded-[18px] focus:outline-none text-black  text-[15px] relative ${emtpyError?'placeholder:text-red-500':'placeholder:text-[#6A6A6A]'} `}
+                    className={`w-full pl-14 pr-6 py-3 sm:py-5 bg-transparent border-0 rounded-[18px] focus:outline-none text-black  text-[15px] relative ${emtpyError?'placeholder:text-red-500':'placeholder:text-[#6A6A6A]'} `}
                   />
+
+                   <Button
+              onClick={()=>{
+                handleSubmit()
+                  trackEvent("Report Generate Button Click", {
+      location: "Homepage",
+    })
+              }}
+                type="button"
+                className="w-fit bg-gradient-to-b from-gray-700 to-gray-800 hover:from-[#000] hover:to-[#000] text-white px-8 py-3 hidden sm:flex rounded-[18px]  items-center justify-center gap-2 transition-all duration-200 h-auto shadow-[0_1px_2px_rgba(0,0,0,0.12),0_8px_16px_rgba(0,0,0,0.24)] hover:shadow-[0_1px_2px_rgba(0,0,0,0.16),0_16px_32px_rgba(0,0,0,0.32)]   text-[15px] font-medium absolute top-[50%] translate-y-[-50%] right-3"
+              >
+                {loading?'Fetching Report...':'Get My AI Report'}
+                {/* <ChevronRight size={20} /> */}
+              </Button>
                 </div>
 
                 
@@ -378,15 +389,15 @@ export function HomePage({
     })
               }}
                 type="button"
-                className="w-full bg-gradient-to-b from-gray-700 to-gray-800 hover:from-[#000] hover:to-[#000] text-white px-8 py-6 rounded-[18px] flex items-center justify-center gap-2 transition-all duration-200 h-auto shadow-[0_1px_2px_rgba(0,0,0,0.12),0_8px_16px_rgba(0,0,0,0.24)] hover:shadow-[0_1px_2px_rgba(0,0,0,0.16),0_16px_32px_rgba(0,0,0,0.32)] hover:translate-y-[-1px] active:translate-y-0 text-[15px] font-medium"
+                className="w-full sm:hidden  bg-gradient-to-b from-gray-700 to-gray-800 hover:from-[#000] hover:to-[#000] text-white sm:px-8 px-4 py-4  rounded-[18px] flex items-center justify-center gap-2 transition-all duration-200 h-auto shadow-[0_1px_2px_rgba(0,0,0,0.12),0_8px_16px_rgba(0,0,0,0.24)] hover:shadow-[0_1px_2px_rgba(0,0,0,0.16),0_16px_32px_rgba(0,0,0,0.32)] hover:translate-y-[-1px] active:translate-y-0 text-[15px] font-medium z-[99]"
               >
-                {loading?'Get My AI Report...':'Get My AI Report'}
+                {loading?'Fetching Report...':'Get My AI Report'}
                 <ChevronRight size={20} />
               </Button>
             </div>
 
             {/* Right: Map Selection */}
-            <div className="bg-white/90 backdrop-blur-xl border border-[#ECECEC]/60 rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.06)]">
+            <div className="bg-white/60 backdrop-blur-xl border border-[#ECECEC]/60 rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.06)]">
               <div className="p-3 sm:p-4 border-b border-[#ECECEC]/50 flex items-center justify-between">
                 <span className="text-[#6A6A6A] text-xs sm:text-sm">
                   Or select on map
@@ -407,7 +418,7 @@ export function HomePage({
                   className="text-[#0A2540] hover:text-[#0A2540] text-xs flex items-center gap-1.5 h-auto py-1.5 px-2 sm:px-3"
                 >
                   <Navigation size={14} />
-                  <span className="hidden sm:inline">Use My Location</span>
+                  <span className="hidden sm:inline text-black">Use My Location</span>
                   <span className="sm:hidden">GPS</span>
                 </Button>
               </div>
@@ -422,12 +433,12 @@ export function HomePage({
           </div>
         </form>
 
-        <p className="text-[#6A6A6A] text-xs mb-4 sm:mb-5 opacity-70">
+        {/* <p className="text-[#6A6A6A] text-xs mb-0 sm:mb-5 opacity-70">
           No login · Uses live county tax records · Voided after 30 seconds
-        </p>
+        </p> */}
 
         {/* Property Type Toggle */}
-        <div className="flex items-center justify-center gap-2 sm:gap-1 bg-[#F7F7F7]/80 backdrop-blur-sm border border-[#ECECEC]/50 rounded-full p-1.5 inline-flex shadow-sm">
+        {/* <div className="flex items-center justify-center gap-2 sm:gap-1 bg-[#F7F7F7]/80 backdrop-blur-sm border border-[#ECECEC]/50 rounded-full p-1.5 inline-flex shadow-sm">
           <label
             className="flex items-center gap-2 sm:gap-2.5 cursor-pointer px-4 sm:px-6 py-2 sm:py-2.5 rounded-full transition-all duration-300 hover:bg-white/50"
             style={{
@@ -487,18 +498,18 @@ export function HomePage({
               </span>
             </span>
           </label>
-        </div>
+        </div> */}
      </div>
 
-   
+      <HomePageSection2/>
       {/* Intelligence Cards */}
-      <IntelligenceCards />
+      {/* <IntelligenceCards /> */}
 
       {/* Sample Report Preview */}
       <SampleReportPreview />
 
       {/* How It Works */}
-      <HowItWorks />
+      {/* <HowItWorks /> */}
 
       {/* Social Proof */}
       {/* <SocialProof /> */}
@@ -589,42 +600,42 @@ export function HomePage({
       {/* Final CTA */}
       <section className="relative py-24 lg:py-32 overflow-hidden">
         {/* Advanced mesh gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#FAFBFC] via-white to-[#F5F8FF]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(0,91,255,0.12)_0%,transparent_40%),radial-gradient(circle_at_80%_70%,rgba(24,163,111,0.08)_0%,transparent_40%),radial-gradient(circle_at_50%_50%,rgba(0,91,255,0.06)_0%,transparent_60%)]"></div>
+        {/* <div className="absolute inset-0 bg-gradient-to-br from-[#FAFBFC] via-white to-[#F5F8FF]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(0,91,255,0.12)_0%,transparent_40%),radial-gradient(circle_at_80%_70%,rgba(24,163,111,0.08)_0%,transparent_40%),radial-gradient(circle_at_50%_50%,rgba(0,91,255,0.06)_0%,transparent_60%)]"></div> */}
 
         {/* Floating orbs */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-[#005BFF]/5 rounded-full blur-3xl animate-pulse"></div>
+        {/* <div className="absolute top-20 left-10 w-72 h-72 bg-[#005BFF]/5 rounded-full blur-3xl animate-pulse"></div>
         <div
           className="absolute bottom-20 right-10 w-96 h-96 bg-[#18A36F]/5 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: "1s" }}
-        ></div>
+        ></div> */}
 
         {/* Grid pattern overlay */}
-        <div
+        {/* <div
           className="absolute inset-0 opacity-[0.015]"
           style={{
             backgroundImage:
               "linear-gradient(rgba(0,0,0,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.5) 1px, transparent 1px)",
             backgroundSize: "48px 48px",
           }}
-        ></div>
+        ></div> */}
 
         <div className="max-w-5xl mx-auto px-6 lg:px-8 relative z-10">
           {/* Badge */}
           <div className="flex justify-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-xl border border-black/[0.06] shadow-[0_0_0_1px_rgba(255,255,255,0.5)_inset,0_8px_16px_rgba(0,0,0,0.06)]">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-b from-[#0A0A0A] to-[#161718] border border-black ">
               <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#005BFF] to-[#18A36F] animate-pulse"></div>
-              <span className="text-[#6A6A6A] text-[13px] font-medium tracking-wide">
+              <span className="text-[#fff] text-[13px] font-medium tracking-wide">
                 FREE · NO LOGIN · INSTANT
               </span>
             </div>
           </div>
 
           {/* Main heading */}
-          <h2 className="text-black text-[44px] lg:text-[56px] mb-6 tracking-[-0.03em] text-center font-[500] leading-[1.1]">
+          <h2 className="text-black text-[44px] lg:text-[56px] mb-6 tracking-[-0.03em] text-center font-[500] leading-[1.1] ">
             Ready to Unlock Your
-            <br />
-            <span className="bg-gradient-to-r from-[#005BFF] via-[#0066FF] to-[#18A36F] bg-clip-text text-transparent">
+          
+            <span className="bg-gradient-to-r from-gray-800 via-gray-600 to-gray-500 bg-clip-text text-transparent ml-2">
               Property Intelligence?
             </span>
           </h2>
@@ -635,10 +646,10 @@ export function HomePage({
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
             <Button
               onClick={() => document.querySelector("input")?.focus()}
-              className="group relative bg-gradient-to-b from-[#005BFF] to-[#0047CC] hover:from-[#0052E6] hover:to-[#003DB8] text-white px-10 py-6 rounded-[20px] inline-flex items-center gap-3 transition-all duration-200 shadow-[0_0_0_1px_rgba(255,255,255,0.1)_inset,0_1px_2px_rgba(0,0,0,0.12),0_12px_24px_rgba(0,91,255,0.3)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2)_inset,0_1px_2px_rgba(0,0,0,0.16),0_20px_40px_rgba(0,91,255,0.4)] hover:translate-y-[-2px] active:translate-y-0 text-[16px] font-medium"
+              className="group relative bg-gradient-to-b from-[#0A0A0A] to-[#161718] text-white px-10 py-6 rounded-[20px] inline-flex items-center gap-3 transition-all duration-200 shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_1px_2px_rgba(0,0,0,0.12),0_12px_24px_rgba(0,0,0,0.3)] hover:shadow-[0_0_0_1px_rgba(0,0,0,0.2)_inset,0_1px_2px_rgba(0,0,0,0.16),0_20px_40px_rgba(0,0,0,0.4)] hover:translate-y-[-2px] active:translate-y-0 text-[16px] font-medium"
             >
               <span>Get My Free Report</span>
               <ChevronRight
@@ -665,9 +676,9 @@ export function HomePage({
           {/* Trust indicators - Bento grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 max-w-4xl mx-auto">
             <div className="bg-white/60 backdrop-blur-xl border border-black/[0.06] rounded-3xl p-6 lg:p-8 shadow-[0_0_0_1px_rgba(255,255,255,0.5)_inset,0_8px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.8)_inset,0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-300 group hover:scale-[1.02]">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#005BFF]/10 to-[#005BFF]/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-b from-[#0A0A0A] to-[#161718] shadow-md shadow-black flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200">
                 <FileText
-                  className="text-[#005BFF]"
+                  className="text-[#fff]"
                   size={24}
                   strokeWidth={1.5}
                 />
@@ -681,8 +692,8 @@ export function HomePage({
             </div>
 
             <div className="bg-white/60 backdrop-blur-xl border border-black/[0.06] rounded-3xl p-6 lg:p-8 shadow-[0_0_0_1px_rgba(255,255,255,0.5)_inset,0_8px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.8)_inset,0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-300 group hover:scale-[1.02]">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#18A36F]/10 to-[#18A36F]/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200">
-                <Lock className="text-[#18A36F]" size={24} strokeWidth={1.5} />
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-b from-[#0A0A0A] to-[#161718] shadow-md shadow-black flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200">
+                <Lock className="text-[#fff]" size={24} strokeWidth={1.5} />
               </div>
               <h3 className="text-black text-[17px] font-medium mb-2">
                 100% Private
@@ -693,20 +704,8 @@ export function HomePage({
             </div>
 
             <div className="bg-white/60 backdrop-blur-xl border border-black/[0.06] rounded-3xl p-6 lg:p-8 shadow-[0_0_0_1px_rgba(255,255,255,0.5)_inset,0_8px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.8)_inset,0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-300 group hover:scale-[1.02]">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#005BFF]/10 to-[#18A36F]/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200">
-                <svg
-                  className="w-6 h-6 text-[#005BFF]"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"
-                  />
-                </svg>
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-b from-[#0A0A0A] to-[#161718] shadow-md shadow-black flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200 text-white">
+                <BrainCircuit />
               </div>
               <h3 className="text-black text-[17px] font-medium mb-2">
                 AI-Powered
@@ -718,13 +717,14 @@ export function HomePage({
           </div>
         </div>
       </section>
-
-      {/* Footer */}
+      <FAQSection/>
+      {/* Footer
       <footer className="border-t border-[#ECECEC]/50 py-10 bg-white">
         <div className="max-w-7xl mx-auto px-6 text-center text-[#6A6A6A] text-sm">
           © 2026 AIPropertyReport.com · Powered by ProExchange
         </div>
-      </footer>
+      </footer> */}
+      <Footer/>
     </div>
   );
 }

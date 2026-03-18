@@ -1,21 +1,94 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
-const data = [
-  { year: '2019', value: 850000 },
-  { year: '2020', value: 890000 },
-  { year: '2021', value: 980000 },
-  { year: '2022', value: 1100000 },
-  { year: '2023', value: 1150000 },
-  { year: '2024', value: 1250000, projected: true }, // Current year roughly
-  { year: '2025', value: 1320000, projected: true },
-  { year: '2026', value: 1400000, projected: true },
-  { year: '2027', value: 1480000, projected: true },
-  { year: '2028', value: 1580000, projected: true },
-  { year: '2029', value: 1690000, projected: true },
-];
 
-export const AppreciationChart: React.FC = () => {
+export const AppreciationChart: React.FC = ({HousePrices,growthRate}) => {
+  console.log(growthRate)
+  console.log(HousePrices)
+
+  
+
+
+  const [data, setData] = useState([]);
+
+useEffect(() => {
+  if (!HousePrices?.length) return;
+
+  const now = new Date();
+
+  // Build lookup map
+  const priceMap = new Map();
+
+  HousePrices.forEach((item) => {
+    const d = new Date(item?.x);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    priceMap.set(key, Number(item?.y));
+  });
+
+  // fallback finder (search previous months if exact month missing)
+  const getClosePrice = (yearOffset) => {
+    let year = now.getFullYear() - yearOffset;
+    let month = now.getMonth() + 1;
+
+    while (year >= 1900) {
+      const key = `${year}-${String(month).padStart(2, "0")}`;
+
+      if (priceMap.has(key)) {
+        return priceMap.get(key);
+      }
+
+      month--;
+
+      if (month === 0) {
+        month = 12;
+        year--;
+      }
+    }
+
+    return null;
+  };
+
+  // limit growth rate
+  let houseGrowthModified = growthRate;
+  if (growthRate > 5) houseGrowthModified = 5;
+  if (growthRate < -2) houseGrowthModified = -2;
+
+  const basePrice = getClosePrice(0);
+
+  if (!basePrice) return;
+
+  const result = [];
+
+  // past 5 years
+  for (let i = 5; i > 0; i--) {
+    result.push({
+      year: now.getFullYear() - i,
+      value: getClosePrice(i),
+    });
+  }
+
+  // current year
+  result.push({
+    year: now.getFullYear(),
+    value: basePrice,
+    projected: true,
+  });
+
+  // future projections
+  for (let i = 1; i <= 5; i++) {
+    result.push({
+      year: now.getFullYear() + i,
+      value: basePrice * (1 + houseGrowthModified / 100) ** i,
+      projected: true,
+    });
+  }
+
+  setData(result);
+
+}, [HousePrices, growthRate]);
+
+
+
   return (
     <div className="w-full h-[300px]">
       <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
@@ -46,7 +119,7 @@ export const AppreciationChart: React.FC = () => {
             itemStyle={{ color: '#005BFF' }}
             formatter={(value: number) => [`$${value.toLocaleString()}`, 'Value']}
           />
-          <ReferenceLine x="2024" stroke="#000" strokeDasharray="3 3" label={{ position: 'top', value: 'Today', fill: '#9CA3AF', fontSize: 12 }} />
+          <ReferenceLine x={new Date().getFullYear()} stroke="#000" strokeDasharray="3 3" label={{ position: 'top', value: 'Today', fill: '#9CA3AF', fontSize: 12 }} />
           <Line 
             type="monotone" 
             dataKey="value" 

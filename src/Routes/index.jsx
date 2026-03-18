@@ -68,6 +68,8 @@ import { MortgageSupport } from "../components/AllAdminPortals/MortgagePartnerPo
 import { MortgageSettings } from "../components/AllAdminPortals/MortgagePartnerPortal/screens/MortgageSettings";
 import LeadManagerPortal from "../components/AllAdminPortals/LeadManangerPortal/LeadManangerPortal";
 import { FunnelFlow } from "../components/AllAdminPortals/UserDashboard/FunnelFlow";
+import { UserLoginScreen } from "../components/auth/UserLoginScreen";
+import UserDashboardNew from "../components/AllAdminPortals/UserDashboardNew/UserDashboardNew";
 const Routers = createBrowserRouter([
   {
     path: "/",
@@ -272,7 +274,11 @@ const Routers = createBrowserRouter([
   },
   {
     path:'/userDashboard',
-    element:<FunnelFlow/>
+    element:<UserDashboardNew/>
+  },
+  {
+    path:'/userLoginScreen',
+    element:<UserLoginScreen/>
   }
 ]);
 
