@@ -84,6 +84,7 @@ useEffect(() => {
   }
 
   setData(result);
+  
 
 }, [HousePrices, growthRate]);
 

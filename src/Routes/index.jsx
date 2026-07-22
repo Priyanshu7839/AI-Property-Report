@@ -70,6 +70,25 @@ import LeadManagerPortal from "../components/AllAdminPortals/LeadManangerPortal/
 import { FunnelFlow } from "../components/AllAdminPortals/UserDashboard/FunnelFlow";
 import { UserLoginScreen } from "../components/auth/UserLoginScreen";
 import UserDashboardNew from "../components/AllAdminPortals/UserDashboardNew/UserDashboardNew";
+import { UserDashboardLogin } from "../components/AllAdminPortals/UserDashboardNew/UserDashboardLogin";
+import { HouseAddition } from "../components/AllAdminPortals/UserDashboardNew/HouseAddition";
+import AddPropertyFlow from "../components/AllAdminPortals/UserDashboardNew/AddPropertyFlow";
+import LiamHomepage from "../LIAM/LiamHomepage";
+import LIAMConversation from "../LIAM/LIAMConversation";
+import Login from "../LOGIN/login";
+import LoginHome from "../LOGIN/LoginHome";
+import Signup from "../LOGIN/Signup";
+import LIAMNetworkFlow from "../LIAM/LIAMNetwork/LIAMNetworkFlow";
+import AddPropertyForm from "../LIAM/AddProperty/AddPropertyForm";
+import MyProperties from "../LIAM/MyProperties/MyProperties";
+import PropertyDetail from "../components/AllAdminPortals/UserDashboardNew/PropertyDetail";
+import PropertyDetails from "../LIAM/MyProperties/PropertyDetails";
+import CreateAlerts from "../LIAM/MyProperties/CreateAlerts";
+import AddProperty from "../LIAM/AddProperty/AddProperty";
+import LIAMlayout from "../Layout/LIAMlayout";
+import { elements } from "chart.js";
+import CompleteProfile from "../LOGIN/CompleteProfile";
+import LIAMSplashScreen from "../LIAM/LIAMSplashScreen";
 const Routers = createBrowserRouter([
   {
     path: "/",
@@ -273,13 +292,83 @@ const Routers = createBrowserRouter([
     ],
   },
   {
+    path:'/userDashboardlogin',
+    element:<UserDashboardLogin/>
+  },
+
+  {
     path:'/userDashboard',
     element:<UserDashboardNew/>
   },
   {
     path:'/userLoginScreen',
     element:<UserLoginScreen/>
+  },
+  {
+    path:'/add',
+    element:<AddPropertyFlow/>
+  },
+  {
+    path:'/AskLIAM/LoginHome',
+    element:<LoginHome/>
+  },
+  {
+        path:'/AskLIAM/Signup',
+      element:<Signup/>
+    },
+      {
+        path:'/AskLIAM/SignIn',
+      element:<Login/>
+    },
+      {
+        path:'/AskLIAM/Complete-Profile',
+      element:<CompleteProfile/>
+    },
+   
+  {
+    path:'/AskLIAM',
+    element:<LIAMlayout/>,
+    children:[
+   
+      
+    {
+      path:'/AskLIAM/Home',
+      element:<LiamHomepage/>
+      
+    },
+    {
+      path:'/AskLIAM/LIAMConversation',
+      element:<LIAMConversation/>
+    },
+    {
+      path:'/AskLIAM/AddProperty',
+      element:<AddProperty/>
+    },
+    {
+      path:'/AskLIAM/AddPropertyForm',
+      element:<AddPropertyForm/>
+    },
+    {
+      path:'/AskLIAM/MyProperties',
+      element:<MyProperties/>
+    },
+    {
+      path:'/AskLIAM/PropertyDetails',
+      element:<PropertyDetails/>
+    },
+    {
+      path:'/AskLIAM/CreateAlerts',
+      element:<CreateAlerts/>
+    },
+    {
+      path:'/AskLIAM/LIAMNetwork',
+      element:<LIAMNetworkFlow/>
+    },
+    
+
+    ]
   }
+
 ]);
 
 export default Routers;

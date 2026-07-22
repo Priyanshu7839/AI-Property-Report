@@ -16,70 +16,28 @@ export interface Property {
   riskScore: 'Low' | 'Medium' | 'High';
 }
 
+
+
 export const properties: Property[] = [
   {
-    id: '1',
-    address: '1240 Waverley St',
-    city: 'Palo Alto',
-    state: 'CA',
-    image: 'https://images.unsplash.com/photo-1600596542815-e32870110029?ixlib=rb-4.1.0&auto=format&fit=crop&w=800&q=80',
-    valuation: 4250000,
-    equity: 1850000,
+    id: 1,
+    image: "https://images.unsplash.com/photo-1622015663319-e97e697503ee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBsdXh1cnklMjBob21lJTIwZXh0ZXJpb3IlMjBhcmNoaXRlY3R1cmV8ZW58MXx8fHwxNzcxMTY1NDQ1fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    address: "1248 Oakwood Avenue, Palo Alto, CA",
+    valuation: "$3,450,000",
+    equity: "$1,200,000",
     confidence: 94,
-    lastUpdated: 'Feb 14, 2026',
-    purchasePrice: 3100000,
-    mortgageBalance: 2400000,
-    monthlyRent: 14500,
-    expenseRatio: 0.32,
-    riskScore: 'Low'
+    lastUpdated: "2 days ago",
+    status: "Active"
   },
   {
-    id: '2',
-    address: '88 King St, Unit 402',
-    city: 'San Francisco',
-    state: 'CA',
-    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.1.0&auto=format&fit=crop&w=800&q=80',
-    valuation: 1150000,
-    equity: 420000,
-    confidence: 89,
-    lastUpdated: 'Feb 12, 2026',
-    purchasePrice: 980000,
-    mortgageBalance: 730000,
-    monthlyRent: 4800,
-    expenseRatio: 0.45,
-    riskScore: 'Medium'
-  },
-  {
-    id: '3',
-    address: '2200 Westlake Ave',
-    city: 'Seattle',
-    state: 'WA',
-    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.1.0&auto=format&fit=crop&w=800&q=80',
-    valuation: 2850000,
-    equity: 950000,
-    confidence: 91,
-    lastUpdated: 'Feb 10, 2026',
-    purchasePrice: 2100000,
-    mortgageBalance: 1900000,
-    monthlyRent: 8200,
-    expenseRatio: 0.28,
-    riskScore: 'Low'
-  },
-  {
-    id: '4',
-    address: '4505 Highland Dr',
-    city: 'Austin',
-    state: 'TX',
-    image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.1.0&auto=format&fit=crop&w=800&q=80',
-    valuation: 1650000,
-    equity: 650000,
+    id: 2,
+    image: "https://images.unsplash.com/photo-1559329146-807aff9ff1fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBhcGFydG1lbnQlMjBidWlsZGluZyUyMGV4dGVyaW9yfGVufDF8fHx8MTc3MTEwNjM1N3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    address: "850 Folsom Street, Unit 4B, San Francisco, CA",
+    valuation: "$1,850,000",
+    equity: "$450,000",
     confidence: 88,
-    lastUpdated: 'Feb 08, 2026',
-    purchasePrice: 1200000,
-    mortgageBalance: 1000000,
-    monthlyRent: 6500,
-    expenseRatio: 0.35,
-    riskScore: 'Medium'
+    lastUpdated: "5 hours ago",
+    status: "Review"
   },
 ];
 

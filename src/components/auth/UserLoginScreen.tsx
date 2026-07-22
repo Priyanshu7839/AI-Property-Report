@@ -35,7 +35,7 @@ import {
 import { ImageWithFallback } from "../../components/figma/ImageWithFallback";
 import Logo from "../../assets/House.jpeg";
 import Banner from "../assets/IMG/Banner.png";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { CreateUser, LoginUser } from "../apicalls/ApiCalls";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
@@ -103,6 +103,10 @@ export function UserLoginScreen({
 
   const [signingIn, setSigningIn] = useState(false);
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams()
+  const redirect = searchParams.get('redirect')
+  const address = searchParams.get('address')
+ 
   const SignInUser = async () => {
     if (formData.email === "" || formData.password === "") {
       return;
@@ -123,7 +127,15 @@ export function UserLoginScreen({
           email:user.email
       }))
       
-      navigate(-1);
+     if(redirect) {
+      navigate(`/Report?address=${address}&redirect=true`)
+     
+
+     }
+     else{
+      navigate('/userDashboard')
+     
+     }
 
 
 

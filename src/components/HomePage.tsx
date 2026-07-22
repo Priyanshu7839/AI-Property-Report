@@ -9,6 +9,9 @@ import {
   BrainCircuit,
   CheckCheck,
   ArrowLeft,
+  Menu,
+  Phone,
+  X,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { IntelligenceCards } from "./IntelligenceCards";
@@ -29,6 +32,9 @@ import HouseBanner from '../assets/Banner2.png'
 import HomePageSection2 from "./HomePageSection2";
 import Footer from "./Footer";
 import FAQSection from "./FAQSection";
+import { useSelector } from "react-redux";
+import { ChatbotModal } from "./ChatbotModal";
+import { supabase } from "../Utils/Supabase";
 
 interface HomePageProps {
   onGenerateReport: (
@@ -45,6 +51,11 @@ export function HomePage({
   onShowMethodology,
   onShowSampleReport,
 }: HomePageProps) {
+
+  const UserDetails = useSelector((state) => state.UserDetails);
+
+
+ 
   const [address, setAddress] = useState("");
   const [propertyType, setPropertyType] = useState<
     "residential" | "commercial"
@@ -76,7 +87,7 @@ export function HomePage({
             headers: {
               " x-rapidapi-host": "trueway-geocoding.p.rapidapi.com",
               "x-rapidapi-key":
-                "d3cfd720b6msh644a12c2e9f2d08p186288jsn9c9392aa203b",
+                "a48bfbafb3msh42b1f23858b4dd2p127af3j5dc6836da5a",
             },
           }
         );
@@ -102,7 +113,7 @@ export function HomePage({
             headers: {
               " x-rapidapi-host": "trueway-geocoding.p.rapidapi.com",
               "x-rapidapi-key":
-                "d3cfd720b6msh644a12c2e9f2d08p186288jsn9c9392aa203b",
+                "a48bfbafb3msh42b1f23858b4dd2p127af3j5dc6836da5a",
             },
           }
         );
@@ -134,7 +145,7 @@ export function HomePage({
           headers: {
             " x-rapidapi-host": "trueway-geocoding.p.rapidapi.com",
             "x-rapidapi-key":
-              "d3cfd720b6msh644a12c2e9f2d08p186288jsn9c9392aa203b",
+              "a48bfbafb3msh42b1f23858b4dd2p127af3j5dc6836da5a",
           },
         }
       );
@@ -170,13 +181,13 @@ export function HomePage({
         try {
           const response = await axios.get(`https://zhomes-realty-us.p.rapidapi.com/properties/search-address?address=${address}`,{
             headers:{
-            'X-RapidAPI-Key': '69953a3276msh1fffb8e07d13516p11031ejsnfd55185a907e',
+            'X-RapidAPI-Key': 'a48bfbafb3msh42b1f23858b4dd2p127af3jsne5dc6836da5a',
             'X-RapidAPI-Host': 'zhomes-realty-us.p.rapidapi.com'
           }
           })
 
           console.log(response)
-          
+        
 
           // if(response.data.data?.zestimate === null) {
           // setDataError(true)
@@ -218,6 +229,27 @@ export function HomePage({
     }
   };
 
+
+  const [showMenu,setShowMenu] = useState(false)
+
+    // /*----------------------------Chat bot Funtion-----------------------------------------------------
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const [chatbotMode, setChatbotMode] = useState<span
+    | "general"
+    | "schedule-call"
+    | "advisor"
+    | "strategy-session"
+    | "apply-strategy"
+  >("general");
+
+  const openChatbot = (mode: typeof chatbotMode, strategyName?: string) => {
+    setChatbotMode(mode);
+    setIsChatbotOpen(true);
+  };
+
+   
+  // /*-----------------------------------------------------------------------------------------------------
+
   return (
     <div className="min-h-screen bg-white/60 relative overflow-hidden">
      <CommercialErrorPopup isOpen={Error} onClose={()=>setError(false)}/>
@@ -234,7 +266,7 @@ export function HomePage({
 
 
       {/* Header */}
-      <header className="border-b border-black/[0.06] bg-white/30 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b border-black/[0.06] bg-white/30 backdrop-blur-sm sticky top-0 z-50 ">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="text-[#000] tracking-tight font-medium relative inline-flex items-baseline">
             <span
@@ -297,7 +329,83 @@ export function HomePage({
             >
               Partners
             </span>
+
+              <Button
+                onClick={() => {
+                if(UserDetails.loggedIn){
+               navigate('/userDashboard')
+
+                }else{
+                   navigate('/userLoginScreen')
+                }
+
+                }}
+                className="w-fit text-white  bg-gradient-to-b from-[#0A0A0A] to-[#161718] px-6 py-4 rounded-xl text-[15px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
+              >
+              {
+                UserDetails.loggedIn ?'View Dashboard':'SignIn'
+              }
+                {/* <ChevronRight size={18} /> */}
+              </Button>
           </nav>
+
+
+          <div className=' md:hidden flex'
+          onClick={()=>{
+            setShowMenu(!showMenu)
+          }}
+          >
+            <Menu/> 
+
+          <div className={` w-[200px] absolute top-1 right-0 transition-height duration-150 bg-black backdrop-blur-3xl rounded-md  ${showMenu?'h-auto p-[1rem] pt-[2rem]':'h-0 p-0 overflow-hidden'}`}>
+
+            <div className='text-white absolute right-2 top-2'>
+              <X />
+            </div>
+
+          <nav className="flex flex-col items-center gap-8 text-[#fff] text-[15px]">
+            <a
+              href="#how-it-works"
+              className="hover:text-[#000] transition-colors duration-200"
+            >
+              How it works
+            </a>
+            <a
+              href="#sample-report"
+              className="hover:text-[#000] transition-colors duration-200"
+            >
+              Sample report
+            </a>
+            <span
+              onClick={()=>{
+                navigate('/Login')
+              }}
+              className="hover:text-[#000] cursor-pointer transition-colors duration-200"
+            >
+              Partners
+            </span>
+
+              <Button
+                onClick={() => {
+                if(UserDetails.loggedIn){
+               navigate('/userDashboard')
+
+                }else{
+                   navigate('/userLoginScreen')
+                }
+
+                }}
+                className="w-fit text-black   bg-gradient-to-b from-[#fff] to-[#fff] px-6 py-4 rounded-xl text-[15px] font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
+              >
+              {
+                UserDetails.loggedIn ?'View Dashboard':'SignIn'
+              }
+                {/* <ChevronRight size={18} /> */}
+              </Button>
+          </nav>
+
+          </div>
+          </div>
         </div>
       </header>
 
@@ -725,6 +833,24 @@ export function HomePage({
         </div>
       </footer> */}
       <Footer/>
+
+       <div className="fixed bottom-6 right-6 z-50">
+        <Button
+          onClick={() => setIsChatbotOpen(true)}
+          className="bg-gradient-to-b from-[#0A0A0A] to-[#161718] text-white px-6 py-4 rounded-full text-[15px] font-medium transition-all duration-200 shadow-[0_8px_24px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.5)] hover:scale-105 flex items-center gap-2"
+        >
+          <Phone size={18} />
+          Ask LIAM
+          <div className="w-2 h-2 rounded-full bg-[#18a36f] animate-pulse"></div>
+        </Button>
+      </div>
+
+        <ChatbotModal
+              isOpen={isChatbotOpen}
+              onClose={() => setIsChatbotOpen(false)}
+              propertyAddress={address}
+              mode={chatbotMode}
+            />
     </div>
   );
 }

@@ -216,11 +216,15 @@ export function ReportsDatabase() {
               {Reports.sort((a,b)=>b.createdAt.seconds - a.createdAt.seconds)?.map((report) => (
                 <tr key={report.id} className="border-t hover:bg-gray-50">
                   <td className="py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm">
-                    <Link to={`/reports/${report.id}`} className="text-blue-600 hover:underline">
+                  
                       {report.id}
+                   
+                  </td>
+                  <td className="py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm">
+                     <Link to={`/Report?address=${report.address}`} className="text-blue-600 hover:underline">
+                      {report.address}
                     </Link>
                   </td>
-                  <td className="py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm">{report.address}</td>
                   <td className="py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm">{typeof(report?.ipAddress)==='object'?report?.ipAddress.ip:report?.ipAddress}</td>
                   <td className="py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm">{report?.ipAddress?.city}</td>
                   <td className="py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm">{report?.ipAddress?.region}</td>

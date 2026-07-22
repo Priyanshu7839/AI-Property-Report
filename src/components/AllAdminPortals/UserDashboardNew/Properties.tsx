@@ -1,115 +1,143 @@
-import React from 'react';
-import { Card, Button, Badge } from '../../../components/ui/Components';
-import { MapPin, ArrowUpRight, Plus, Filter, LayoutGrid, List } from 'lucide-react';
-import { properties, type Property } from './mockData';
+import React,{useState,useEffect} from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { MoreHorizontal, FileText, RefreshCw, Plus, MapPin, Building, TrendingUp } from 'lucide-react';
+import { Card, CardContent, CardFooter } from '../../ui/card';
+import { AddPropertyModal } from './AddPropertyModal';
 
-interface PropertiesProps {
-  onSelectProperty: (propertyId: string) => void;
-}
+const PROPERTIES = [
+  {
+    id: 1,
+    image: "https://images.unsplash.com/photo-1622015663319-e97e697503ee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBsdXh1cnklMjBob21lJTIwZXh0ZXJpb3IlMjBhcmNoaXRlY3R1cmV8ZW58MXx8fHwxNzcxMTY1NDQ1fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    address: "1248 Oakwood Avenue, Palo Alto, CA",
+    valuation: "$3,450,000",
+    equity: "$1,200,000",
+    confidence: 94,
+    lastUpdated: "2 days ago",
+    status: "Active"
+  },
+  {
+    id: 2,
+    image: "https://images.unsplash.com/photo-1559329146-807aff9ff1fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBhcGFydG1lbnQlMjBidWlsZGluZyUyMGV4dGVyaW9yfGVufDF8fHx8MTc3MTEwNjM1N3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    address: "850 Folsom Street, Unit 4B, San Francisco, CA",
+    valuation: "$1,850,000",
+    equity: "$450,000",
+    confidence: 88,
+    lastUpdated: "5 hours ago",
+    status: "Review"
+  },
+];
 
-export function Properties({ onSelectProperty }: PropertiesProps) {
+
+
+
+export default function Properties({ onSelectProperty,setActiveTab }) {
+
+  const [openproperty,setopenProperty] = useState(false)
+
+  const navigate= useNavigate()
+
+
+
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="space-y-6 animate-in fade-in duration-500">
+      <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-[#111111]">My Properties</h2>
-          <p className="text-[#5B616E] mt-1">Manage valuation, equity, and documents for your assets.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-[#111111]">My Properties</h1>
+          <p className="text-[#5B616E]">Manage your real estate assets and valuations.</p>
         </div>
-        <div className="flex gap-3">
-          <Button variant="outline" className="gap-2">
-            <Filter size={16} /> Filter
-          </Button>
-          <Button className="gap-2">
-            <Plus size={16} /> Add Property
-          </Button>
-        </div>
+        <button
+        onClick={()=>{setActiveTab('Add')}}
+        className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
+          <Plus className="w-4 h-4" />
+          Add Property
+        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {properties.map((property) => (
-          <PropertyCard key={property.id} property={property} onClick={() => onSelectProperty(property.id)} />
+        {PROPERTIES.map((property) => (
+          <PropertyCard onSelectProperty={onSelectProperty} key={property.id} property={property} />
         ))}
         
-        {/* Add Property Card Placeholder */}
-        <button className="group border-2 border-dashed border-[#E6E8EC] rounded-xl flex flex-col items-center justify-center gap-4 p-8 hover:border-[#111111] hover:bg-gray-50 transition-all cursor-pointer min-h-[380px]">
-          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-[#5B616E] group-hover:bg-[#111111] group-hover:text-white transition-colors">
-            <Plus size={24} />
+        {/* Add Property Placeholder Card */}
+        <div
+        onClick={()=>{
+          setActiveTab('Add')
+        }}
+        className="border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center p-8 cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all min-h-[400px]">
+          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-4 text-gray-400">
+            <Plus className="w-6 h-6" />
           </div>
-          <div className="text-center">
-            <h3 className="font-medium text-[#111111]">Add New Property</h3>
-            <p className="text-sm text-[#5B616E] mt-1">Connect address or upload deed</p>
-          </div>
-        </button>
+          <p className="font-medium text-gray-900">Add New Property</p>
+          <p className="text-sm text-gray-500 mt-1">Connect address or upload deed</p>
+        </div>
+
       </div>
+      <AddPropertyModal openproperty={openproperty} setopenProperty={setopenProperty}/>
     </div>
   );
 }
 
-function PropertyCard({ property, onClick }: { property: Property; onClick: () => void }) {
+function PropertyCard({ property,onSelectProperty }) {
   return (
-    <div 
-      onClick={onClick}
-      className="group bg-white border border-[#E6E8EC] rounded-xl overflow-hidden hover:shadow-lg hover:border-[#D1D5DB] transition-all cursor-pointer flex flex-col h-full"
-    >
+    <Card onClick={()=>{ onSelectProperty(property?.id)}} className="group overflow-hidden bg-white hover:shadow-lg transition-all duration-300 border-[#E6E8EC]">
       <div className="relative h-48 overflow-hidden">
         <img 
           src={property.image} 
           alt={property.address} 
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        <div className="absolute top-3 right-3">
-          <Badge variant={property.riskScore === 'Low' ? 'positive' : property.riskScore === 'Medium' ? 'warning' : 'risk'} className="shadow-sm backdrop-blur-md bg-white/90">
-            {property.riskScore} Risk
-          </Badge>
+        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md text-xs font-semibold shadow-sm border border-gray-100">
+          {property.status}
         </div>
       </div>
       
-      <div className="p-5 flex flex-col flex-1">
-        <div className="flex justify-between items-start mb-2">
+      <CardContent className="p-5">
+        <div className="flex items-start justify-between mb-4">
           <div>
-            <h3 className="font-semibold text-lg text-[#111111] leading-tight">{property.address}</h3>
-            <div className="flex items-center gap-1 text-sm text-[#5B616E] mt-1">
-              <MapPin size={14} />
-              {property.city}, {property.state}
+            <h3 className="font-semibold text-lg leading-tight text-gray-900 mb-1 line-clamp-1">{property.address}</h3>
+            <div className="flex items-center text-xs text-gray-500 gap-1">
+              <MapPin className="w-3 h-3" />
+              San Francisco Bay Area
             </div>
+          </div>
+          <button className="text-gray-400 hover:text-gray-600">
+            <MoreHorizontal className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 py-4 border-t border-gray-100 border-b mb-4">
+          <div>
+            <p className="text-xs text-gray-500 mb-1 uppercase tracking-wider font-medium">AI Valuation</p>
+            <p className="text-lg font-bold text-gray-900">{property.valuation}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500 mb-1 uppercase tracking-wider font-medium">Unlockable</p>
+            <p className="text-lg font-bold text-green-600">{property.equity}</p>
           </div>
         </div>
 
-        <div className="mt-4 space-y-3 flex-1">
-          <div className="flex justify-between items-center py-2 border-b border-gray-50">
-            <span className="text-sm text-[#5B616E]">AI Valuation</span>
-            <div className="flex items-center gap-1.5">
-              <span className="font-semibold text-[#111111]">${(property.valuation / 1000000).toFixed(2)}M</span>
-              <span className="text-xs text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded flex items-center">
-                <ArrowUpRight size={10} /> 2.4%
-              </span>
-            </div>
+        <div className="flex items-center justify-between text-xs text-gray-500">
+          <div className="flex items-center gap-1.5">
+            <div className={`w-2 h-2 rounded-full ${property.confidence > 90 ? 'bg-green-500' : 'bg-amber-500'}`}></div>
+            <span>Confidence: {property.confidence}%</span>
           </div>
-          
-          <div className="flex justify-between items-center py-2 border-b border-gray-50">
-            <span className="text-sm text-[#5B616E]">Unlockable Equity</span>
-            <span className="font-medium text-[#111111]">${(property.equity / 1000000).toFixed(2)}M</span>
-          </div>
-          
-          <div className="flex justify-between items-center py-2">
-            <span className="text-sm text-[#5B616E]">Confidence Score</span>
-            <div className="flex items-center gap-2">
-              <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-[#111111] rounded-full" 
-                  style={{ width: `${property.confidence}%` }}
-                />
-              </div>
-              <span className="text-xs font-medium">{property.confidence}%</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-4 pt-4 border-t border-[#E6E8EC] flex justify-between items-center text-xs text-[#9CA3AF]">
           <span>Updated {property.lastUpdated}</span>
-          <span className="group-hover:text-[#111111] transition-colors font-medium">View Report →</span>
         </div>
-      </div>
-    </div>
+      </CardContent>
+
+      <CardFooter className="p-4 bg-gray-50 border-t border-gray-100 flex gap-2">
+        <Link  className="flex-1">
+          <button className="w-full py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 hover:border-gray-300 transition-colors shadow-sm text-gray-700">
+            View Details
+          </button>
+        </Link>
+        <button className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 transition-colors shadow-sm" title="View Report">
+          <FileText className="w-4 h-4" />
+        </button>
+        <button className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 transition-colors shadow-sm" title="Update Valuation">
+          <RefreshCw className="w-4 h-4" />
+        </button>
+      </CardFooter>
+    </Card>
   );
 }

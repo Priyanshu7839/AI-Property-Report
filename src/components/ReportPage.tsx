@@ -682,7 +682,7 @@ export function ReportPage({
           {
             headers: {
               "X-RapidAPI-Key":
-                "69953a3276msh1fffb8e07d13516p11031ejsnfd55185a907e",
+                "a48bfbafb3msh42b1f23858b4dd2p127af3jsne5dc6836da5a",
               "X-RapidAPI-Host": "zhomes-realty-us.p.rapidapi.com",
             },
           },
@@ -709,7 +709,7 @@ export function ReportPage({
           {
             headers: {
               "X-RapidAPI-Key":
-                "69953a3276msh1fffb8e07d13516p11031ejsnfd55185a907e",
+                "a48bfbafb3msh42b1f23858b4dd2p127af3jsne5dc6836da5a",
               "X-RapidAPI-Host": "zhomes-realty-us.p.rapidapi.com",
             },
           },
@@ -738,7 +738,7 @@ export function ReportPage({
   
   const housePrice = parseInt(HomesData?.price);
 
-  const [HousePrices, setHousePrices] = useState([]); //House Prices sent to the openai api to fetch negiotiation intelligence
+  const [HousePrices, setHousePrices] = useState([]); 
 
   useEffect(() => {
     const getTimeSeries = async () => {
@@ -1280,6 +1280,8 @@ export function ReportPage({
   const UserDetails = useSelector((state) => state.UserDetails);
 
   const [savingReport,setSavingReport] = useState(false)
+  const redirect = searchParams.get("redirect")
+ 
 
   const saveReports = async() => {
     setSavingReport(true)
@@ -1298,11 +1300,11 @@ export function ReportPage({
   
 
 
-  // useEffect(()=>{
-  //     if(UserDetails.loggedIn){
-  //       saveReports()
-  //     }
-  // },[UserDetails.loggedIn])
+  useEffect(()=>{
+      if(UserDetails.loggedIn && redirect){
+        saveReports()
+      }
+  },[UserDetails.loggedIn])
 
  
 
@@ -1423,9 +1425,9 @@ export function ReportPage({
                 onClick={() => {
                 if(UserDetails.loggedIn){
                 saveReports()
-
+              
                 }else{
-                   navigate('/userLoginScreen')
+                   navigate(`/userLoginScreen?redirect=true&address=${address}`)
                 }
 
                 }}
@@ -1498,7 +1500,7 @@ export function ReportPage({
                           ? " Gain"
                           : " Loss"}
                       </span>
-                      <span className="font-bold">
+                      <span className={`font-bold ${(AnnualGrowth?.house)?.toFixed(2) > 0 ? "text-green-500" : "text-[redt]"}`}>
                         {(AnnualGrowth?.house)?.toFixed(2) > 0 ? "+" : "-"}$
                         {parseInt(
                           Math.abs(housePrice * (AnnualGrowth?.house)) / 100,
@@ -1519,7 +1521,7 @@ export function ReportPage({
 
 
                     <span className="font-bold text-[#005BFF]">
-                      <CountUp value={0.3375 * housePrice} prefix="$" />
+                      <CountUp value={0.6 * housePrice} prefix="$" />
                     </span>
                   </div>
                 </div>
@@ -1808,55 +1810,7 @@ export function ReportPage({
                   </div>
 
                   <div className="space-y-3 flex flex-wrap max-[600px]:flex-col items-stretch justify-between">
-                    {/* <div className="flex items-center justify-between p-4 rounded-xl bg-gray-200 border border-black/30 hover:border-[#BEDBFF]/20 transition-all duration-200 group w-[49%] max-[600px]:w-full h-[92px]">
-                      <div className="flex items-center gap-3">
-                        <div className="flex flex-col gap-1">
-                          <p className="text-black text-[16px] font-medium">
-                            {HomesData?.resoFacts?.pricePerSquareFoot}/sq.ft
-                          </p>
-
-                          <p className="text-black/80 text-[10px] font-medium">
-                            Subject Property
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {Array.isArray(similarHomes) &&
-                      similarHomes?.slice(0, 3).map((comp, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-[#FAFBFC] to-white border border-black/[0.06] hover:border-[#005BFF]/20 transition-all duration-200 group w-[49%] max-[600px]:w-full h-[92px]"
-                        >
-                          <div className="flex items-center justify-between  w-full gap-3">
-                            <div className="flex flex-col gap-1">
-                              <p className="text-black text-[16px] font-medium">
-                                {parseInt(comp.price / comp.livingArea)}/sq.ft
-                              </p>
-
-                              <p className="text-black/80 text-[10px] ">
-                                {comp.address.streetAddress +
-                                  ", " +
-                                  comp.address.city +
-                                  ", " +
-                                  comp.address.state +
-                                  ", " +
-                                  comp.address.zipcode}
-                              </p>
-                            </div>
-
-                            <div
-                              className={`p-2 rounded-lg  transition-colors ${
-                                idx === 0 && "bg-[#07A28733] text-[#07A287]"
-                              } ${idx === 1 && "bg-[#F93F631A] text-[#F93F63]"} ${
-                                idx === 2 && "bg-[#005BFF33] text-[#005BFF]"
-                              } `}
-                            >
-                              <MapPin size={14} />
-                            </div>
-                          </div>
-                        </div>
-                      ))} */}
+                   
 
                       <AppreciationChart HousePrices={HousePrices} growthRate={AnnualGrowth.house}/>
                   </div>
@@ -2225,7 +2179,7 @@ export function ReportPage({
                             </div>
                             <div className="text-2xl font-bold tracking-tight text-[#18A36F] tabular-nums mb-1">
                              {
-                              (selectedPortfolio?.profitAfterTax < 0 || ReturnsAssets?.profitAfterTax < 0)&&'-'
+                              ((selectedPortfolio?.value !== 'Custom' && selectedPortfolio?.profitAfterTax < 0) ||(selectedPortfolio?.value === 'Custom' && ReturnsAssets?.profitAfterTax < 0))&&'-'
                              }
 
                                 ${selectedPortfolio?.value !== 'Custom'?Math.abs(Number(selectedPortfolio?.profitAfterTax)).toLocaleString('en-us'):Math.abs(Number(ReturnsAssets?.profitAfterTax)).toLocaleString('en-us')}
@@ -2586,7 +2540,7 @@ The model applies normalization and risk controls to reduce distortion from shor
                       >
                       
                          {
-                              (selectedPortfolio?.profitAfterTax < 0 || ReturnsAssets?.profitAfterTax < 0)&&'-'
+                              ((selectedPortfolio?.value !== 'Custom' && selectedPortfolio?.profitAfterTax < 0) || (selectedPortfolio?.value === 'Custom' &&ReturnsAssets?.profitAfterTax < 0))&&'-'
                              }
 
 
@@ -3299,7 +3253,7 @@ The model applies normalization and risk controls to reduce distortion from shor
                   performance does not guarantee future results. Consult with
                   qualified professionals before making any financial decisions.
                 </p>
-                <div className="pt-3 border-t border-black/[0.06]">
+                {/* <div className="pt-3 border-t border-black/[0.06]">
                   <p className="text-[#6A6A6A] text-[11px]">
                     <span className="font-medium text-black">
                       Data Privacy:
@@ -3309,7 +3263,7 @@ The model applies normalization and risk controls to reduce distortion from shor
                     sensitive personal data. Do not input confidential financial
                     information.
                   </p>
-                </div>
+                </div> */}
               </div>
               <ul className="text-[#6A6A6A] text-[12px] leading-relaxed space-y-2">
                 {[

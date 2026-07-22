@@ -1,433 +1,366 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Button, Badge } from '../../../components/ui/Components';
-import { 
-  FileText, Download, Plus, Search, 
-  BarChart2, PieChart, Calendar, ChevronRight, 
-  ArrowUpRight, ArrowDownRight, Printer, Share2, 
-  Loader2, Filter, X,
-  MapPin
-} from 'lucide-react';
-// import { reports, type Report } from './mockData';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { useNavigate } from 'react-router';
-import { toast } from 'sonner';
-import { FetchSavedUserReports, SaveReportToPortfolio } from '../../apicalls/ApiCalls';
-import { useSelector } from 'react-redux';
+import React from "react";
+import {
+  Home, LayoutDashboard, Building2, FileText, TrendingUp, GitBranch, PieChart,
+  ClipboardList, CircleDollarSign, Users, ReceiptText, Settings, HelpCircle,
+  Search, Bell, ChevronRight, ChevronDown, Plus, ShieldCheck, DollarSign,
+  ArrowUpRight, SlidersHorizontal, Grid3X3, Download, Share2, Star,
+  MoreVertical, Eye, AlertTriangle, Sparkles
+} from "lucide-react";
 
-export function Reports() {
-  const [activeReport, setActiveReport] = useState(null);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [showGenerateModal, setShowGenerateModal] = useState(false);
-const navigate = useNavigate()
-  const handleGenerate = () => {
-   navigate('/')
-  };
-const UserDetails = useSelector((state) => state.UserDetails);
+const navItems = [
+  { label: "Dashboard Overview", icon: LayoutDashboard },
+  { label: "My Properties", icon: Building2 },
+  { label: "Saved Reports", icon: FileText, active: true },
+  { label: "Equity & Valuation", icon: TrendingUp },
+  { label: "Strategy Scenarios", icon: GitBranch },
+  { label: "Portfolio Builder", icon: PieChart },
+  { label: "Taxes & Documents", icon: ClipboardList },
+  { label: "Rental & Income", icon: CircleDollarSign },
+  { label: "Advisors & Agents", icon: Users },
+  { label: "Invoices & Billing", icon: ReceiptText },
+  { label: "Settings", icon: Settings },
+];
 
-const [reports,setReports] = useState([])
+const kpis = [
+  { label: "Total Reports", value: "42", icon: FileText },
+  { label: "Property Reports", value: "18", icon: Home },
+  { label: "Portfolio Reports", value: "6", icon: PieChart },
+  { label: "Insurance Reports", value: "5", icon: ShieldCheck },
+  { label: "Refinancing Reports", value: "8", icon: DollarSign },
+  { label: "Strategy Reports", value: "5", icon: ArrowUpRight },
+];
 
-  const fetchReports = async() => {
-    try {
-      const reports =await FetchSavedUserReports(UserDetails.uid)
-     
-     
-        setReports(reports)
-      
-    } catch (error) {
-      console.log(error)
-      toast.error('failed to fetch reports')
-    }
-  }
+const reports = [
+  {
+    title: "Miami Duplex",
+    address: "123 Ocean Dr, Miami, FL 33139",
+    type: "Property Report",
+    date: "Jun 14, 2024",
+    score: "92/100",
+    upside: "$38,000",
+    status: "New",
+    statusTone: "bg-emerald-600",
+    summary: "Insurance and refinance opportunities detected.",
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80",
+  },
+  {
+    title: "Dallas 8-Unit",
+    address: "2211 Maple Ave, Dallas, TX 75201",
+    type: "Refinancing Report",
+    date: "Jun 12, 2024",
+    score: "88/100",
+    upside: "$24,500",
+    status: "Review",
+    statusTone: "bg-amber-500",
+    summary: "Strong cash-out refinance potential identified.",
+    image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=900&q=80",
+  },
+  {
+    title: "Austin Warehouse",
+    address: "8901 Industrial Blvd, Austin, TX 78724",
+    type: "Insurance Report",
+    date: "Jun 10, 2024",
+    score: "76/100",
+    upside: "$12,300",
+    status: "New",
+    statusTone: "bg-emerald-600",
+    summary: "Premium is 18% above market average.",
+    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80",
+  },
+  {
+    title: "Phoenix 16-Unit",
+    address: "445 N Central Ave, Phoenix, AZ 85004",
+    type: "Strategy Scenario",
+    date: "Jun 8, 2024",
+    score: "81/100",
+    upside: "$31,200",
+    status: "Review",
+    statusTone: "bg-amber-500",
+    summary: "Consider rent increase strategy Q3 2024.",
+    image: "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80",
+  },
+];
 
-  useEffect(()=>{
-    fetchReports()
-  },[])
+const collections = [
+  { label: "Highest Opportunity", count: "8 reports", icon: Sparkles, tone: "text-emerald-700 bg-emerald-50" },
+  { label: "Expiring Insurance", count: "4 reports", icon: ShieldCheck, tone: "text-emerald-700 bg-emerald-50" },
+  { label: "Refinance Candidates", count: "7 reports", icon: DollarSign, tone: "text-emerald-700 bg-emerald-50" },
+  { label: "Highest Risk", count: "6 reports", icon: AlertTriangle, tone: "text-red-600 bg-red-50" },
+];
 
-  const [savingReport,setSavingReport] = useState(false)
-
-  const SaveToPortfolio = async(reportId) => {
-setSavingReport(true)
-    try {
-      await SaveReportToPortfolio(reportId)
-      toast.success('Report Saved To Portfolio')
-    } catch (error) {
-      console.log(error)
-      toast.success('Failed to Save')
-    }
-    setSavingReport(false)
-
-  }
-
-  
-
+function Sidebar() {
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-[#111111]">Reports & Analysis</h1>
-          <p className="text-[#5B616E] mt-1">Generate comprehensive insights on portfolio performance, valuation, and tax impact.</p>
-        </div>
-        <div className="flex gap-3">
-          <Button variant="outline" className="gap-2">
-            <Filter size={16} /> Filter
-          </Button>
-          <Button className="gap-2" onClick={() => setShowGenerateModal(true)}>
-            <Plus size={16} /> Generate New Report
-          </Button>
-        </div>
+    <aside className="fixed left-0 top-0 z-40 hidden h-screen w-[280px] flex-col bg-[#071116] text-white shadow-2xl lg:flex">
+      <div className="flex h-20 items-center gap-3 px-7">
+        <Home className="h-8 w-8 text-emerald-500" />
+        <span className="text-xl font-bold tracking-tight">AIPropertyReport</span>
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Reports List */}
-        <div className="lg:col-span-2 space-y-6">
-          <Card className="overflow-hidden flex flex-col gap-3">
-            <div className="p-4 border-b border-[#E6E8EC] flex items-center justify-between bg-gray-50/50">
-              <h3 className="font-semibold text-[#111111]">Saved Reports</h3>
-              <div className="relative">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
-                <input 
-                  type="text" 
-                  placeholder="Search reports..." 
-                  className="pl-9 pr-4 py-1.5 text-sm border border-[#E6E8EC] rounded-md focus:outline-none focus:border-[#111111] w-48 bg-white transition-colors"
-                />
-              </div>
-            </div>
-           
-          </Card>
-
-           <div className="divide-y divide-[#E6E8EC] flex flex-col gap-2">
-              {reports.map((report) => (
-                // <div 
-                //   key={report.id} 
-                //   onClick={() => setActiveReport(report)}
-                //   className={`p-4 hover:bg-gray-50 transition-colors cursor-pointer group ${activeReport?.id === report.id ? 'bg-gray-50' : ''}`}
-                // >
-                //   <div className="flex justify-between items-start mb-2">
-                //     <div className="flex items-center gap-3">
-                //       {/* <div className={`p-2 rounded-lg ${
-                //         report.type === 'Valuation' ? 'bg-emerald-50 text-emerald-600' :
-                //         report.type === 'Tax' ? 'bg-amber-50 text-amber-600' :
-                //         'bg-blue-50 text-blue-600'
-                //       }`}>
-                //         {report.type === 'Valuation' && <BarChart2 size={18} />}
-                //         {report.type === 'Tax' && <FileText size={18} />}
-                //         {report.type === 'Portfolio' && <PieChart size={18} />}
-                //       </div> */}
-                //       <div>
-                //         <h4 className="font-medium text-[#111111] capitalize">{report.address}</h4>
-                //         <div className="flex items-center gap-2 text-xs text-[#5B616E] mt-0.5">
-                //           <span> Report ID : {report.id}</span>
-                         
-                //         </div>
-                //         <div className="flex items-center gap-2 text-xs text-[#5B616E] mt-0.5">
-                //           <span> Date Added : </span>
-                //                                    <span>{new Date(report?.createdAt.seconds * 1000).toLocaleDateString()}</span>
-
-                          
-                //         </div>
-                       
-                //         <div className="flex items-center gap-2 text-xs text-[#5B616E] mt-0.5">
-                //           <span>Hidden Cash</span>
-                //           <span className="w-1 h-1 bg-gray-300 rounded-full" />
-                //           <span>$ {report.hiddencash.toLocaleString('en-us')}</span>
-                          
-                //         </div>$ </span>
-                          
-                //         <div className="flex items-center gap-2 text-xs text-[#5B616E] mt-0.5">
-                //           <span>House Growth Rate</span>
-                //           <span className="w-1 h-1 bg-gray-300 rounded-full" />
-                //           <span>{parseFloat(report.growthRate).toFixed(2)}%</span>
-                          
-                //         </div>
-                //         <div className="flex items-center gap-2 text-xs text-[#5B616E] mt-0.5">
-                //           <span>House Value</span>
-                //           <span className="w-1 h-1 bg-gray-300 rounded-full" />
-                //           <span>$ {report.houseValue.toLocaleString('en-us')}</span>
-                          
-                //         </div>
-                //         <div className="flex items-center gap-2 text-xs text-[#5B616E] mt-0.5">
-                //           <span>Total Opportunity</span>
-                //           <span className="w-1 h-1 bg-gray-300 rounded-full" />
-                //           <span>$ {report.totalOpportunity.toLocaleString('en-us')}</span>
-                          
-                //         </div>
-                          
-
-                //       </div>
-                      
-                //     </div>
-                    
-                //     <Badge variant={report.status === 'Ready' ? 'positive' : 'neutral'}>
-                //       {report.status}
-                //     </Badge>
-                //   </div>
-                  
-                //   <p className="text-sm text-[#5B616E] line-clamp-2 pl-[52px] pr-8 mb-3">
-                //     {report.summary}
-                //   </p>
-
-                //   {/* <div className="pl-[52px] flex items-center gap-4">
-                //     {report.metrics.slice(0, 3).map((metric, idx) => (
-                //       <div key={idx} className="flex flex-col">
-                //         <span className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">{metric.label}</span>
-                //         <div className="flex items-center gap-1">
-                //           <span className="text-sm font-semibold text-[#111111]">{metric.value}</span>
-                //           {metric.trend && (
-                //             <span className={`text-[10px] ${
-                //               metric.trendDirection === 'up' ? 'text-emerald-600' : 
-                //               metric.trendDirection === 'down' ? 'text-rose-600' : 
-                //               'text-gray-500'
-                //             }`}>
-                //               {metric.trend}
-                //             </span>
-                //           )}
-                //         </div>
-                //       </div>
-                //     ))}
-                //   </div> */}
-                // </div>
-
-                <Card className='w-full p-6 flex flex-col items-start gap-2'>
-
-                <div>
-                    <h1 className='flex items-center gap-1 font-semibold capitalize'>
-                   <span>
-                     <MapPin size={15}/> 
-                   </span>
-
-                   {report.address}
-                    
-                  </h1>
-                   <div className="flex items-center gap-2 text-xs text-[#5B616E] mt-0.5">
-                         
-                                                  <span>{new Date(report?.createdAt.seconds * 1000).toLocaleDateString()}</span>
-                  
-                       </div>
-
-
-
-
-                </div>
-
-                <div className='flex items-center justify-between gap-2 w-full'>
-
-                  <div className = 'flex flex-col rounded-md border border-black/20 w-full'>
-
-                      <span className='py-2 px-4 border-b border-black/20 flex items-center justify-between'>Property Value <h1 className='font-medium text-green-700'>$ {report.houseValue.toLocaleString('en-us')}</h1></span>
-                      <span className='py-2 px-4 flex items-center justify-between'>Growth Rate 
-
-                        <h1 className='font-medium'>{parseFloat(report.growthRate).toFixed(2)}%</h1>
-                      </span>
-
-                  </div>
-                  <div className = 'flex flex-col rounded-md border border-black/20 w-full'>
-
-                      <span className='py-2 px-4 border-b border-black/20 flex items-center justify-between'>Hidden Cash
-                        <h1 className='font-medium text-green-700'>$ {report.hiddencash.toLocaleString('en-us')}</h1>
-                      
-                      </span>
-                      <span className='py-2 px-4 flex items-center justify-between'>Total Oppurtunity
-                        <h1 className='font-medium'>$ {report.totalOpportunity.toLocaleString('en-us')}</h1>
-
-
-                      </span>
-
-                  </div>
-
-                </div>
-
-
-              {
-              !report.savedToPortfolio &&
-              <div 
-                onClick={()=>{
-                  SaveToPortfolio(report?.id)
-                }}
-                className='w-full flex items-center justify-end'>
-                      <Button>
-                        {
-                          savingReport?'Saving...':'Save To Portfolio'
-                        }
-                        
-                      </Button>
-                </div>}
-
-
-
-
-                </Card>
-              ))}
-            </div>
-        </div>
-
-        {/* Report Detail Panel */}
-        {/* <div className="space-y-6">
-          {activeReport ? (
-            <Card className="p-6 sticky top-6 animate-in fade-in slide-in-from-right-4 duration-300">
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <h3 className="font-bold text-lg text-[#111111] leading-tight">{activeReport.title}</h3>
-                  <p className="text-sm text-[#5B616E] mt-1">Generated by {activeReport.generatedBy}</p>
-                </div>
-                <button onClick={() => setActiveReport(null)} className="text-gray-400 hover:text-[#111111]">
-                  <X size={16} />
-                </button>
-              </div>
-
-              <div className="space-y-6">
-                <div className="bg-gray-50 p-4 rounded-lg border border-[#E6E8EC]">
-                  <h4 className="text-xs font-semibold text-[#5B616E] uppercase tracking-wider mb-3">Key Metrics</h4>
-                  <div className="grid grid-cols-2 gap-4">
-                    {activeReport.metrics.map((metric, idx) => (
-                      <div key={idx}>
-                        <div className="text-xs text-[#9CA3AF] mb-1">{metric.label}</div>
-                        <div className="text-lg font-bold text-[#111111] flex items-center gap-2">
-                          {metric.value}
-                          {metric.trendDirection && metric.trendDirection !== 'neutral' && (
-                            <span className={`text-xs px-1.5 py-0.5 rounded ${
-                              metric.trendDirection === 'up' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
-                            }`}>
-                              {metric.trendDirection === 'up' ? '↑' : '↓'} {metric.trend?.replace(/^[+-]/, '')}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="text-sm font-semibold text-[#111111]">Visualization</h4>
-                  <div className="h-40 w-full border border-[#E6E8EC] rounded-lg p-2 min-w-0">
-                    <ResponsiveContainer width="100%" height="100%" minWidth={0} debounce={1}>
-                      <AreaChart data={[
-                        { name: 'Jan', val: 4000 }, { name: 'Feb', val: 3000 },
-                        { name: 'Mar', val: 5000 }, { name: 'Apr', val: 4500 },
-                        { name: 'May', val: 6000 }, { name: 'Jun', val: 5500 }
-                      ]}>
-                        <defs>
-                          <linearGradient id="colorVal" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#111111" stopOpacity={0.1}/>
-                            <stop offset="95%" stopColor="#111111" stopOpacity={0}/>
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E6E8EC" />
-                        <XAxis dataKey="name" hide />
-                        <YAxis hide />
-                        <Tooltip />
-                        <Area type="monotone" dataKey="val" stroke="#111111" strokeWidth={2} fill="url(#colorVal)" />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-
-                <div className="pt-6 border-t border-[#E6E8EC] flex flex-col gap-3">
-                  <Button className="w-full justify-center gap-2">
-                    <Download size={16} /> Download PDF
-                  </Button>
-                  <div className="grid grid-cols-2 gap-3">
-                    <Button variant="outline" className="justify-center gap-2">
-                      <Printer size={16} /> Print
-                    </Button>
-                    <Button variant="outline" className="justify-center gap-2">
-                      <Share2 size={16} /> Share
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          ) : (
-            <Card className="p-8 text-center bg-gray-50 border-dashed border-2 border-[#E6E8EC] h-full flex flex-col items-center justify-center min-h-[400px]">
-              <div className="w-16 h-16 bg-white rounded-full shadow-sm flex items-center justify-center text-[#9CA3AF] mb-4">
-                <FileText size={32} strokeWidth={1.5} />
-              </div>
-              <h3 className="font-semibold text-[#111111] text-lg">Select a Report</h3>
-              <p className="text-[#5B616E] max-w-xs mx-auto mt-2 text-sm">
-                Click on any report from the list to view detailed analysis, charts, and export options.
-              </p>
-            </Card>
-          )}
-        </div> */}
-      </div>
-
-      {/* Generate Report Modal Overlay */}
-      {showGenerateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <Card className="w-full max-w-lg p-6 m-4 shadow-2xl relative">
-            <button 
-              onClick={() => setShowGenerateModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-[#111111]"
+      <nav className="flex-1 space-y-1 overflow-y-auto px-4 py-2">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <button
+              key={item.label}
+              className={`group flex h-11 w-full items-center gap-3 rounded-xl px-4 text-left text-sm font-medium transition ${
+                item.active
+                  ? "bg-white/12 text-white shadow-inner ring-1 ring-white/10"
+                  : "text-slate-200 hover:bg-white/8 hover:text-white"
+              }`}
             >
-              <X size={20} />
+              <Icon className="h-[18px] w-[18px]" />
+              <span className="flex-1">{item.label}</span>
+              {item.active && <ChevronRight className="h-4 w-4 text-slate-300" />}
             </button>
-            
-            <h2 className="text-xl font-bold text-[#111111] mb-6">Generate New Report</h2>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-[#111111] mb-1.5">Report Type</label>
-                <div className="grid grid-cols-2 gap-3">
-                  <button className="flex flex-col items-center justify-center p-3 border-2 border-[#111111] bg-gray-50 rounded-lg text-sm font-medium text-[#111111]">
-                    <PieChart size={20} className="mb-2" />
-                    Portfolio Analysis
-                  </button>
-                  <button className="flex flex-col items-center justify-center p-3 border border-[#E6E8EC] hover:border-gray-300 rounded-lg text-sm font-medium text-[#5B616E] hover:text-[#111111] transition-colors">
-                    <BarChart2 size={20} className="mb-2" />
-                    Valuation Report
-                  </button>
-                </div>
-              </div>
+          );
+        })}
+      </nav>
 
-              <div>
-                <label className="block text-sm font-medium text-[#111111] mb-1.5">Date Range</label>
-                <select className="w-full p-2.5 bg-white border border-[#E6E8EC] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#E6E8EC] focus:border-[#111111]">
-                  <option>Last 30 Days</option>
-                  <option>Current Quarter (Q1 2026)</option>
-                  <option>Last Year (2025)</option>
-                  <option>Custom Range</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-[#111111] mb-1.5">Include Sections</label>
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm text-[#5B616E]">
-                    <input type="checkbox" checked className="rounded border-gray-300 text-[#111111] focus:ring-[#111111]" readOnly />
-                    Executive Summary
-                  </label>
-                  <label className="flex items-center gap-2 text-sm text-[#5B616E]">
-                    <input type="checkbox" checked className="rounded border-gray-300 text-[#111111] focus:ring-[#111111]" readOnly />
-                    Financial Metrics (Cash-on-Cash, IRR)
-                  </label>
-                  <label className="flex items-center gap-2 text-sm text-[#5B616E]">
-                    <input type="checkbox" checked className="rounded border-gray-300 text-[#111111] focus:ring-[#111111]" readOnly />
-                    Market Comps & Trends
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8 flex gap-3">
-              <Button variant="outline" className="w-full" onClick={() => setShowGenerateModal(false)}>
-                Cancel
-              </Button>
-              <Button className="w-full bg-[#111111] text-white hover:bg-black" onClick={handleGenerate} disabled={isGenerating}>
-                {isGenerating ? (
-                  <>
-                    <Loader2 size={16} className="animate-spin" /> Generating...
-                  </>
-                ) : (
-                  <>
-                    Generate Report <ArrowUpRight size={16} />
-                  </>
-                )}
-              </Button>
-            </div>
-          </Card>
+      <div className="space-y-4 border-t border-white/10 p-4">
+        <div className="flex items-center gap-3 rounded-2xl p-2">
+          <div className="grid h-10 w-10 place-items-center rounded-full bg-emerald-600 text-sm font-bold">AD</div>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold">Abhyuday Dixit</p>
+            <p className="truncate text-xs text-slate-300">abhyuday@investor.com</p>
+          </div>
+          <ChevronDown className="h-4 w-4 text-slate-300" />
         </div>
-      )}
+
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+          <div className="mb-3 flex items-center gap-2 text-sm font-semibold">
+            <Users className="h-4 w-4" />
+            Advisor Connect
+          </div>
+          <p className="mb-4 text-xs leading-5 text-slate-300">Book a call with a specialist to review your portfolio or reports.</p>
+          <button className="h-10 w-full rounded-xl bg-emerald-800 text-sm font-semibold text-white transition hover:bg-emerald-700">Connect Now</button>
+        </div>
+
+        <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+          <HelpCircle className="h-5 w-5" />
+          <div className="flex-1">
+            <p className="text-sm font-semibold">Need Help?</p>
+            <p className="text-xs text-slate-300">Visit our Help Center</p>
+          </div>
+          <ChevronRight className="h-4 w-4" />
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+function Topbar() {
+  return (
+    <header className="sticky top-0 z-30 flex h-20 items-center gap-4 border-b border-slate-200/80 bg-white/90 px-5 backdrop-blur xl:px-8">
+      <div className="flex h-11 flex-1 items-center gap-3 rounded-2xl bg-slate-100 px-4 lg:max-w-[660px]">
+        <Search className="h-5 w-5 text-slate-500" />
+        <input className="w-full bg-transparent text-sm outline-none placeholder:text-slate-500" placeholder="Search properties, reports, or analyze address..." />
+        <span className="hidden rounded-md bg-white px-2 py-1 text-xs font-semibold text-slate-500 shadow-sm sm:inline">⌘ K</span>
+      </div>
+
+      <button className="relative grid h-11 w-11 place-items-center rounded-full bg-white text-slate-900 shadow-sm ring-1 ring-slate-200">
+        <Bell className="h-5 w-5" />
+        <span className="absolute right-1 top-1 grid h-5 w-5 place-items-center rounded-full bg-red-600 text-[10px] font-bold text-white">3</span>
+      </button>
+
+      <button className="hidden h-11 items-center gap-2 rounded-xl bg-[#071116] px-5 text-sm font-semibold text-white shadow-sm md:flex">
+        <Users className="h-4 w-4" />
+        Advisor Connect
+      </button>
+
+      <button className="grid h-11 w-11 place-items-center rounded-full bg-slate-100 text-sm font-semibold text-slate-700">P</button>
+    </header>
+  );
+}
+
+function Hero() {
+  return (
+    <section className="relative overflow-hidden rounded-3xl bg-[#071116] p-8 text-white shadow-xl xl:p-10">
+      <div className="pointer-events-none absolute inset-0 opacity-50">
+        <div className="absolute right-[-8%] top-[-20%] h-[420px] w-[620px] rounded-full bg-emerald-500/10 blur-3xl" />
+        <svg className="absolute bottom-0 right-0 h-full w-[70%]" viewBox="0 0 900 360" fill="none">
+          {[...Array(18)].map((_, i) => (
+            <path key={i} d={`M0 ${260 - i * 7} C 180 ${180 - i * 4}, 250 ${300 - i * 5}, 430 ${190 - i * 4} S 690 ${80 + i * 5}, 900 ${140 - i * 2}`} stroke="rgba(16,185,129,0.22)" strokeWidth="1" />
+          ))}
+        </svg>
+      </div>
+
+      <div className="relative grid gap-8 xl:grid-cols-[1fr_480px]">
+        <div className="max-w-2xl">
+          <h1 className="mb-4 text-4xl font-bold tracking-tight xl:text-5xl">Your AI Intelligence Library</h1>
+          <p className="max-w-xl text-base leading-7 text-slate-200">
+            Every property analysis, equity review, refinance scenario, insurance review, and portfolio report generated by <span className="text-emerald-400">LIAM.</span>
+          </p>
+          <button className="mt-8 inline-flex h-12 items-center gap-2 rounded-xl bg-emerald-700 px-5 text-sm font-semibold text-white transition hover:bg-emerald-600">
+            <Plus className="h-4 w-4" />
+            Generate New Report
+          </button>
+        </div>
+
+        <div className="rounded-2xl bg-white p-6 text-slate-950 shadow-2xl">
+          <h3 className="mb-5 text-sm font-bold">Reports Summary</h3>
+          <div className="grid grid-cols-2 gap-5">
+            <SummaryMetric value="42" label="Reports Generated" />
+            <SummaryMetric value="8" label="New This Month" />
+            <SummaryMetric value="3" label="Require Review" />
+            <SummaryMetric value="$128K" label="Identified Opportunity" />
+          </div>
+          <div className="mt-5 flex items-start gap-3 rounded-xl bg-emerald-50 p-4 text-sm font-medium text-emerald-800">
+            <Sparkles className="mt-0.5 h-5 w-5" />
+            <span>LIAM: Three reports contain refinancing opportunities worth reviewing.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SummaryMetric({ value, label }) {
+  return (
+    <div className="border-b border-slate-200 pb-4">
+      <div className="text-3xl font-bold tracking-tight">{value}</div>
+      <div className="mt-1 text-xs text-slate-500">{label}</div>
+    </div>
+  );
+}
+
+function KpiStrip() {
+  return (
+    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+      {kpis.map((kpi) => {
+        const Icon = kpi.icon;
+        return (
+          <div key={kpi.label} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="grid h-12 w-12 place-items-center rounded-full bg-emerald-50 text-emerald-700">
+              <Icon className="h-6 w-6" />
+            </div>
+            <div>
+              <div className="text-2xl font-bold tracking-tight text-slate-950">{kpi.value}</div>
+              <div className="text-xs font-medium text-slate-500">{kpi.label}</div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function FilterBar() {
+  const filters = ["Report Type", "Property", "Date", "Opportunity Score", "More Filters"];
+  return (
+    <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm xl:flex-row xl:items-center">
+      <div className="flex h-11 flex-1 items-center gap-3 rounded-xl bg-slate-100 px-4">
+        <Search className="h-4 w-4 text-slate-500" />
+        <input className="w-full bg-transparent text-sm outline-none placeholder:text-slate-500" placeholder="Search reports by property, address, type..." />
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        {filters.map((filter) => (
+          <button key={filter} className="inline-flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700">
+            {filter === "More Filters" && <SlidersHorizontal className="h-4 w-4" />}
+            {filter}
+            {filter !== "More Filters" && <ChevronDown className="h-4 w-4" />}
+          </button>
+        ))}
+        <button className="inline-flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700">
+          Sort: Newest
+          <ChevronDown className="h-4 w-4" />
+        </button>
+        <button className="grid h-11 w-11 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700">
+          <Grid3X3 className="h-4 w-4" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ReportCard({ report }) {
+  return (
+    <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
+      <div className="relative h-40 overflow-hidden">
+        <img src={report.image} alt="" className="h-full w-full object-cover" />
+        <span className={`absolute left-4 top-4 rounded-lg ${report.statusTone} px-3 py-1 text-sm font-bold text-white`}>{report.status}</span>
+        <button className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-black/25 text-white backdrop-blur">
+          <Star className="h-5 w-5" />
+        </button>
+      </div>
+
+      <div className="p-5">
+        <h3 className="text-xl font-bold tracking-tight text-slate-950">{report.title}</h3>
+        <p className="mt-1 text-sm text-slate-500">{report.address}</p>
+
+        <div className="mt-3 flex items-center gap-3">
+          <span className="rounded-md bg-violet-100 px-2 py-1 text-xs font-bold text-violet-700">{report.type}</span>
+          <span className="text-xs text-slate-500">Generated: {report.date}</span>
+        </div>
+
+        <div className="mt-5 space-y-2 border-t border-slate-100 pt-4 text-sm">
+          <div className="flex justify-between"><span className="text-slate-600">Opportunity Score</span><span className="font-bold text-emerald-700">{report.score}</span></div>
+          <div className="flex justify-between"><span className="text-slate-600">Estimated Upside</span><span className="font-bold text-emerald-700">{report.upside}</span></div>
+        </div>
+
+        <div className="mt-5 flex gap-3 rounded-xl bg-emerald-50 p-4 text-sm font-medium text-emerald-800">
+          <Sparkles className="h-5 w-5 shrink-0" />
+          <span>LIAM: {report.summary}</span>
+        </div>
+
+        <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-sm font-semibold text-slate-700">
+          <button className="inline-flex items-center gap-1"><Eye className="h-4 w-4" />Open</button>
+          <button className="inline-flex items-center gap-1"><Download className="h-4 w-4" />PDF</button>
+          <button className="inline-flex items-center gap-1"><Share2 className="h-4 w-4" />Share</button>
+          <button><MoreVertical className="h-5 w-5" /></button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function SmartCollections() {
+  return (
+    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="grid gap-4 xl:grid-cols-[220px_1fr_auto] xl:items-center">
+        <div>
+          <h3 className="text-lg font-bold tracking-tight">Smart Collections</h3>
+          <p className="mt-1 text-sm leading-5 text-slate-500">Curated report collections to help you focus on what matters.</p>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {collections.map((collection) => {
+            const Icon = collection.icon;
+            return (
+              <button key={collection.label} className="flex items-center gap-4 rounded-2xl bg-slate-50 p-4 text-left transition hover:bg-slate-100">
+                <span className={`grid h-12 w-12 place-items-center rounded-full ${collection.tone}`}><Icon className="h-6 w-6" /></span>
+                <span><span className="block text-sm font-bold text-slate-950">{collection.label}</span><span className="text-xs text-slate-500">{collection.count}</span></span>
+              </button>
+            );
+          })}
+        </div>
+
+        <button className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold text-emerald-700">
+          View All Collections
+          <ChevronRight className="h-4 w-4" />
+        </button>
+      </div>
+    </section>
+  );
+}
+
+export default function Reports() {
+  return (
+    <div className="min-h-screen bg-[#f6f7f6] font-sans text-slate-950">
+      {/* <Sidebar /> */}
+      <div className="">
+       
+        <main className="space-y-5 p-5 xl:p-8">
+          <h1 className="text-3xl font-bold tracking-tight">Saved Reports</h1>
+          <Hero />
+          <KpiStrip />
+          <FilterBar />
+          <section className="grid gap-5 md:grid-cols-2 2xl:grid-cols-4">
+            {reports.map((report) => <ReportCard key={report.title} report={report} />)}
+          </section>
+          <SmartCollections />
+        </main>
+      </div>
     </div>
   );
 }

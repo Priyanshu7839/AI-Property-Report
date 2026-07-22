@@ -17,7 +17,8 @@ import {
   Menu,
   X,
   ChevronRight,
-  LogOut
+  LogOut,
+  Wrench
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -40,13 +41,13 @@ const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard Overview', icon: LayoutDashboard },
   { id: 'properties', label: 'My Properties', icon: Building2 },
   { id: 'reports', label: 'Saved Reports', icon: FileText },
-  { id: 'equity', label: 'Equity & Valuation', icon: TrendingUp },
-  { id: 'scenarios', label: 'Strategy Scenarios', icon: GitMerge },
-  { id: 'portfolio', label: 'Portfolio Builder', icon: PieChart },
+  { id: 'tenants', label: 'Tenants Hub', icon: Users },
+  { id: 'service', label: 'Service Ticket', icon: Wrench },
+  { id: 'organization', label: 'Organization', icon: TrendingUp },
+  { id: 'portfolio', label: 'Wealth Builder', icon: PieChart },
   { id: 'documents', label: 'Taxes & Documents', icon: FileCheck },
-  { id: 'rental', label: 'Rental & Income', icon: Key },
-  { id: 'advisors', label: 'Advisors & Agents', icon: Users },
-  { id: 'billing', label: 'Invoices & Billing', icon: Receipt },
+  { id: 'advisors', label: 'Advisor & Market Utilities', icon: Users },
+  { id: 'pricing', label: 'Invoices & Billing', icon: Receipt },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 

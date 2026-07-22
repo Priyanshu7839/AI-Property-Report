@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">LIAM</string>
+    <string name="title_activity_main">LIAM</string>
+    <string name="package_name">com.liam.app</string>
+    <string name="custom_url_scheme">com.liam.app</string>
+</resources>

@@ -33,13 +33,13 @@ export const gettimeSeriesData = async(House) => {
     try {
          const [SandP, Bonds, Bitcoin] = await Promise.all([
       axios.get(
-        "https://api.twelvedata.com/time_series?apikey=7b5359b56dc14d0790c7da284692a107&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2026-02-02 02:57:00&symbol=SPY"
+        "https://api.twelvedata.com/time_series?apikey=0b3f30ff2a97427996198a52b9881c02&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2026-02-02 02:57:00&symbol=SPY"
       ),
       axios.get(
-        "https://api.twelvedata.com/time_series?apikey=7b5359b56dc14d0790c7da284692a107&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2026-02-02 02:57:00&symbol=BND"
+        "https://api.twelvedata.com/time_series?apikey=0b3f30ff2a97427996198a52b9881c02&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2026-02-02 02:57:00&symbol=BND"
       ),
       axios.get(
-        "https://api.twelvedata.com/time_series?apikey=7b5359b56dc14d0790c7da284692a107&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2026-02-02 02:57:00&symbol=BTC/USD"
+        "https://api.twelvedata.com/time_series?apikey=0b3f30ff2a97427996198a52b9881c02&interval=1month&country=US&format=JSON&start_date=2020-01-01 02:57:00&end_date=2026-02-02 02:57:00&symbol=BTC/USD"
       ),
       // axios.get(
       //   `https://zhomes-realty-us.p.rapidapi.com/properties/search-address?address=${address}`,
@@ -299,7 +299,7 @@ return only in types mentioned in json strusture do not change the format or any
 
 export const GeneratePdf = async(address)=> {
   try {
-    const response = await axios.get(`https://autotrends-backend.onrender.com/aiproperty/getpdf?address=${address}}`,{
+    const response = await axios.get(`https://autotrends-backend.wonderfulisland-5beba373.centralindia.azurecontainerapps.io/aiproperty/getpdf?address=${address}}`,{
        responseType: "blob"
     }).then(res => {
   const file = new Blob([res.data], { type: "application/pdf" });
@@ -376,6 +376,28 @@ reportArray.push({
     })
     
     return reportArray
+  } catch (error) {
+    console.log(error)
+    return error
+  }
+}
+
+export const GetEmails = async() =>{
+  try {
+    const emails = await getDocs(collection(db,"emails"))
+   
+      const emailArray = []
+
+
+    emails.forEach((doc)=>{
+emailArray.push({
+    id: doc.id,
+    ...doc.data(),
+    created_at: new Date(doc.data().createdAt.seconds * 1000).toLocaleDateString('en-In',{month:'long',day:'numeric',year:'numeric'})
+  });
+    })
+
+    return emailArray
   } catch (error) {
     console.log(error)
     return error

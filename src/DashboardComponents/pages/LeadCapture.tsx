@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { Search, Send, Download, Settings, CheckCircle, XCircle } from 'lucide-react';
+import { GetEmails } from '../../components/apicalls/ApiCalls';
 
 const mockLeads = [
   {
@@ -77,18 +78,35 @@ const mockLeads = [
 const leadTypes = ['All Types', 'Refinance Lead', 'Seller Lead', 'Insurance Savings Lead', 'High Equity Lead', 'Investment Lead'];
 
 export function LeadCapture() {
+
+    const [emails,setEmails] = useState([])
+    useEffect(() => {
+  
+  
+    const GetReport = async()=>{
+      const response = await GetEmails()
+    //  console.log(response)
+     setEmails(response)
+  
+    }
+  
+    GetReport()
+  
+  
+   
+  }, [])
+  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('All Types');
   const [selectedLeads, setSelectedLeads] = useState<string[]>([]);
   const [showRoutingModal, setShowRoutingModal] = useState(false);
 
-  const filteredLeads = mockLeads.filter(lead => {
-    const matchesSearch = lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         lead.zip.includes(searchTerm) ||
-                         lead.id.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = filterType === 'All Types' || lead.leadType === filterType;
-    return matchesSearch && matchesType;
+  const filteredLeads = emails.filter(lead => {
+    const matchesSearch =
+                         lead.email.toLowerCase().includes(searchTerm.toLowerCase())
+   
+    return matchesSearch;
   });
 
   const toggleLeadSelection = (leadId: string) => {
@@ -130,23 +148,23 @@ export function LeadCapture() {
       {/* Stats Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-4 md:mb-6">
         <div className="bg-white rounded-lg shadow p-4 md:p-6">
-          <p className="text-gray-600 text-xs md:text-sm">Total Leads Today</p>
-          <p className="text-2xl md:text-3xl mt-2">892</p>
+          <p className="text-gray-600 text-xs md:text-sm">Total Leads </p>
+          <p className="text-2xl md:text-3xl mt-2">{emails?.length}</p>
           <p className="text-xs md:text-sm text-green-600 mt-2">+18% vs yesterday</p>
         </div>
         <div className="bg-white rounded-lg shadow p-4 md:p-6">
           <p className="text-gray-600 text-xs md:text-sm">High-Intent Leads</p>
-          <p className="text-2xl md:text-3xl mt-2">234</p>
+          <p className="text-2xl md:text-3xl mt-2">-</p>
           <p className="text-xs md:text-sm text-green-600 mt-2">+31% vs yesterday</p>
         </div>
         <div className="bg-white rounded-lg shadow p-4 md:p-6">
           <p className="text-gray-600 text-xs md:text-sm">Leads Monetized</p>
-          <p className="text-2xl md:text-3xl mt-2">178</p>
+          <p className="text-2xl md:text-3xl mt-2">-</p>
           <p className="text-xs md:text-sm text-gray-600 mt-2">20% conversion</p>
         </div>
         <div className="bg-white rounded-lg shadow p-4 md:p-6">
           <p className="text-gray-600 text-xs md:text-sm">Lead Value Today</p>
-          <p className="text-2xl md:text-3xl mt-2">$14,526</p>
+          <p className="text-2xl md:text-3xl mt-2">-</p>
           <p className="text-xs md:text-sm text-green-600 mt-2">Average: $81.64</p>
         </div>
       </div>
@@ -165,7 +183,7 @@ export function LeadCapture() {
             />
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+          {/* <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
             <select
               className="flex-1 sm:flex-initial px-4 py-2.5 md:py-3 border border-gray-300 rounded-lg appearance-none bg-white text-sm md:text-base"
               value={filterType}
@@ -194,7 +212,7 @@ export function LeadCapture() {
               <Settings size={20} />
               Auto-Route Rules
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -219,17 +237,17 @@ export function LeadCapture() {
                   />
                 </th>
                 <th className="text-left py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-600">ID</th>
-                <th className="text-left py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-600">Name</th>
+                {/* <th className="text-left py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-600">Name</th> */}
                 <th className="text-left py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-600">Email</th>
-                <th className="text-left py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-600">Phone</th>
-                <th className="text-left py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-600">Address</th>
+             <th className="text-left py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-600">Created At</th>
+               {/*} <th className="text-left py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-600">Address</th>
                 <th className="text-left py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-600">ZIP</th>
                 <th className="text-left py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-600">Type</th>
                 <th className="text-center py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-600">Intent</th>
                 <th className="text-left py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-600">Buyer</th>
                 <th className="text-left py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-600">Status</th>
                 <th className="text-right py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-600">Value</th>
-                <th className="text-left py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-600">Notes</th>
+                <th className="text-left py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-gray-600">Notes</th> */}
               </tr>
             </thead>
             <tbody>
@@ -244,35 +262,10 @@ export function LeadCapture() {
                     />
                   </td>
                   <td className="py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm text-blue-600">{lead.id}</td>
-                  <td className="py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm">{lead.name}</td>
                   <td className="py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm">{lead.email}</td>
-                  <td className="py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm whitespace-nowrap">{lead.phone}</td>
-                  <td className="py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm">{lead.address}</td>
-                  <td className="py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm">{lead.zip}</td>
-                  <td className="py-3 md:py-4 px-2 md:px-4">
-                    <span className={`inline-block px-2 md:px-3 py-0.5 md:py-1 rounded-full text-xs md:text-sm whitespace-nowrap ${getLeadTypeColor(lead.leadType)}`}>
-                      {lead.leadType}
-                    </span>
-                  </td>
-                  <td className="py-4 px-4 text-center">
-                    <div className="flex items-center justify-center">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                        lead.intentScore >= 90 ? 'bg-green-100 text-green-700' :
-                        lead.intentScore >= 80 ? 'bg-blue-100 text-blue-700' :
-                        'bg-yellow-100 text-yellow-700'
-                      }`}>
-                        {lead.intentScore}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-4 px-4 text-sm">{lead.buyer}</td>
-                  <td className="py-4 px-4">
-                    <span className={`inline-block px-3 py-1 rounded-full text-sm ${getStatusColor(lead.status)}`}>
-                      {lead.status}
-                    </span>
-                  </td>
-                  <td className="py-4 px-4 text-right text-green-600">{lead.value}</td>
-                  <td className="py-4 px-4 text-sm text-gray-600">{lead.notes}</td>
+                  <td className="py-3 md:py-4 px-2 md:px-4 text-xs md:text-sm">{lead.created_at}</td>
+                
+                 
                 </tr>
               ))}
             </tbody>

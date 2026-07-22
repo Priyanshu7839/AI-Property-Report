@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { X, Send, Phone, Calendar, User, Mail, Clock, Check, Sparkles, MessageCircle } from 'lucide-react';
 import { Button } from './ui/button';
+import { Textarea } from './ui/textarea';
 
 interface ChatbotModalProps {
   isOpen: boolean;
@@ -47,6 +48,7 @@ export function ChatbotModal({ isOpen, onClose, propertyAddress, mode = 'general
     preferredTime: ''
   });
   const [showBookingForm, setShowBookingForm] = useState(false);
+  const [showConsultForm,setShowConsultForm] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -62,7 +64,9 @@ export function ChatbotModal({ isOpen, onClose, propertyAddress, mode = 'general
       "How does it work?",
       "What's in the report?",
       "Is it really free?",
-      "Get my report now"
+      "Get my report now",
+      "Contact Support"
+      
     ] : [
       "Unlock my home equity",
       "Investment opportunities",
@@ -111,10 +115,17 @@ export function ChatbotModal({ isOpen, onClose, propertyAddress, mode = 'general
           } else if (reply.includes('Is it really free')) {
             botResponse = "Yes, 100% free! No credit card, no hidden fees, ever. We provide these reports to help homeowners discover opportunities they didn't know existed. If you want expert guidance to act on your insights, our advisors are available for free consultations too.";
             setConversationStage('goal');
-          } else if (reply.includes('Get my report')) {
+          }
+          else if(reply.includes('Contact Support')){
+            botResponse = "Oops! Sorry for the inconvinience Caused. Just want to know some details so our team can reach you"
+            setShowConsultForm(true)
+            setShowQuickReplies(false)
+          }
+          else if (reply.includes('Get my report')) {
             botResponse = "Perfect! Just scroll up to the address input field, enter your property address, and hit 'Generate Report'. You'll have your complete AI property intelligence report in seconds. Need any help?";
             setShowQuickReplies(false);
           }
+          
         }
         // Report mode responses
         else {
@@ -366,6 +377,68 @@ export function ChatbotModal({ isOpen, onClose, propertyAddress, mode = 'general
             </div>
           )}
 
+            {showConsultForm && !userInfo.email && (
+            <div className="bg-white rounded-xl p-5 border border-black/[0.06] shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <Calendar className="text-[#005BFF]" size={18} />
+                <h4 className="text-black font-medium text-[14px]">Consult Form</h4>
+              </div>
+              <form onSubmit={handleBookingFormSubmit} className="space-y-3">
+                <div>
+                  <label className="block text-[#6A6A6A] text-[11px] mb-1 uppercase tracking-wide font-medium">Your Name</label>
+                  <input
+                    type="text"
+                    value={userInfo.name}
+                    onChange={(e) => setUserInfo(prev => ({ ...prev, name: e.target.value }))}
+                    className="w-full px-3 py-2 border border-black/[0.12] rounded-lg text-[14px] focus:outline-none focus:border-[#005BFF] transition-colors"
+                    placeholder="John Smith"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-[#6A6A6A] text-[11px] mb-1 uppercase tracking-wide font-medium">Email</label>
+                  <input
+                    type="email"
+                    value={userInfo.email}
+                    onChange={(e) => setUserInfo(prev => ({ ...prev, email: e.target.value }))}
+                    className="w-full px-3 py-2 border border-black/[0.12] rounded-lg text-[14px] focus:outline-none focus:border-[#005BFF] transition-colors"
+                    placeholder="john@example.com"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-[#6A6A6A] text-[11px] mb-1 uppercase tracking-wide font-medium">Phone</label>
+                  <input
+                    type="tel"
+                    value={userInfo.phone}
+                    onChange={(e) => setUserInfo(prev => ({ ...prev, phone: e.target.value }))}
+                    className="w-full px-3 py-2 border border-black/[0.12] rounded-lg text-[14px] focus:outline-none focus:border-[#005BFF] transition-colors"
+                    placeholder="(555) 123-4567"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-[#6A6A6A] text-[11px] mb-1 uppercase tracking-wide font-medium">Query</label>
+                  <Textarea
+                  
+                    value={userInfo.preferredTime}
+                    onChange={(e) => setUserInfo(prev => ({ ...prev, preferredTime: e.target.value }))}
+                    className="w-full px-3 py-2 border border-black/[0.12] rounded-lg text-[14px] focus:outline-none focus:border-[#005BFF] transition-colors"
+                    placeholder="I want to..."
+                    required
+                  />
+                </div>
+                <Button 
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-[#005BFF] to-[#0066FF] text-white py-3 rounded-lg text-[14px] font-medium hover:opacity-90 transition-opacity"
+                >
+                  {/* <Calendar size={16} className="mr-2" /> */}
+                 Register Complaint
+                </Button>
+              </form>
+            </div>
+          )}
+
           <div ref={messagesEndRef} />
         </div>
 
@@ -388,8 +461,8 @@ export function ChatbotModal({ isOpen, onClose, propertyAddress, mode = 'general
               <Send size={18} />
             </button>
           </form>
-          <p className="text-[#6A6A6A] text-[10px] text-center mt-2">
-            🔒 Your information is secure and never shared
+          <p className="text-[#6A6A6A] text-[10px] text-center mt-2 capitalize">
+            LIAM finds hidden savings and equity opportunities in your home — see what you can unlock.
           </p>
         </div>
       </div>

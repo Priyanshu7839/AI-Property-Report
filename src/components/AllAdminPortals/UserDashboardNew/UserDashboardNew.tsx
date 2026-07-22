@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 import { Layout } from './Layout';
 import { Dashboard } from './Dashboard';
-import { Properties } from './Properties';
-import { PropertyDetail } from './PropertyDetail';
+import  Properties  from './Properties';
+import  PropertyDetail  from './PropertyDetail';
 import { Portfolio } from './Portfolio';
 import { Advisors } from './Advisors';
 import { Documents } from './Documents';
-import { Reports } from './Reports';
+import  Reports  from './Reports';
 import { properties } from './mockData';
+import TenantsHub from './TenantsHub';
+import ServiceTickets from './ServiceTickets';
+import Pricing from './Pricing';
+import DocumentVaultPage from './DocumentVaultPage';
+import Organization from './Organization';
+import AddPropertyFlow from './AddPropertyFlow';
 
 export default function UserDashboardNew() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -15,11 +21,13 @@ export default function UserDashboardNew() {
 
   const handleSelectProperty = (id: string) => {
     setSelectedPropertyId(id);
-    setActiveTab('properties'); // Ensure we stay on properties tab context
+    setActiveTab('properties'); 
+   // Ensure we stay on properties tab context
   };
 
   const handleBackToProperties = () => {
     setSelectedPropertyId(null);
+     console.log('clicked')
   };
 
   const renderContent = () => {
@@ -33,15 +41,26 @@ export default function UserDashboardNew() {
             return <PropertyDetail property={property} onBack={handleBackToProperties} />;
           }
         }
-        return <Properties onSelectProperty={handleSelectProperty} />;
+        return <Properties setActiveTab={setActiveTab} onSelectProperty={handleSelectProperty} />;
       case 'portfolio':
         return <Portfolio />;
       case 'advisors':
         return <Advisors />;
-      case 'documents':
-        return <Documents />;
+      case 'documents': 
+        return <DocumentVaultPage />;
       case 'reports':
         return <Reports />;
+      case 'tenants':
+      return <TenantsHub/>
+      case 'service':
+        return <ServiceTickets/>
+        case 'organization':
+        return <Organization/>
+        case 'pricing' :
+          return <Pricing/>
+
+          case 'Add' :
+            return <AddPropertyFlow setActiveTab={setActiveTab}/>
       default:
         // For other tabs not fully implemented, we can show a placeholder or reuse existing components for demo
         return (
