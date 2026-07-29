@@ -134,3 +134,21 @@ export const getDailyBriefing = async () => {
         );
     }
 }
+
+
+
+
+export const saveUserChat = async (body) => {
+  return api.post("/properties/saveUserChat", body, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+}
+
+
+export const getAIRoadmapTitle = async (user_uuid) => {
+  return api.post("/properties/get-ai-roadmap-title", {
+    user_uuid,
+  });
+};

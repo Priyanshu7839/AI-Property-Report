@@ -55,7 +55,7 @@ import {
   Tag,
   SmilePlus,
   UsersRound,
-  Map,
+  Map as MapIcon ,
   Bell,
   Settings,
   ArrowRight,
@@ -90,7 +90,7 @@ import {
 } from "../components/apicalls/ApiCalls";
 import { AppreciationChart } from "../components/AppreciationChart";
 import { useLocation, useSearchParams } from "react-router";
-import { chatStart, getDailyBriefing } from "../../Apicall";
+import { chatStart, getDailyBriefing, saveUserChat } from "../../Apicall";
 import LIAMLOGO from "../assets/LIAMLOGO.png";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -628,6 +628,35 @@ export default function LIAMConversation() {
   const [homesData, setHomesData] = useState([]);
 
   const [selectedProperty, setSelectedProperty] = useState(null);
+
+
+  const handleSaveRoadmap = async (chat,isRoadmap,title) => {
+  try {
+    const payload = {
+      roadmap_completed: true,
+      context: {
+        goal: "Buy Rental Property",
+        budget: 500000,
+        timeline: "12 months",
+        location: "Dallas, TX",
+      },
+    };
+
+    const { data } = await saveUserChat(
+      {
+      roadmap_completed: isRoadmap,
+      context: chat,
+      user_uuid:'23319d59-47f4-4f16-88b7-459e5e7c542a',
+      title:title
+    }
+    );
+    
+
+    console.log("Saved:", data);
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   const fetchPropertiesDetails = async (zpid) => {
     try {
@@ -1213,7 +1242,7 @@ export default function LIAMConversation() {
     setIsTyping(true);
     try {
       const response = await chatStart({
-        conversation: nextConversation,
+        conversations: nextConversation,
         intent,
       });
       console.log(response);
@@ -1237,6 +1266,9 @@ export default function LIAMConversation() {
           },
         ]);
       }
+
+
+      await handleSaveRoadmap(messages,true,ai?.roadmap?.title)
 
       // UI message
       setMessages((prev) => [
@@ -1906,11 +1938,12 @@ export default function LIAMConversation() {
                       <div className=" text-[#18181B] border-[0.5px] border-[#cfcfd7] mb-5 px-5 py-3 rounded-2xl flex  gap-2 items-center justify-between">
                         <div className="flex flex-col gap-2 items-start justify-between ">
                           <p className="font-semibold text-xl leading-tight">
-                            {selectedProperty?.address.street}
+                            {/* {selectedProperty?.address.street} */}39 Brandis Ave
                           </p>
                           <p className="text-md text-[#71717A] flex items-center gap-1">
                             <MapPin size={16} />{" "}
-                            {selectedProperty?.address.city}
+                            {/* {selectedProperty?.address.city} */}
+                            Staten Island
                           </p>
 
                           <div className="flex items-center gap-2">
@@ -1953,10 +1986,11 @@ export default function LIAMConversation() {
                         <h1 className="flex items-center justify-center flex-col  w-full">
                           <p className="text-gray-100 text-sm">Est. Rent</p>
                           <p className="font-bold capitalize">
-                            {selectedProperty?.rentZestimate
+                            {/* {selectedProperty?.rentZestimate
                               ? ` $
             ${Number(selectedProperty?.rentZestimate).toLocaleString("en-us")}`
-                              : "0"}
+                              : "0"} */}
+                              $2,006 per month
                           </p>
                         </h1>
                       </div>
@@ -1970,7 +2004,9 @@ export default function LIAMConversation() {
                           <p className="text-[10px] text-[#15803D]">HOA Fee</p>
 
                           <h1 className="text-[#111827] text-[13px] font-bold">
-                            $ {homesData?.hoaFee}
+                            $ 
+                            {/* {homesData?.hoaFee} */}
+                            300 / mo
                           </h1>
                         </div>
                         <div className="flex flex-col items-center gap-[2px]">
@@ -2058,7 +2094,7 @@ export default function LIAMConversation() {
                             handleReportGenerate();
                             setReportStep(1);
                           }}
-                          className="p-3 text-white bg-[green] font-bold rounded-xl text-center"
+                          className="p-3 text-white bg-[green] font-bold rounded-xl text-center cursor-pointer"
                         >
                           Generate AI Property Report
                         </div>
@@ -2067,7 +2103,7 @@ export default function LIAMConversation() {
                           onClick={() => {
                             setReportStep(3);
                           }}
-                          className="p-3 bg-[#000] text-[#ffffff] font-bold rounded-xl text-center"
+                          className="p-3 bg-[#000] text-[#ffffff] font-bold rounded-xl text-center cursor-pointer"
                         >
                           Contact Agent
                         </div>

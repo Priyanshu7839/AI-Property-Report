@@ -59,7 +59,11 @@ const MyProperties = () => {
 };
 
 
-useEffect(()=>{fetchProperty()},[propertyType,user?.id])
+useEffect(()=>{
+    if(user){
+        fetchProperty()
+    }
+},[propertyType,user?.id])
 
   return (
     <div className='h-[83vh] font-[Inter]'>

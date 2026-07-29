@@ -89,7 +89,7 @@ const [homeAnimationFinished,setHomeAnimationFinished] = useState(false)
         const response = await getCurrentUser(uuid);
 
         if (response.success) {
-      localStorage.setItem("user", JSON.stringify(user));
+          localStorage.setItem("user", JSON.stringify(user));
           console.log(response.data);
         }
       } catch (err) {

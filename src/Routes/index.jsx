@@ -89,10 +89,11 @@ import LIAMlayout from "../Layout/LIAMlayout";
 import { elements } from "chart.js";
 import CompleteProfile from "../LOGIN/CompleteProfile";
 import LIAMSplashScreen from "../LIAM/LIAMSplashScreen";
+import MyRoadmaps from "../LIAM/MyRoadmaps/MyRoadmaps";
 const Routers = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
+    element: <LIAMSplashScreen />,
   },
   {
     path: "/Report",
@@ -364,6 +365,10 @@ const Routers = createBrowserRouter([
       path:'/AskLIAM/LIAMNetwork',
       element:<LIAMNetworkFlow/>
     },
+    {
+      path:'/AskLIAM/MyRoadmaps',
+      element:<MyRoadmaps/>
+    }
     
 
     ]

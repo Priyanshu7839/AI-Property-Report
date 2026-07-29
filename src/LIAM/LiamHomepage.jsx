@@ -6,12 +6,16 @@ import { useNavigate, useSearchParams } from "react-router";
 import LIAMLOGO from '../assets/LIAMLOGO.png'
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { supabase } from "../Utils/Supabase";
 
 
 
 
 const Typewriter = ({ text, speed = 70, onComplete }) => {
   const [display, setDisplay] = useState("");
+
+
+  
 
   useEffect(() => {
     let i = 0;
@@ -40,7 +44,12 @@ const Typewriter = ({ text, speed = 70, onComplete }) => {
 
 const LiamHomepage = () => {
 
+
+
+
   const [showContent, setShowContent] = useState(false);
+
+    
 
 
 
@@ -64,6 +73,39 @@ const LiamHomepage = () => {
   ];
 
   const navigate = useNavigate()
+
+  useEffect(() => {
+  const fetchUser = async () => {
+    try {
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
+
+      if (error) throw error;
+
+      if (!session) {
+        navigate("/AskLIAM/LoginHome");
+        return;
+      }
+
+      const user = session.user;
+
+     
+
+      // Store auth user
+      localStorage.setItem("user", JSON.stringify(user));
+
+      
+
+    
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  fetchUser();
+}, [navigate]);
 
   const [selected,setSelected] = useState(null)
 
@@ -238,7 +280,7 @@ const LiamHomepage = () => {
 </div>
 
 
-          <div className="relative w-full  sm:w-[70%] ">
+          <div className="relative w-full ">
           <input
 
                

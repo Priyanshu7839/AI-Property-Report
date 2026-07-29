@@ -19,7 +19,7 @@ const user = JSON.parse(localStorage.getItem("user"));
     setAdding(true)
     try {
         const response = await createProperty(
-            user.id,              // Logged in user's id
+            user?.id,              // Logged in user's id
             'Residential',      // Residential, Commercial, Mixed Use, Land/Vacant Land
             formData                   // Your state object
         );

@@ -10,40 +10,43 @@ import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in'
 
 const LoginHome = () => {
     const navigate = useNavigate()
-  const signInWithGoogle = async () => {
-
+ const signInWithGoogle = async () => {
   try {
-    const result = await GoogleSignIn.signIn();
+    if (Capacitor.isNativePlatform()) {
+      // Android & iOS
+      const result = await GoogleSignIn.signIn();
 
-    const { data, error } = await supabase.auth.signInWithIdToken({
-      provider: "google",
-      token: result.idToken,
-    });
+      const { data, error } = await supabase.auth.signInWithIdToken({
+        provider: "google",
+        token: result.idToken,
+      });
 
-    if (error) {
-      console.error(error);
-      return;
-    }
+      if (error) throw error;
 
-    const user = data.user;
+      const user = data.user;
 
-    const { data: profile, error: profileError } = await supabase
-      .from("users")
-      .select("*")
-      .eq("auth_user_id", user.id)
-      .maybeSingle();
+      const { data: profile, error: profileError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("auth_user_id", user.id)
+        .maybeSingle();
 
-    if (profileError) {
-      console.error(profileError);
-      return;
-    }
+      if (profileError) throw profileError;
 
-    localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("user", JSON.stringify(user));
 
-    if (profile) {
-      navigate(`/AskLIAM/Home?uuid=${user.id}`);
+      if (profile) {
+        navigate(`/AskLIAM/Home?uuid=${user.id}`);
+      } else {
+        navigate(`/AskLIAM/Complete-Profile?uuid=${user.id}`);
+      }
     } else {
-      navigate(`/AskLIAM/Complete-Profile?uuid=${user.id}`);
+      // Web
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+      });
+
+      if (error) throw error;
     }
   } catch (err) {
     console.error(err);
@@ -56,11 +59,14 @@ const LoginHome = () => {
 //     provider: "Google",
 //   });
 
+
+
+
   
-//   if (error) {
-//     console.error(error);
-//   }
-// };
+  if (error) {
+    console.error(error);
+  }
+};
 
 const signInWithApple = async () => {
   const {data, error } = await supabase.auth.signInWithOAuth({
@@ -74,7 +80,7 @@ const signInWithApple = async () => {
   }
 };
   return (
-    <div className='h-[100vh] flex flex-col items-center justify-center gap-10'>
+    <div className='max-w-[400px] mx-auto h-[100vh] flex flex-col items-center justify-center gap-10'>
    
        
 

@@ -156,7 +156,7 @@ const LIAMNetworkFlow = () => {
 
   const fetchProperty = async () => {
     try {
-      const response = await getProperty(1, "All");
+      const response = await getProperty('443f9067-2099-46c0-babf-69cbc1a8ac15', "All");
 
       const sortedProperties = [...response?.data].sort((a, b) => {
     const aHasListing = (a.listing_types?.length ?? 0) > 0;

@@ -1,13 +1,14 @@
-import { ArrowRight, Banknote, Bell, Building2, ChevronDown, Crown, DollarSign, HelpCircle, House, Landmark, Map, Menu, Network, Paperclip, Settings2, Shield, User, NotepadText, SquarePen, LogOut  } from 'lucide-react';
+import { ArrowRight, Banknote, Bell, Building2, ChevronDown, Crown, DollarSign, HelpCircle, House, Landmark, Map, Network, Paperclip, Settings2, Shield, User, NotepadText, SquarePen, LogOut, Plus  } from 'lucide-react';
 import React, { useState,useEffect,useRef } from 'react'
-import { IoPulse } from "react-icons/io5";
+import { IoAdd, IoPulse } from "react-icons/io5";
 import LIAMLOGO from '../assets/LIAMLOGO.png'
 import { Settings } from '../components/AllAdminPortals/FinancialAdvisorPortal/pages/Settings';
 import { useNavigate, useSearchParams } from 'react-router';
-import { getCurrentUser } from '../../Apicall';
+import {  getAIRoadmapTitle, getCurrentUser } from '../../Apicall';
 import { supabase } from '../Utils/Supabase';
 import LIAMIcon from '../assets/LIAMIcon.png'
 import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in';
+import { HiOutlineMenuAlt2 } from "react-icons/hi";
 
 
 
@@ -63,6 +64,27 @@ const logout = async () => {
   }
 };
 
+
+const [RoadmapTitles,setRoadmapTitles] = useState([])
+  const [showRoadmapTitles,setShowRoadmapTitles] = useState(false)
+
+  const fetchRoadMapTitle = async () => {
+  try {
+    const { data } = await getAIRoadmapTitle('23319d59-47f4-4f16-88b7-459e5e7c542a');
+
+    console.log(data.title);
+   setRoadmapTitles(data?.title)
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
+useEffect(()=>{
+  fetchRoadMapTitle()
+},[])
+
+
    const sidebaroptions = [
     {
       name:'Home',
@@ -80,6 +102,7 @@ const logout = async () => {
         intent: "daily_briefing",
       },
     }),
+    
 
       
     },
@@ -87,7 +110,8 @@ const logout = async () => {
       name:'My Roadmaps',
       icon:<Map/>,
          onClick: () =>
-    navigate("#"),
+    setShowRoadmapTitles(!showRoadmapTitles),
+         dropdown:true
 
       
     },
@@ -116,8 +140,7 @@ const logout = async () => {
       name:'LIAM Pro',
       icon:<Crown/>,
       dropdown:true,
-          onClick: () =>
-    navigate("#"),
+          onClick: () => setShowLiamProDropdown(!showLiamProDropDown),
 
     },
     {
@@ -129,6 +152,12 @@ const logout = async () => {
    
     
   ]
+
+  
+
+ 
+
+  
 
 
   const [selectedSidebarOptions,setSelectedSidebarOptions] = useState('Home')
@@ -144,28 +173,7 @@ const logout = async () => {
 
     const [userData, setUserData] = useState(null);
 
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     try {
-  //       const {
-  //         data: { user },
-  //       } = await supabase.auth.getUser();
 
-  //       if (!user) return;
-
-  //       const response = await getCurrentUser(uuid);
-
-  //       if (response.success) {
-  //         setUserData(response.data);
-  //         console.log(response.data);
-  //       }
-  //     } catch (err) {
-  //       console.error(err);
-  //     }
-  //   };
-
-  //   fetchUser();
-  // }, []);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -184,12 +192,12 @@ const logout = async () => {
 };
 
 
- 
+
 
 
   return (
     <div ref={sidebarRef} className = 'px-3 pt-10 pb-5 flex items-start justify-between h-[12vh] bg-[#FDFDFD]'>
-       <Menu size={24}  onClick={() =>{ 
+       <HiOutlineMenuAlt2 size={24}  onClick={() =>{ 
         
         setSidebarOpen(!sidebarOpen)
 
@@ -210,7 +218,7 @@ const logout = async () => {
 
              <div 
              onClick={()=>{
-              handleNavigate('/AskLIAM/LIAMConversation')
+              navigate('/AskLIAM/Home')
              }}
              className="">
                          <SquarePen color='black' />
@@ -229,8 +237,11 @@ const logout = async () => {
                       
                             <div className='flex items-start flex-col justify-center w-full gap-4 '>
                                 <div className="flex items-center justify-between w-full font-extrabold text-[24px]">
-                                <h1>LIAM</h1>
-                                <Menu onClick={()=>{setSidebarOpen(false)}}/>
+                                <p className='flex text-[46px]  font-bold leading-8 tracking-[0.15em]  w-[160px] flex items-start justify-start mb-5 ml-3'>
+             <img src={LIAMIcon} alt=""  className='w-[60%]'/>
+
+            </p>
+                               
                               </div>
                       
                               <div className="flex flex-col items-start gap-1 w-full">
@@ -251,52 +262,101 @@ const logout = async () => {
                                         {item.icon}
                                         {item.name}</h1>
                                         
-                                        {item.dropdown &&
+                                        {item.dropdown  &&
                                         <div className='flex items-center justify-center gap-1'>
-                                            <div className='py-1 px-2 bg-[#22C55E14] text-[#22C55E] text-[9px] font-semibold rounded-[6px] whitespace-nowrap'>Coming Soon</div>
-                                           <ChevronDown onClick={()=>{setShowLiamProDropdown(!showLiamProDropDown)}} size={16}/>
+                                          { item.name === 'LIAM Pro' &&  <div className='py-1 px-2 bg-[#22C55E14] text-[#22C55E] text-[9px] font-semibold rounded-[6px] whitespace-nowrap'>Coming Soon</div>}
+                                           <ChevronDown  size={16}/>
                                         </div>
                                         }
                                       </div>
                       
-                                     {(item.dropdown && showLiamProDropDown)&& <div className='py-3 px-5 flex flex-col gap-6 bg-[#22C55E14] rounded-md'>
-                                           <div className='flex items-center justify-between'>
-                                             <h1 className="font-semibold text-[14px] text-[#6B7280] flex items-center gap-1">
+                                     {(item.name === 'LIAM Pro' && showLiamProDropDown)&& <div className='py-3 px-5 flex flex-col gap-6 bg-[#22C55E14] rounded-md'>
+                                           <div className='flex flex-col items-center justify-between gap-4'>
+                                            <div className='flex items-center justify-between w-full'>
+                                               <h1 className="font-semibold  text-[14px] text-[#6B7280] flex items-center gap-1">
                                               <Landmark color='#22C55E' size={16}/>
                                               Mortgage Offers
                                             </h1>
                       
                                             <div className='py-1 px-2 text-[white] bg-[green] text-[9px] font-semibold rounded-[6px] whitespace-nowrap '>Coming Soon</div>
+                                            </div>
+
+                                            <div className='w-full rounded-full h-[1px] bg-[#cfcfd7]'></div>
                                            </div>
-                                            
-                                           <div className='flex items-center justify-between'>
-                                             <h1 className="font-semibold text-[14px] text-[#6B7280] flex items-center gap-1">
+                                           <div className='flex flex-col items-center justify-between gap-4'>
+                                            <div className='flex items-center justify-between w-full'>
+                                                <h1 className="font-semibold text-[14px] text-[#6B7280] flex items-center gap-1">
                                               <Banknote color='#22C55E' size={16}/>
                                              Sell Property
                                             </h1>
-                      
                                             <div className='py-1 px-2 text-[white] bg-[green] text-[9px] font-semibold rounded-[6px] whitespace-nowrap '>Coming Soon</div>
+                                            </div>
+
+                                            <div className='w-full rounded-full h-[1px] bg-[#cfcfd7]'></div>
                                            </div>
-                                            
-                                           <div className='flex items-center justify-between'>
-                                             <h1 className="font-semibold text-[14px] text-[#6B7280] flex items-center gap-1">
+                                           <div className='flex flex-col items-center justify-between gap-4'>
+                                            <div className='flex items-center justify-between w-full'>
+                                               <h1 className="font-semibold text-[14px] text-[#6B7280] flex items-center gap-1">
                                               <Shield color='#22C55E' size={16}/>
                                               Insurance Offers
                                             </h1>
-                      
                                             <div className='py-1 px-2 text-[white] bg-[green] text-[9px] font-semibold rounded-[6px] whitespace-nowrap '>Coming Soon</div>
+                                            </div>
+
+                                            <div className='w-full rounded-full h-[1px] bg-[#cfcfd7]'></div>
                                            </div>
-                                            
-                                           <div className='flex items-center justify-between'>
-                                             <h1 className="font-semibold text-[14px] text-[#6B7280] flex items-center gap-1">
+                                           <div className='flex flex-col items-center justify-between gap-4'>
+                                            <div className='flex items-center justify-between w-full'>
+                                                <h1 className="font-semibold text-[14px] text-[#6B7280] flex items-center gap-1">
                                               <DollarSign color='#22C55E' size={16}/>
                                               Refinance Options
                                             </h1>
-                      
-                                           <div className='py-1 px-2 text-[white] bg-[green] text-[9px] font-semibold rounded-[6px] whitespace-nowrap '>Coming Soon</div>
+                                            <div className='py-1 px-2 text-[white] bg-[green] text-[9px] font-semibold rounded-[6px] whitespace-nowrap '>Coming Soon</div>
+                                            </div>
+
                                            </div>
+                                          
+                                            
+                                        
+                                            
+                                          
                                             
                                       </div>}
+
+
+                                      {(item.name === 'My Roadmaps' && showRoadmapTitles)&&
+
+                                      <div
+                                     
+                                       className='py-3 px-5 flex flex-col gap-6 bg-[#22C55E14] rounded-md'
+                                      >
+                                       <div 
+                                        onClick={()=>{
+                                        navigate('/AskLIAM/LIAMConversation')
+                                      setSidebarOpen(false)
+                                      }}
+                                       className='flex items-center gap-2'>
+                                        <div className='shrink-0 w-2 h-2 rounded-full bg-[green]'></div>
+                                         <h1 className = 'text-sm text-[#6B7280] line-clamp-1 font-bold'>{RoadmapTitles}</h1>
+                                       </div>
+
+
+
+                                       <h1 
+                                        onClick={()=>{
+                                        navigate('/AskLIAM/LIAMConversation')
+                                      setSidebarOpen(false)
+                                      }}
+                                       className='flex items-center justify-start gap-2 text-[#22C55E] font-bold'>
+                                      <Plus size={16}/>
+                                        Create New Roadmap
+                                       </h1>
+                                      </div>
+
+
+                                      
+                                        
+                                      }
                                      </div>
                                     )
                                   })
