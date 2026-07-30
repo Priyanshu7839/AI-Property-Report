@@ -63,10 +63,10 @@ const LoginHome = () => {
 
 
   
-  if (error) {
-    console.error(error);
-  }
-};
+//   if (error) {
+//     console.error(error);
+//   }
+// };
 
 const signInWithApple = async () => {
   const {data, error } = await supabase.auth.signInWithOAuth({
